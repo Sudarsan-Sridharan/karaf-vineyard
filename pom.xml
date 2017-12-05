@@ -38,6 +38,7 @@
     </properties>
 
     <modules>
+        <module>common</module>
         <module>registry</module>
         <module>gateway</module>
         <module>discovery</module>
@@ -126,5 +127,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- OSGi -->
+
+        </dependencies>
+    </dependencyManagement>
 
 </project>

@@ -35,7 +35,9 @@
 
     <modules>
         <module>api</module>
-        <module>impl</module>
+        <module>bridge</module>
+        <module>rest</module>
+        <module>commands</module>
     </modules>
 
 </project>
