@@ -16,12 +16,43 @@
  */
 package org.apache.karaf.vineyard.registry.storage;
 
+import org.apache.karaf.vineyard.common.Service;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 
 /**
  * Implementation of the service processing, storing the services into a database.
  */
 public class SqlRegistryService implements RegistryService {
+
+    @Override
+    public void add(Service service) {
+        // TODO implement method
+        
+    }
+
+    @Override
+    public void delete(Service service) {
+        // TODO implement method
+        
+    }
+
+    @Override
+    public void delete(String id) {
+        // TODO implement method
+        
+    }
+
+    @Override
+    public void update(Service service) {
+        // TODO implement method
+        
+    }
+
+    @Override
+    public Service get(String id) {
+        // TODO implement method
+        return null;
+    }
 
 
 
