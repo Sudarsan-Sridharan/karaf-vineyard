@@ -16,24 +16,8 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.List;
-import java.util.Map;
-
 /**
- * Describe a service registered in Karaf Vineyard.
+ * Generic policy container. It's extended by specific policy type.
  */
-public class Service {
-
-    /** Unique service ID */
-    public String id;
-
-    /** Human readable name/alias for the service */
-    public String name;
-
-    /** Description of the service */
-    public String description;
-
-    /** Description of this service on different environments */
-    public List<ServiceOnEnvironment> environments;
-
+public abstract class Policy {
 }

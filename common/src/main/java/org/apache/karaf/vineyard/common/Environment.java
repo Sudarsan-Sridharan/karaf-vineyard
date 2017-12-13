@@ -16,24 +16,26 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * Describe a service registered in Karaf Vineyard.
+ * Describe an environment where services are attached to.
  */
-public class Service {
+public class Environment {
 
-    /** Unique service ID */
-    public String id;
+    /** The environment unique ID */
+    private String id;
 
-    /** Human readable name/alias for the service */
+    /** Name of the environment */
     public String name;
 
-    /** Description of the service */
+    /** Description of the environment */
     public String description;
 
-    /** Description of this service on different environments */
-    public List<ServiceOnEnvironment> environments;
+    /** Scope of the environment (on cloud, on prem, ...) */
+    public String scope;
+
+    /** The environment maintainers with roles */
+    public Map<Maintainer, Role> maintainers;
 
 }
