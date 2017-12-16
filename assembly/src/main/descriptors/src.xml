@@ -32,6 +32,9 @@
                 <exclude>**/eclipse-classes/**</exclude>
                 <exclude>**/*.i??</exclude>
                 <exclude>**/.idea/**</exclude>
+                <exclude>**/.project/**</exclude>
+                <exclude>**/.settings/**</exclude>
+                <exclude>**/.project/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>
