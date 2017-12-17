@@ -38,10 +38,13 @@
 
     <feature name="vineyard-registry" version="${project.version}" description="Karaf Vineyard Registry">
         <feature>vineyard-common</feature>
+        <feature>jdbc</feature>
+        <feature>pax-jdbc-derby</feature>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.api/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.commands/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.rest/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.storage/${project.version}</bundle>
+        <configfile finalname="/etc/org.apache.karaf.vineyard.registry.storage.jdbc.cfg">mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.storage/${project.version}/cfg</configfile>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.webconsole/${project.version}</bundle>
     </feature>
 
