@@ -18,6 +18,7 @@ package org.apache.karaf.vineyard.registry.storage;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -91,6 +92,118 @@ public class SqlRegistryService implements RegistryService {
                             + " CONSTRAINT X_SRV_ENV_META_FK FOREIGN KEY (id_service, id_environment) "
                             + " REFERENCES VINEYARD.X_SRV_ENV (id_service, id_environment))"
             };
+    
+    /** Select queries */
+    private final static String selectEnvironmentSql = 
+            "select id, name, description, scope "
+            + "from VINEYARD.ENVIRONMENT";
+    private final static String selectMaintainerSql = 
+            "select name, email, team "
+            + "from VINEYARD.MAINTAINER";
+    private final static String selectDataformatSql = 
+            "select id, name, sample, dataschema "
+            + "from VINEYARD.DATAFORMAT";
+    private final static String selectEndpointSql = 
+            "select location, eptinput, eptoutput "
+            + "from VINEYARD.ENDPOINT";
+    private final static String selectServiceSql = 
+            "select id, name, description "
+            + "from VINEYARD.SERVICE";
+    private final static String selectMaintainerForEnvironmentSql = 
+            "select id_environment, name_maintainer "
+            + "from VINEYARD.X_ENV_MNT";
+    private final static String selectEnvironmentForServiceSql = 
+            "select id_service, id_environment, state, version, endpoint, gateway "
+            + "from VINEYARD.X_SRV_ENV";
+    private final static String selectMetadataEnvironmentForServiceSql = 
+            "select id_service, id_environment, metakay, metavalue "
+            + "from VINEYARD.X_SRV_ENV_META";
+    
+    /** Insert queries */
+    private final static String insertEnvironmentSql = 
+            "insert into VINEYARD.ENVIRONMENT "
+            + "(name, description, scope) "
+            + "values (?, ?, ?)";
+    private final static String insertMaintainerSql = 
+            "insert into VINEYARD.MAINTAINER "
+            + "(name, email, team) "
+            + "values (?, ?, ?, ?)";
+    private final static String insertDataformatSql = 
+            "insert into VINEYARD.DATAFORMAT "
+            + "(name, sample, dataschema) "
+            + "values (?, ?, ?)";
+    private final static String insertEndpointSql = 
+            "insert into VINEYARD.ENDPOINT "
+            + "(location, eptinput, eptoutput) "
+            + "values (?, ?, ?, ?)";
+    private final static String insertServiceSql = 
+            "insert into VINEYARD.SERVICE "
+            + "(name, description) "
+            + "values (?, ?)";
+    private final static String insertMaintainerForEnvironmentSql = 
+            "insert into VINEYARD.X_ENV_MNT "
+            + "(id_environment, name_maintainer) values (?, ?)";
+    private final static String insertEnvironmentForServiceSql = 
+            "insert into VINEYARD.X_SRV_ENV "
+            + "(id_service, id_environment, state, version, endpoint, gateway) "
+            + "values (?, ?, ?, ?, ?, ?)";
+    private final static String insertMetadataEnvironmentForServiceSql = 
+            "insert into VINEYARD.X_SRV_ENV_META "
+            + "(id_service, id_environment, metakay, metavalue) "
+            + "values (?, ?, ?, ?)";
+    
+    /** Update queries */
+    private final static String updateEnvironmentSql = 
+            "update VINEYARD.ENVIRONMENT "
+            + "set (name = ?, description = ?, scope = ?) "
+            + "where id = ?";
+    private final static String updateMaintainerSql = 
+            "update VINEYARD.MAINTAINER "
+            + "set (email = ?, team = ?) "
+            + "where name = ?";
+    private final static String updateDataformatSql = 
+            "update VINEYARD.DATAFORMAT "
+            + "set (name = ?, sample = ?, dataschema = ?) "
+            + "where id = ?";
+    private final static String updateEndpointSql = 
+            "update VINEYARD.ENDPOINT "
+            + "set (eptinput = ?, eptoutput = ?) "
+            + "where location = ?";
+    private final static String updateServiceSql = 
+            "update VINEYARD.SERVICE "
+            + "set (name = ?, description = ?) "
+            + "where id = ?";
+    private final static String updateEnvironmentForServiceSql = 
+            "update VINEYARD.X_SRV_ENV "
+            + "set (state = ?, version = ?, endpoint = ?, gateway = ?) "
+            + "where id_service = ? and id_environment = ?";
+    private final static String updateMetadataEnvironmentForServiceSql = 
+            "update VINEYARD.X_SRV_ENV_META "
+            + "set (metakey = ?, metavalue = ?) "
+            + "where id_service = ? and id_environment = ?";
+    
+    /** Delete queries */
+    private final static String deleteEnvironmentSql = 
+            "delete VINEYARD.ENVIRONMENT "
+            + "where id = ?";
+    private final static String deleteMaintainerSql = 
+            "delete VINEYARD.MAINTAINER "
+            + "where name = ?";
+    private final static String deleteDataformatSql = 
+            "delete VINEYARD.DATAFORMAT "
+            + "where id = ?";
+    private final static String deleteEndpointSql = 
+            "delete VINEYARD.ENDPOINT "
+            + "where location = ?";
+    private final static String deleteServiceSql = 
+            "delete VINEYARD.SERVICE "
+            + "where id = ?";
+    private final static String deleteEnvironmentForServiceSql = 
+            "delete VINEYARD.X_SRV_ENV "
+            + "where id_service = ? and id_environment = ?";
+    private final static String deleteMetadataEnvironmentForServiceSql = 
+            "delete VINEYARD.X_SRV_ENV_META "
+            + "where id_service = ? and id_environment = ?";
             
     @Reference(target = "(osgi.jndi.service.name=jdbc/vineyard)")
     private DataSource dataSource;
@@ -109,7 +222,7 @@ public class SqlRegistryService implements RegistryService {
         try (Connection connection = dataSource.getConnection()) {
             createTables(connection);
         } catch (Exception e) {
-            LOGGER.debug("Error creating table ", e);
+            LOGGER.error("Error creating table ", e);
         }
     }
 
@@ -132,18 +245,20 @@ public class SqlRegistryService implements RegistryService {
                 // Tables does not exist so we create all the tables
                 String[] createTemplate = null;
                 if (dialect.equalsIgnoreCase("mysql")) {
-                    //TODO createTemplate = createTableQueryMySQLTemplate;
+                    //TODO createTableQueryMySQLTemplate;
                 } else if (dialect.equalsIgnoreCase("derby")) {
                     createTemplate = createTableQueryDerbyTemplate;
                 } else {
-                    //TODO createTemplate = createTableQueryGenericTemplate;
+                    //TODO createTableQueryGenericTemplate;
                 }
                 try (Statement createStatement = connection.createStatement()) {
                     for (int cpt = 0; cpt < createTemplate.length; cpt++) {
                         createStatement.addBatch(createTemplate[cpt]);
                     }
-                    createStatement.executeBatch();
-                    LOGGER.debug("Schema and tables has been created");
+                    if (createStatement.executeBatch().length == 0) {
+                        throw new SQLException("No table has been created !");
+                    }
+                    LOGGER.info("Schema and tables has been created");
                 } catch (SQLException exception) {
                     LOGGER.error("Can't create tables", exception);
                 }
@@ -157,34 +272,117 @@ public class SqlRegistryService implements RegistryService {
 
     @Override
     public void add(Service service) {
-        // TODO implement method
-
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement insertStatement = 
+                    connection.prepareStatement(insertServiceSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    
+                    insertStatement.setString(1, service.name);
+                    insertStatement.setString(2, service.description);
+                    insertStatement.executeUpdate();
+                    
+                    int newId = 0;
+                    
+                    ResultSet rs = insertStatement.getGeneratedKeys();
+                    
+                    if (rs.first()) {
+                        newId = rs.getInt(1);
+                    }
+                    
+                    service.id = String.valueOf(newId);
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't insert service with name {}", service.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
     }
 
     @Override
     public void delete(Service service) {
-        // TODO implement method
-
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteServiceSql)) {
+                    
+                    deleteStatement.setString(1, service.id);
+                    deleteStatement.executeUpdate();
+                    
+            } catch (SQLException exception) {
+                LOGGER.error("Can't delete service with name {}", service.id, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
     }
 
     @Override
     public void delete(String id) {
-        // TODO implement method
-
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteServiceSql)) {
+                    
+                    deleteStatement.setString(1, id);
+                    deleteStatement.executeUpdate();
+                    
+            } catch (SQLException exception) {
+                LOGGER.error("Can't delete service with name {}", id, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
     }
 
     @Override
     public void update(Service service) {
-        // TODO implement method
-
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement updateStatement = 
+                    connection.prepareStatement(updateServiceSql)) {
+                    
+                    updateStatement.setString(1, service.name);
+                    updateStatement.setString(2, service.description);
+                    updateStatement.setString(3, service.id);
+                    updateStatement.executeUpdate();
+                    
+            } catch (SQLException exception) {
+                LOGGER.error("Can't udpate service with name {}", service.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
     }
 
     @Override
     public Service get(String id) {
-        // TODO implement method
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectServiceSql)) {
+                    selectStatement.setString(1, id);
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    if (rs.first()) {
+                        Service service = new Service();
+                        service.id = rs.getString("id");
+                        service.name = rs.getString("name");
+                        service.description = rs.getString("description");
+                        return service;
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't find service with id {}", id, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
         return null;
     }
-
-
-
 }
