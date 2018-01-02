@@ -22,7 +22,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -280,6 +282,7 @@ public class SqlRegistryService implements RegistryService {
                     insertStatement.setString(1, service.name);
                     insertStatement.setString(2, service.description);
                     insertStatement.executeUpdate();
+                    // TODO insert extra content
                     
                     int newId = 0;
                     
@@ -309,7 +312,7 @@ public class SqlRegistryService implements RegistryService {
                     
                     deleteStatement.setString(1, service.id);
                     deleteStatement.executeUpdate();
-                    
+                    // TODO delete extra content
             } catch (SQLException exception) {
                 LOGGER.error("Can't delete service with name {}", service.id, exception);
             }
@@ -328,6 +331,7 @@ public class SqlRegistryService implements RegistryService {
                     
                     deleteStatement.setString(1, id);
                     deleteStatement.executeUpdate();
+                    // TODO delete extra content
                     
             } catch (SQLException exception) {
                 LOGGER.error("Can't delete service with name {}", id, exception);
@@ -349,7 +353,7 @@ public class SqlRegistryService implements RegistryService {
                     updateStatement.setString(2, service.description);
                     updateStatement.setString(3, service.id);
                     updateStatement.executeUpdate();
-                    
+                    // TODO update extra content
             } catch (SQLException exception) {
                 LOGGER.error("Can't udpate service with name {}", service.name, exception);
             }
@@ -373,6 +377,7 @@ public class SqlRegistryService implements RegistryService {
                         service.id = rs.getString("id");
                         service.name = rs.getString("name");
                         service.description = rs.getString("description");
+                        // TODO add extra content
                         return service;
                     }
             
@@ -384,5 +389,34 @@ public class SqlRegistryService implements RegistryService {
             LOGGER.error("Error getting connection ", exception);
         }
         return null;
+    }
+
+    @Override
+    public List<Service> getAllServices() {
+        
+        List<Service> services = new ArrayList<>();
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectServiceSql)) {
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    while (rs.next()) {
+                        Service service = new Service();
+                        service.id = rs.getString("id");
+                        service.name = rs.getString("name");
+                        service.description = rs.getString("description");
+                        services.add(service);
+                        // TODO add extra content
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the services", exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return services;
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.karaf.vineyard.registry.api;
 
+import java.util.List;
+
 import org.apache.karaf.vineyard.common.Service;
 
 /**
@@ -59,6 +61,14 @@ public interface RegistryService {
      */
     Service get(String id);
 
+    /**
+     * Retrieve all the services in the registry.
+     *
+     * @return The list of services.
+     */
+    List<Service> getAllServices();
+    // TODO add same method with filter
+    
     // TODO complete
 
 }
