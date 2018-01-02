@@ -34,11 +34,12 @@ public class ServicesListCommand extends VineyardRegistryCommandSupport {
                 getRegistryService().getAllServices();
 
         ShellTable table = new ShellTable();
+        table.column("Id");
         table.column("Name");
         table.column("Description");
         // TODO add extra content
         for (org.apache.karaf.vineyard.common.Service service : services) {
-            table.addRow().addContent(service.name, service.description);
+            table.addRow().addContent(service.id, service.name, service.description);
         }
 
         table.print(System.out);
