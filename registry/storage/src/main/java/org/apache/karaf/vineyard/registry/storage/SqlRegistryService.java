@@ -157,54 +157,54 @@ public class SqlRegistryService implements RegistryService {
     /** Update queries */
     private final static String updateEnvironmentSql = 
             "update VINEYARD.ENVIRONMENT "
-            + "set (name = ?, description = ?, scope = ?) "
+            + "set name = ?, description = ?, scope = ? "
             + "where id = ?";
     private final static String updateMaintainerSql = 
             "update VINEYARD.MAINTAINER "
-            + "set (email = ?, team = ?) "
+            + "set email = ?, team = ? "
             + "where name = ?";
     private final static String updateDataformatSql = 
             "update VINEYARD.DATAFORMAT "
-            + "set (name = ?, sample = ?, dataschema = ?) "
+            + "set name = ?, sample = ?, dataschema = ? "
             + "where id = ?";
     private final static String updateEndpointSql = 
             "update VINEYARD.ENDPOINT "
-            + "set (eptinput = ?, eptoutput = ?) "
+            + "set eptinput = ?, eptoutput = ? "
             + "where location = ?";
     private final static String updateServiceSql = 
             "update VINEYARD.SERVICE "
-            + "set (name = ?, description = ?) "
+            + "set name = ?, description = ? "
             + "where id = ?";
     private final static String updateEnvironmentForServiceSql = 
             "update VINEYARD.X_SRV_ENV "
-            + "set (state = ?, version = ?, endpoint = ?, gateway = ?) "
+            + "set state = ?, version = ?, endpoint = ?, gateway = ? "
             + "where id_service = ? and id_environment = ?";
     private final static String updateMetadataEnvironmentForServiceSql = 
             "update VINEYARD.X_SRV_ENV_META "
-            + "set (metakey = ?, metavalue = ?) "
+            + "set metakey = ?, metavalue = ? "
             + "where id_service = ? and id_environment = ?";
     
     /** Delete queries */
     private final static String deleteEnvironmentSql = 
-            "delete VINEYARD.ENVIRONMENT "
+            "delete from VINEYARD.ENVIRONMENT "
             + "where id = ?";
     private final static String deleteMaintainerSql = 
-            "delete VINEYARD.MAINTAINER "
+            "delete from VINEYARD.MAINTAINER "
             + "where name = ?";
     private final static String deleteDataformatSql = 
-            "delete VINEYARD.DATAFORMAT "
+            "delete from VINEYARD.DATAFORMAT "
             + "where id = ?";
     private final static String deleteEndpointSql = 
-            "delete VINEYARD.ENDPOINT "
+            "delete from VINEYARD.ENDPOINT "
             + "where location = ?";
     private final static String deleteServiceSql = 
-            "delete VINEYARD.SERVICE "
+            "delete from VINEYARD.SERVICE "
             + "where id = ?";
     private final static String deleteEnvironmentForServiceSql = 
-            "delete VINEYARD.X_SRV_ENV "
+            "delete from VINEYARD.X_SRV_ENV "
             + "where id_service = ? and id_environment = ?";
     private final static String deleteMetadataEnvironmentForServiceSql = 
-            "delete VINEYARD.X_SRV_ENV_META "
+            "delete from VINEYARD.X_SRV_ENV_META "
             + "where id_service = ? and id_environment = ?";
             
     @Reference(target = "(osgi.jndi.service.name=jdbc/vineyard)")
@@ -276,25 +276,32 @@ public class SqlRegistryService implements RegistryService {
     public void add(Service service) {
         try (Connection connection = dataSource.getConnection()) {
             
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertServiceSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                    
+                    // set values
                     insertStatement.setString(1, service.name);
                     insertStatement.setString(2, service.description);
                     insertStatement.executeUpdate();
                     // TODO insert extra content
                     
                     int newId = 0;
-                    
                     ResultSet rs = insertStatement.getGeneratedKeys();
                     
-                    if (rs.first()) {
+                    if (rs.next()) {
                         newId = rs.getInt(1);
                     }
                     
+                    connection.commit();
+                    
                     service.id = String.valueOf(newId);
+                    LOGGER.debug("Service created with id = {}", newId);
             
             } catch (SQLException exception) {
+                connection.rollback();
                 LOGGER.error("Can't insert service with name {}", service.name, exception);
             }
             
@@ -307,13 +314,20 @@ public class SqlRegistryService implements RegistryService {
     public void delete(Service service) {
         try (Connection connection = dataSource.getConnection()) {
             
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
             try (PreparedStatement deleteStatement = 
                     connection.prepareStatement(deleteServiceSql)) {
-                    
+                    // where values
                     deleteStatement.setString(1, service.id);
                     deleteStatement.executeUpdate();
                     // TODO delete extra content
+                    connection.commit();
+                    LOGGER.debug("Service deleted with id = {}", service.id);
             } catch (SQLException exception) {
+                connection.rollback();
                 LOGGER.error("Can't delete service with name {}", service.id, exception);
             }
             
@@ -326,14 +340,20 @@ public class SqlRegistryService implements RegistryService {
     public void delete(String id) {
         try (Connection connection = dataSource.getConnection()) {
             
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
             try (PreparedStatement deleteStatement = 
                     connection.prepareStatement(deleteServiceSql)) {
-                    
+                    // where values
                     deleteStatement.setString(1, id);
                     deleteStatement.executeUpdate();
                     // TODO delete extra content
-                    
+                    connection.commit();
+                    LOGGER.debug("Service deleted with id = {}", id);
             } catch (SQLException exception) {
+                connection.rollback();
                 LOGGER.error("Can't delete service with name {}", id, exception);
             }
             
@@ -346,15 +366,23 @@ public class SqlRegistryService implements RegistryService {
     public void update(Service service) {
         try (Connection connection = dataSource.getConnection()) {
             
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
             try (PreparedStatement updateStatement = 
                     connection.prepareStatement(updateServiceSql)) {
-                    
+                    // set values
                     updateStatement.setString(1, service.name);
                     updateStatement.setString(2, service.description);
+                    // where values
                     updateStatement.setString(3, service.id);
                     updateStatement.executeUpdate();
                     // TODO update extra content
+                    connection.commit();
+                    LOGGER.debug("Service updated with id = {}", service.id);
             } catch (SQLException exception) {
+                connection.rollback();
                 LOGGER.error("Can't udpate service with name {}", service.name, exception);
             }
             
@@ -368,16 +396,18 @@ public class SqlRegistryService implements RegistryService {
         
         try (Connection connection = dataSource.getConnection()) {
             
-            try (PreparedStatement selectStatement = connection.prepareStatement(selectServiceSql)) {
+            String sqlQuery = selectServiceSql + " where id = ?";
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
                     selectStatement.setString(1, id);
                     ResultSet rs = selectStatement.executeQuery();
                     
-                    if (rs.first()) {
+                    if (rs.next()) {
                         Service service = new Service();
                         service.id = rs.getString("id");
                         service.name = rs.getString("name");
                         service.description = rs.getString("description");
-                        // TODO add extra content
+                        // TODO get extra content
                         return service;
                     }
             
@@ -407,7 +437,7 @@ public class SqlRegistryService implements RegistryService {
                         service.name = rs.getString("name");
                         service.description = rs.getString("description");
                         services.add(service);
-                        // TODO add extra content
+                        // TODO get extra content
                     }
             
             } catch (SQLException exception) {
