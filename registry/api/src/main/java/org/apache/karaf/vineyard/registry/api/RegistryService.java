@@ -19,6 +19,7 @@ package org.apache.karaf.vineyard.registry.api;
 import java.util.List;
 
 import org.apache.karaf.vineyard.common.Environment;
+import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
 
 /**
@@ -81,21 +82,21 @@ public interface RegistryService {
     /**
      * Delete an existing environment from the registry.
      *
-     * @param service The environment to remove.
+     * @param environment The environment to remove.
      */
     void deleteEnvironment(Environment environment);
 
     /**
      * Delete an existing environment from the registry, identified by ID.
      *
-     * @param id The service ID.
+     * @param id The environment ID.
      */
     void deleteEnvironment(String id);
 
     /**
      * Update an existing environment.
      *
-     * @param service The environment details.
+     * @param environment The environment details.
      */
     void updateEnvironment(Environment environment);
 
@@ -114,6 +115,51 @@ public interface RegistryService {
      */
     List<Environment> getAllEnvironments();
     // TODO add same method with filter
+
     
+    /**
+     * Add a new maintainer in the registry.
+     *
+     * @param maintainer The maintainer to add.
+     */
+    void addMaintainer(Maintainer maintainer);
+    
+    /**
+     * Delete an existing maintainer from the registry.
+     *
+     * @param maintainer The maintainer to remove.
+     */
+    void deleteMaintainer(Maintainer maintainer);
+
+    /**
+     * Delete an existing maintainer from the registry, identified by name.
+     *
+     * @param name The maintainer name.
+     */
+    void deleteMaintainer(String name);
+
+    /**
+     * Update an existing mainainer.
+     *
+     * @param maintainer The maintainer details.
+     */
+    void updateMaintainer(Maintainer maintainer);
+
+    /**
+     * Retrieve maintainer details.
+     *
+     * @param name The maintainer name.
+     * @return The maintainer description.
+     */
+    Maintainer getMaintainer(String name);
+
+    /**
+     * Retrieve all the maintainers used in the registry.
+     *
+     * @return The list of maintainers.
+     */
+    List<Maintainer> getAllMaintainers();
+    // TODO add same method with filter
+
     // TODO complete
 }
