@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
@@ -740,6 +741,7 @@ public class SqlRegistryService implements RegistryService {
                     
                     if (rs.next()) {
                         Maintainer maintainer = new Maintainer();
+                        maintainer.name = name;
                         maintainer.email = rs.getString("email");
                         maintainer.team = rs.getString("team");
                         return maintainer;
@@ -780,5 +782,163 @@ public class SqlRegistryService implements RegistryService {
             LOGGER.error("Error getting connection ", exception);
         }
         return maintainers;
+    }
+
+    @Override
+    public void addDataFormat(DataFormat dataformat) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement insertStatement = 
+                    connection.prepareStatement(insertDataformatSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    // set values
+                    insertStatement.setString(1, dataformat.name);
+                    insertStatement.setString(2, dataformat.sample);
+                    insertStatement.setString(3, dataformat.schema);
+                    insertStatement.executeUpdate();
+                    
+                    int newId = 0;
+                    ResultSet rs = insertStatement.getGeneratedKeys();
+                    
+                    if (rs.next()) {
+                        newId = rs.getInt(1);
+                    }
+                    
+                    connection.commit();
+                    
+                    dataformat.id = String.valueOf(newId);
+                    LOGGER.debug("Dataformat created with id = {}", newId);
+            
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't insert dataformat with name {}", dataformat.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }     
+    }
+
+    @Override
+    public void deleteDataFormat(DataFormat dataformat) {
+        deleteDataFormat(dataformat.id);
+    }
+
+    @Override
+    public void deleteDataFormat(String id) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteDataformatSql)) {
+                    // where values
+                    deleteStatement.setString(1, id);
+                    deleteStatement.executeUpdate();
+                    connection.commit();
+                    LOGGER.debug("Dataforaat deleted with id = {}", id);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete dataformat with id {}", id, exception);
+                throw exception;
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error when deleting environment", exception);
+        }
+    }
+
+    @Override
+    public void updateDataFormat(DataFormat dataformat) {
+
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement updateStatement = 
+                    connection.prepareStatement(updateDataformatSql)) {
+                    // set values
+                    updateStatement.setString(1, dataformat.name);
+                    updateStatement.setString(2, dataformat.sample);
+                    updateStatement.setString(3, dataformat.schema);
+                    // where values
+                    updateStatement.setString(4, dataformat.id);
+                    updateStatement.executeUpdate();
+                    connection.commit();
+                    LOGGER.debug("Dataformat updated with id = {}", dataformat.id);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't udpate dataformat with id {}", dataformat.id, exception);
+            }
+            //TODO update extra content
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public DataFormat getDataFormat(String id) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            String sqlQuery = selectDataformatSql + " where id = ?";
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
+                    selectStatement.setString(1, id);
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    if (rs.next()) {
+                        DataFormat dataformat = new DataFormat();
+                        dataformat.id = id;
+                        dataformat.name = rs.getString("name");
+                        dataformat.sample = rs.getString("sample");
+                        dataformat.schema = rs.getString("schema");
+                        return dataformat;
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't find dataformat with id {}", id, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return null;
+    }
+
+    @Override
+    public List<DataFormat> getAllDataFormats() {
+        
+        List<DataFormat> dataformats = new ArrayList<>();
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectDataformatSql)) {
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    while (rs.next()) {
+                        DataFormat dataformat = new DataFormat();
+                        dataformat.id = rs.getString("id");
+                        dataformat.name = rs.getString("name");
+                        dataformat.sample = rs.getString("sample");
+                        dataformat.schema = rs.getString("schema");
+                        dataformats.add(dataformat);
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the dataformats", exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return dataformats;
     }
 }
