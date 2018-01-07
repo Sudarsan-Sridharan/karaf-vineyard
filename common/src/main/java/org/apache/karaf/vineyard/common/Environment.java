@@ -38,4 +38,12 @@ public class Environment {
     /** The environment maintainers with roles */
     public Map<Maintainer, Role> maintainers;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }
