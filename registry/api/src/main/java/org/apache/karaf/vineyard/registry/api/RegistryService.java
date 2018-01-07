@@ -18,6 +18,7 @@ package org.apache.karaf.vineyard.registry.api;
 
 import java.util.List;
 
+import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
@@ -159,6 +160,50 @@ public interface RegistryService {
      * @return The list of maintainers.
      */
     List<Maintainer> getAllMaintainers();
+    // TODO add same method with filter
+    
+    /**
+     * Add a new dataformat in the registry.
+     *
+     * @param dataformat The dataformat to add.
+     */
+    void addDataFormat(DataFormat dataformat);
+    
+    /**
+     * Delete an existing dataformat from the registry.
+     *
+     * @param dataformat The dataformat to remove.
+     */
+    void deleteDataFormat(DataFormat dataformat);
+
+    /**
+     * Delete an existing dataformat from the registry, identified by ID.
+     *
+     * @param id The dataformat ID.
+     */
+    void deleteDataFormat(String id);
+
+    /**
+     * Update an existing mainainer.
+     *
+     * @param dataformat The dataformat details.
+     */
+    void updateDataFormat(DataFormat dataformat);
+
+    /**
+     * Retrieve dataformat details.
+     *
+     * @param id The dataformat ID.
+     * @return The dataformat description.
+     */
+    DataFormat getDataFormat(String id);
+
+    /**
+     * Retrieve all the dataformats used in the registry.
+     *
+     * @return The list of dataformats.
+     */
+    List<DataFormat> getAllDataFormats();
     // TODO add same method with filter
 
     // TODO complete
