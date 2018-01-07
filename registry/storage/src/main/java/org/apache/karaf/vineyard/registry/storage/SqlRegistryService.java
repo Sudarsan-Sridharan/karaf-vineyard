@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Service;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.osgi.service.component.ComponentContext;
@@ -201,11 +202,9 @@ public class SqlRegistryService implements RegistryService {
             "delete from VINEYARD.SERVICE "
             + "where id = ?";
     private final static String deleteEnvironmentForServiceSql = 
-            "delete from VINEYARD.X_SRV_ENV "
-            + "where id_service = ? and id_environment = ?";
+            "delete from VINEYARD.X_SRV_ENV ";
     private final static String deleteMetadataEnvironmentForServiceSql = 
-            "delete from VINEYARD.X_SRV_ENV_META "
-            + "where id_service = ? and id_environment = ?";
+            "delete from VINEYARD.X_SRV_ENV_META ";
             
     @Reference(target = "(osgi.jndi.service.name=jdbc/vineyard)")
     private DataSource dataSource;
@@ -448,5 +447,250 @@ public class SqlRegistryService implements RegistryService {
             LOGGER.error("Error getting connection ", exception);
         }
         return services;
+    }
+
+    @Override
+    public void addEnvironment(Environment environment) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement insertStatement = 
+                    connection.prepareStatement(insertEnvironmentSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    // set values
+                    insertStatement.setString(1, environment.name);
+                    insertStatement.setString(2, environment.description);
+                    insertStatement.setString(3, environment.scope);
+                    insertStatement.executeUpdate();
+                    // TODO insert extra content
+                    
+                    int newId = 0;
+                    ResultSet rs = insertStatement.getGeneratedKeys();
+                    
+                    if (rs.next()) {
+                        newId = rs.getInt(1);
+                    }
+                    
+                    connection.commit();
+                    
+                    environment.setId(String.valueOf(newId));
+                    LOGGER.debug("Environment created with id = {}", newId);
+            
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't insert environment with name {}", environment.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public void deleteEnvironment(Environment environment) {
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            String sqlQuery = deleteMetadataEnvironmentForServiceSql + 
+                    "where id_environment = ?";
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(sqlQuery)) {
+                    // where values
+                    deleteStatement.setString(1, environment.getId());
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Environment deleted with id = {}", environment.getId());
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete environment with name {}", environment.getId(), exception);
+                throw exception;
+            }
+            
+            sqlQuery = deleteEnvironmentForServiceSql + 
+                    "where id_environment = ?";
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(sqlQuery)) {
+                    // where values
+                    deleteStatement.setString(1, environment.getId());
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Environment deleted with id = {}", environment.getId());
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete environment with name {}", environment.getId(), exception);
+                throw exception;
+            }
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteEnvironmentSql)) {
+                    // where values
+                    deleteStatement.setString(1, environment.getId());
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Environment deleted with id = {}", environment.getId());
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete environment with name {}", environment.getId(), exception);
+                throw exception;
+            }
+            
+            connection.commit();
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error when deleting environment", exception);
+        }
+    }
+
+    @Override
+    public void deleteEnvironment(String id) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            String sqlQuery = deleteMetadataEnvironmentForServiceSql + 
+                    "where id_environment = ?";
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(sqlQuery)) {
+                    // where values
+                    deleteStatement.setString(1, id);
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Environment deleted with id = {}", id);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete environment with name {}", id, exception);
+                throw exception;
+            }
+            
+            sqlQuery = deleteEnvironmentForServiceSql + 
+                    "where id_environment = ?";
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(sqlQuery)) {
+                    // where values
+                    deleteStatement.setString(1, id);
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Environment deleted with id = {}", id);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete environment with name {}", id, exception);
+                throw exception;
+            }
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteEnvironmentSql)) {
+                    // where values
+                    deleteStatement.setString(1, id);
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Environment deleted with id = {}", id);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete environment with name {}", id, exception);
+                throw exception;
+            }
+            
+            connection.commit();
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error when deleting environment", exception);
+        }
+    }
+
+    @Override
+    public void updateEnvironment(Environment environment) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement updateStatement = 
+                    connection.prepareStatement(updateServiceSql)) {
+                    // set values
+                    updateStatement.setString(1, environment.name);
+                    updateStatement.setString(2, environment.description);
+                    updateStatement.setString(3, environment.scope);
+                    // where values
+                    updateStatement.setString(4, environment.getId());
+                    updateStatement.executeUpdate();
+                    connection.commit();
+                    LOGGER.debug("Environment updated with id = {}", environment.getId());
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't udpate environment with name {}", environment.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public Environment getEnvironment(String id) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            String sqlQuery = selectEnvironmentSql + " where id = ?";
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
+                    selectStatement.setString(1, id);
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    if (rs.next()) {
+                        Environment environment = new Environment();
+                        environment.name = rs.getString("name");
+                        environment.description = rs.getString("description");
+                        environment.scope = rs.getString("scope");
+                        // TODO get extra content
+                        return environment;
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't find environment with id {}", id, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Environment> getAllEnvironments() {
+        List<Environment> environments = new ArrayList<>();
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectEnvironmentSql)) {
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    while (rs.next()) {
+                        Environment environment = new Environment();
+                        environment.name = rs.getString("name");
+                        environment.description = rs.getString("description");
+                        environments.add(environment);
+                        // TODO get extra content
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the environments", exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return environments;
     }
 }
