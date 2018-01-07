@@ -29,6 +29,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.karaf.vineyard.common.Environment;
+import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.osgi.service.component.ComponentContext;
@@ -113,7 +114,7 @@ public class SqlRegistryService implements RegistryService {
             "select id, name, description "
             + "from VINEYARD.SERVICE";
     private final static String selectMaintainerForEnvironmentSql = 
-            "select id_environment, name_maintainer "
+            "select id_environment, name_maintainer, role "
             + "from VINEYARD.X_ENV_MNT";
     private final static String selectEnvironmentForServiceSql = 
             "select id_service, id_environment, state, version, endpoint, gateway "
@@ -201,6 +202,8 @@ public class SqlRegistryService implements RegistryService {
     private final static String deleteServiceSql = 
             "delete from VINEYARD.SERVICE "
             + "where id = ?";
+    private final static String deleteMaintainerForEnvironmentSql = 
+            "delete from VINEYARD.X_ENV_MNT ";
     private final static String deleteEnvironmentForServiceSql = 
             "delete from VINEYARD.X_SRV_ENV ";
     private final static String deleteMetadataEnvironmentForServiceSql = 
@@ -311,28 +314,7 @@ public class SqlRegistryService implements RegistryService {
 
     @Override
     public void delete(Service service) {
-        try (Connection connection = dataSource.getConnection()) {
-            
-            if (connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
-            
-            try (PreparedStatement deleteStatement = 
-                    connection.prepareStatement(deleteServiceSql)) {
-                    // where values
-                    deleteStatement.setString(1, service.id);
-                    deleteStatement.executeUpdate();
-                    // TODO delete extra content
-                    connection.commit();
-                    LOGGER.debug("Service deleted with id = {}", service.id);
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't delete service with name {}", service.id, exception);
-            }
-            
-        } catch (Exception exception) {
-            LOGGER.error("Error getting connection ", exception);
-        }
+        delete(service.id);
     }
 
     @Override
@@ -490,63 +472,7 @@ public class SqlRegistryService implements RegistryService {
 
     @Override
     public void deleteEnvironment(Environment environment) {
-        
-        try (Connection connection = dataSource.getConnection()) {
-            
-            if (connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
-            
-            String sqlQuery = deleteMetadataEnvironmentForServiceSql + 
-                    "where id_environment = ?";
-            
-            try (PreparedStatement deleteStatement = 
-                    connection.prepareStatement(sqlQuery)) {
-                    // where values
-                    deleteStatement.setString(1, environment.getId());
-                    deleteStatement.executeUpdate();
-                    
-                    LOGGER.debug("Environment deleted with id = {}", environment.getId());
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't delete environment with name {}", environment.getId(), exception);
-                throw exception;
-            }
-            
-            sqlQuery = deleteEnvironmentForServiceSql + 
-                    "where id_environment = ?";
-            
-            try (PreparedStatement deleteStatement = 
-                    connection.prepareStatement(sqlQuery)) {
-                    // where values
-                    deleteStatement.setString(1, environment.getId());
-                    deleteStatement.executeUpdate();
-                    
-                    LOGGER.debug("Environment deleted with id = {}", environment.getId());
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't delete environment with name {}", environment.getId(), exception);
-                throw exception;
-            }
-            
-            try (PreparedStatement deleteStatement = 
-                    connection.prepareStatement(deleteEnvironmentSql)) {
-                    // where values
-                    deleteStatement.setString(1, environment.getId());
-                    deleteStatement.executeUpdate();
-                    
-                    LOGGER.debug("Environment deleted with id = {}", environment.getId());
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't delete environment with name {}", environment.getId(), exception);
-                throw exception;
-            }
-            
-            connection.commit();
-            
-        } catch (Exception exception) {
-            LOGGER.error("Error when deleting environment", exception);
-        }
+        deleteEnvironment(environment.getId());
     }
 
     @Override
@@ -618,7 +544,7 @@ public class SqlRegistryService implements RegistryService {
             }
             
             try (PreparedStatement updateStatement = 
-                    connection.prepareStatement(updateServiceSql)) {
+                    connection.prepareStatement(updateEnvironmentSql)) {
                     // set values
                     updateStatement.setString(1, environment.name);
                     updateStatement.setString(2, environment.description);
@@ -632,6 +558,8 @@ public class SqlRegistryService implements RegistryService {
                 connection.rollback();
                 LOGGER.error("Can't udpate environment with name {}", environment.name, exception);
             }
+            
+            //TODO update extra content
             
         } catch (Exception exception) {
             LOGGER.error("Error getting connection ", exception);
@@ -692,5 +620,165 @@ public class SqlRegistryService implements RegistryService {
             LOGGER.error("Error getting connection ", exception);
         }
         return environments;
+    }
+
+    @Override
+    public void addMaintainer(Maintainer maintainer) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement insertStatement = 
+                    connection.prepareStatement(insertMaintainerSql)) {
+                    // set values
+                    insertStatement.setString(1, maintainer.name);
+                    insertStatement.setString(2, maintainer.email);
+                    insertStatement.setString(3, maintainer.team);
+                    insertStatement.executeUpdate();
+                    
+                    connection.commit();
+                    LOGGER.debug("Maintainer created with name = {}", maintainer.name);
+            
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't insert maintainer with name {}", maintainer.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public void deleteMaintainer(Maintainer maintainer) {
+        deleteMaintainer(maintainer.name);
+    }
+
+    @Override
+    public void deleteMaintainer(String name) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            String sqlQuery = deleteMaintainerForEnvironmentSql + 
+                    "where name_maintainer = ?";
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(sqlQuery)) {
+                    // where values
+                    deleteStatement.setString(1, name);
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Maintainer deleted with name = {}", name);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete maintainer with name {}", name, exception);
+                throw exception;
+            }
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteMaintainerSql)) {
+                    // where values
+                    deleteStatement.setString(1, name);
+                    deleteStatement.executeUpdate();
+                    
+                    LOGGER.debug("Maintainer deleted with name = {}", name);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete maintainer with name {}", name, exception);
+                throw exception;
+            }
+            
+            connection.commit();
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error when deleting maintainer", exception);
+        }
+    }
+
+    @Override
+    public void updateMaintainer(Maintainer maintainer) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement updateStatement = 
+                    connection.prepareStatement(updateMaintainerSql)) {
+                    // set values
+                    updateStatement.setString(1, maintainer.email);
+                    updateStatement.setString(2, maintainer.team);
+                    // where values
+                    updateStatement.setString(3, maintainer.name);
+                    updateStatement.executeUpdate();
+                    connection.commit();
+                    LOGGER.debug("Maintainer updated with name = {}", maintainer.name);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't udpate maintainer with name {}", maintainer.name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public Maintainer getMaintainer(String name) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            String sqlQuery = selectMaintainerSql + " where name = ?";
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
+                    selectStatement.setString(1, name);
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    if (rs.next()) {
+                        Maintainer maintainer = new Maintainer();
+                        maintainer.email = rs.getString("email");
+                        maintainer.team = rs.getString("team");
+                        return maintainer;
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't find maintainer with name {}", name, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Maintainer> getAllMaintainers() {
+        List<Maintainer> maintainers = new ArrayList<>();
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectMaintainerSql)) {
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    while (rs.next()) {
+                        Maintainer maintainer = new Maintainer();
+                        maintainer.name = rs.getString("name");
+                        maintainer.email = rs.getString("email");
+                        maintainer.team = rs.getString("team");
+                        maintainers.add(maintainer);
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the maintainers", exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return maintainers;
     }
 }
