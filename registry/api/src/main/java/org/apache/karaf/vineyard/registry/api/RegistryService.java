@@ -18,6 +18,7 @@ package org.apache.karaf.vineyard.registry.api;
 
 import java.util.List;
 
+import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Service;
 
 /**
@@ -69,6 +70,50 @@ public interface RegistryService {
     List<Service> getAllServices();
     // TODO add same method with filter
     
-    // TODO complete
+    
+    /**
+     * Add a new environment in the registry.
+     *
+     * @param environment The environment to add.
+     */
+    void addEnvironment(Environment environment);
+    
+    /**
+     * Delete an existing environment from the registry.
+     *
+     * @param service The environment to remove.
+     */
+    void deleteEnvironment(Environment environment);
 
+    /**
+     * Delete an existing environment from the registry, identified by ID.
+     *
+     * @param id The service ID.
+     */
+    void deleteEnvironment(String id);
+
+    /**
+     * Update an existing environment.
+     *
+     * @param service The environment details.
+     */
+    void updateEnvironment(Environment environment);
+
+    /**
+     * Retrieve environment details.
+     *
+     * @param id The environment ID.
+     * @return The environment description.
+     */
+    Environment getEnvironment(String id);
+
+    /**
+     * Retrieve all the environments used in the registry.
+     *
+     * @return The list of environments.
+     */
+    List<Environment> getAllEnvironments();
+    // TODO add same method with filter
+    
+    // TODO complete
 }
