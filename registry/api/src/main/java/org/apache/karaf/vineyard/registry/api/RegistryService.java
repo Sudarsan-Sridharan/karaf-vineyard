@@ -19,6 +19,7 @@ package org.apache.karaf.vineyard.registry.api;
 import java.util.List;
 
 import org.apache.karaf.vineyard.common.DataFormat;
+import org.apache.karaf.vineyard.common.Endpoint;
 import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
@@ -206,5 +207,48 @@ public interface RegistryService {
     List<DataFormat> getAllDataFormats();
     // TODO add same method with filter
 
+    /**
+     * Add a new endpoint in the registry.
+     *
+     * @param endpoint The endpoint to add.
+     */
+    void addEndpoint(Endpoint endpoint);
+    
+    /**
+     * Delete an existing endpoint from the registry.
+     *
+     * @param endpoint The endpoint to remove.
+     */
+    void deleteEndpoint(Endpoint endpoint);
+
+    /**
+     * Delete an existing endpoint from the registry, identified by localtion (URI).
+     *
+     * @param location The endpoint location (URI).
+     */
+    void deleteEndpoint(String location);
+
+    /**
+     * Update an existing mainainer.
+     *
+     * @param endpoint The endpoint details.
+     */
+    void updateEndpoint(Endpoint endpoint);
+
+    /**
+     * Retrieve endpoint details.
+     *
+     * @param location The endpoint location (URI).
+     * @return The endpoint description.
+     */
+    Endpoint getEndpoint(String location);
+
+    /**
+     * Retrieve all the endpoints used in the registry.
+     *
+     * @return The list of endpoints.
+     */
+    List<Endpoint> getAllEndpoints();
+    // TODO add same method with filter
     // TODO complete
 }
