@@ -29,6 +29,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.karaf.vineyard.common.DataFormat;
+import org.apache.karaf.vineyard.common.Endpoint;
 import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
@@ -140,7 +141,7 @@ public class SqlRegistryService implements RegistryService {
     private final static String insertEndpointSql = 
             "insert into VINEYARD.ENDPOINT "
             + "(location, eptinput, eptoutput) "
-            + "values (?, ?, ?, ?)";
+            + "values (?, ?, ?)";
     private final static String insertServiceSql = 
             "insert into VINEYARD.SERVICE "
             + "(name, description) "
@@ -841,7 +842,7 @@ public class SqlRegistryService implements RegistryService {
                     deleteStatement.setString(1, id);
                     deleteStatement.executeUpdate();
                     connection.commit();
-                    LOGGER.debug("Dataforaat deleted with id = {}", id);
+                    LOGGER.debug("Dataformat deleted with id = {}", id);
             } catch (SQLException exception) {
                 connection.rollback();
                 LOGGER.error("Can't delete dataformat with id {}", id, exception);
@@ -940,5 +941,162 @@ public class SqlRegistryService implements RegistryService {
             LOGGER.error("Error getting connection ", exception);
         }
         return dataformats;
+    }
+
+    @Override
+    public void addEndpoint(Endpoint endpoint) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement insertStatement = 
+                    connection.prepareStatement(insertEndpointSql)) {
+                    // set values
+                    insertStatement.setString(1, endpoint.location);
+                    insertStatement.setString(2, endpoint.input.id);
+                    insertStatement.setString(3, endpoint.output.id);
+                    insertStatement.executeUpdate();
+                    connection.commit();
+                    
+                    LOGGER.debug("Endpoint created with location = {}", endpoint.location);
+            
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't insert endpoint with location {}", endpoint.location, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public void deleteEndpoint(Endpoint endpoint) {
+        deleteEndpoint(endpoint.location);
+    }
+
+    @Override
+    public void deleteEndpoint(String location) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement deleteStatement = 
+                    connection.prepareStatement(deleteEndpointSql)) {
+                    // where values
+                    deleteStatement.setString(1, location);
+                    deleteStatement.executeUpdate();
+                    connection.commit();
+                    LOGGER.debug("Endpoint deleted with location = {}", location);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete endpoint with location {}", location, exception);
+                throw exception;
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error when deleting endpoint", exception);
+        }
+    }
+
+    @Override
+    public void updateEndpoint(Endpoint endpoint) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+            
+            try (PreparedStatement updateStatement = 
+                    connection.prepareStatement(updateEndpointSql)) {
+                    // set values
+                    updateStatement.setString(1, endpoint.input.id);
+                    updateStatement.setString(2, endpoint.output.id);
+                    // where values
+                    updateStatement.setString(4, endpoint.location);
+                    updateStatement.executeUpdate();
+                    connection.commit();
+                    LOGGER.debug("Endpoint updated with location = {}", endpoint.location);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't udpate endpoint with location {}", endpoint.location, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        
+    }
+
+    @Override
+    public Endpoint getEndpoint(String location) {
+        try (Connection connection = dataSource.getConnection()) {
+            
+            String sqlQuery = selectEndpointSql + " where location = ?";
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
+                    selectStatement.setString(1, location);
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    if (rs.next()) {
+                        Endpoint endpoint = new Endpoint();
+                        endpoint.location = location;
+                        int inputId = rs.getInt("input");
+                        int outputId = rs.getInt("output");
+                        if (inputId != 0) {
+                            endpoint.input = getDataFormat(String.valueOf(inputId));
+                        }
+                        if (outputId != 0) {
+                            endpoint.output = getDataFormat(String.valueOf(outputId));
+                        }
+                        return endpoint;
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't find endpoint with id {}", location, exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Endpoint> getAllEndpoints() {
+        
+        List<Endpoint> endpoints = new ArrayList<>();
+        
+        try (Connection connection = dataSource.getConnection()) {
+            
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectServiceSql)) {
+                    ResultSet rs = selectStatement.executeQuery();
+                    
+                    while (rs.next()) {
+                        Endpoint endpoint = new Endpoint();
+                        endpoint.location = rs.getString("location");
+                        int inputId = rs.getInt("input");
+                        int outputId = rs.getInt("output");
+                        if (inputId != 0) {
+                            endpoint.input = getDataFormat(String.valueOf(inputId));
+                        }
+                        if (outputId != 0) {
+                            endpoint.output = getDataFormat(String.valueOf(outputId));
+                        }
+                        endpoints.add(endpoint);
+                    }
+            
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the services", exception);
+            }
+            
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return endpoints;
     }
 }
