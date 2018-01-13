@@ -16,11 +16,12 @@
  */
 package org.apache.karaf.vineyard.common;
 
+/**
+ * Role of a maintainer for an environment.
+ */
 public enum Role {
-
     OWNER,
     ADMIN,
     MANAGER,
     VIEWER;
-
 }
