@@ -70,7 +70,7 @@ public interface RegistryService {
      *
      * @return The list of services.
      */
-    List<Service> getAllServices();
+    List<Service> getAll();
     // TODO add same method with filter
     
     

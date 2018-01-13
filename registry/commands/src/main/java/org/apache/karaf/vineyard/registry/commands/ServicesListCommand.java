@@ -31,7 +31,7 @@ public class ServicesListCommand extends VineyardRegistryCommandSupport {
 
     protected Object doExecute() throws Exception {
         List<org.apache.karaf.vineyard.common.Service> services = 
-                getRegistryService().getAllServices();
+                getRegistryService().getAll();
 
         ShellTable table = new ShellTable();
         table.column("Id");
