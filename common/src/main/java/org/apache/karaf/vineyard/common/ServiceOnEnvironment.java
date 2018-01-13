@@ -28,7 +28,7 @@ public class ServiceOnEnvironment {
     public String serviceId;
 
     /** The environment ID */
-    public String environmentId;
+    public Environment environment;
 
     /** Define the current state of the service (production ready, staging, ...) */
     public String state;
