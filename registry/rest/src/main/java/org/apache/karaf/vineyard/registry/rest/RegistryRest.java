@@ -16,45 +16,111 @@
  */
 package org.apache.karaf.vineyard.registry.rest;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.apache.karaf.vineyard.common.Service;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 
-@Path("/")
+@Path("/registry")
+@Consumes({"application/json"})
+@Produces({"application/json"})
+@Api(tags = {"registryRest"})
 public class RegistryRest {
 
     private RegistryService registry;
     
-    @Path("/service")
-    @POST
-    public void addService(Service service) throws Exception {
-        registry.add(service);
-    }
-
-    @Path("/service")
-    @DELETE
-    public void deleteService(Service service) throws Exception {
-        registry.delete(service);
+    public void setRegistry(RegistryService registry) {
+        this.registry = registry;
     }
     
     @Path("/service")
-    @DELETE
-    public void deleteService(@PathParam("id") String id) throws Exception {
-        registry.delete(id);
+    @POST
+    @ApiOperation(value = "Create a Service", notes = "Create a new service in the registry")
+    public Response addService(@ApiParam(value = "the Service to create",
+            required = true) Service service) throws Exception {
+        if (registry != null) {
+           registry.add(service);
+           return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
     }
 
     @Path("/service")
-    @Produces("application/json")
+    @DELETE
+    @ApiOperation(value = "Delete a Service", notes = "Delete a service to find in the registry")
+    public Response deleteService(@ApiParam(value = "the Service to delete",
+            required = true) Service service) throws Exception {
+        if (registry != null) {
+            registry.delete(service);
+            return Response.ok().build();
+         } else {
+             return Response.serverError().build();
+         }
+    }
+    
+    @Path("/service/{id}")
+    @DELETE
+    @ApiOperation(value = "Delete a Service", notes = "Delete a service to find in the registry")
+    public Response deleteService(@ApiParam(value = "id of the service", required = true) @PathParam("id") String id) 
+            throws Exception {
+        if (registry != null) {
+            registry.delete(id);
+            return Response.ok().build();
+         } else {
+             return Response.serverError().build();
+         }
+    }
+    
+    @Path("/service/{id}")
     @GET
-    public List<Service> listServices() throws Exception {
-        return registry.getAll();
+    @Produces("application/json")
+    @ApiOperation(value = "Find one Service", notes = "Service id of the service to find in the registry", 
+        response = Service.class, responseContainer = "Service")
+    public Response getService(@ApiParam(value = "id of the service", required = true) @PathParam("id") String id) 
+            throws Exception {
+        
+        if (registry != null) {
+            Service service = registry.get(id);
+            if (service != null) {
+                return Response.ok(service).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/service")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Retrieve all the services in the registry", notes = "n/a",
+            response = Service.class, responseContainer = "Service")
+    public Response listServices() throws Exception {
+        
+        if (registry != null) {
+            List<Service> services = registry.getAll();
+            if (services != null) {
+                return Response.ok(services).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
     }
 }

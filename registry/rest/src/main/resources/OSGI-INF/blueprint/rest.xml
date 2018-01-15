@@ -26,6 +26,23 @@
              http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
              ">
 
+    <!-- CXF Swagger2Feature -->
+    <bean id="swagger2FeatureVineyard" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
+        <property name="basePath" value="/cxf/vineyard"/>
+        <property name="contact" value="dev-subscribe@karaf.apache.org"/>
+        <property name="description" value="Vineyard Registry"/>
+        <property name="prettyPrint" value="true"/>
+        <property name="resourcePackage" value="org.apache.karaf.vineyard.registry.rest"/>
+        <property name="title" value="Vineyard Registry API"/>
+        <property name="version" value="1.0.0-SNAPSHOT"/>
+    </bean>
+    
+    <reference id="registry" interface="org.apache.karaf.vineyard.registry.api.RegistryService"/>
+
+    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.rest.RegistryRest">
+        <property name="registry" ref="registry"/>
+    </bean>
+    
     <cxf:bus>
         <cxf:features>
             <cxf:logging/>
@@ -34,17 +51,14 @@
 
     <jaxrs:server id="registryRest" address="/vineyard/registry">
         <jaxrs:serviceBeans>
-            <ref component-id="serviceBean" />
+            <ref component-id="serviceBean"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+            <bean class="org.apache.karaf.vineyard.registry.rest.ApiOriginFilter"/>
         </jaxrs:providers>
+        <jaxrs:features>
+            <ref component-id="swagger2FeatureVineyard"/>
+        </jaxrs:features>
     </jaxrs:server>
-
-    <reference id="registry" interface="org.apache.karaf.vineyard.registry.api.RegistryService"/>
-
-    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.rest.RegistryRest">
-        <property name="registry" ref="registry"/>
-    </bean>
-
 </blueprint>

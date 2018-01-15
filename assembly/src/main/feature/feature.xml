@@ -18,6 +18,8 @@
 -->
 <features name="karaf-vineyard-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
 
+    <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
+    
     <feature name="vineyard" version="${project.version}" description="Meta feature installing common Vineyard features">
         <feature version="${project.version}">vineyard-common</feature>
     </feature>
@@ -37,9 +39,16 @@
     </feature>
 
     <feature name="vineyard-registry" version="${project.version}" description="Karaf Vineyard Registry">
-        <feature>vineyard-common</feature>
+        <feature version="${project.version}">vineyard-common</feature>
         <feature>jdbc</feature>
         <feature>pax-jdbc-derby</feature>
+        <feature version="${cxf.version}">cxf-jaxrs</feature>
+        <feature version="${cxf.version}">cxf-rs-description-swagger2</feature>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/2.4.6</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/2.4.6</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/2.4.6</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.4.6</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/2.4.6</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.api/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.commands/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.rest/${project.version}</bundle>
