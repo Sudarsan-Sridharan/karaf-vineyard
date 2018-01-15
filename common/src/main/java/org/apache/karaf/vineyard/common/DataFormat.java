@@ -22,15 +22,47 @@ package org.apache.karaf.vineyard.common;
 public class DataFormat {
 
     /** Data format unique ID */
-    public String id;
+    private String id;
 
     /** Data format name (alias) */
-    public String name;
+    private String name;
 
     /** Description of the data format (when possible) */
-    public String schema;
+    private String schema;
 
     /** Data format sample used to simulate and test */
-    public String sample;
+    private String sample;
 
+    
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getSample() {
+        return sample;
+    }
+
+    public void setSample(String sample) {
+        this.sample = sample;
+    }
 }

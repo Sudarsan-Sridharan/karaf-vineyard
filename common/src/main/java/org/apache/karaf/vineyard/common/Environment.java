@@ -27,17 +27,18 @@ public class Environment {
     private String id;
 
     /** Name of the environment */
-    public String name;
+    private String name;
 
     /** Description of the environment */
-    public String description;
+    private String description;
 
     /** Scope of the environment (on cloud, on prem, ...) */
-    public String scope;
+    private String scope;
 
     /** The environment maintainers with roles */
-    public Map<Maintainer, Role> maintainers;
+    private Map<Maintainer, Role> maintainers;
 
+    
     public String getId() {
         return id;
     }
@@ -46,4 +47,35 @@ public class Environment {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public Map<Maintainer, Role> getMaintainers() {
+        return maintainers;
+    }
+
+    public void setMaintainers(Map<Maintainer, Role> maintainers) {
+        this.maintainers = maintainers;
+    }
 }

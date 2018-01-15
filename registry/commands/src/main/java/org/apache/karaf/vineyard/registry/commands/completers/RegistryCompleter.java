@@ -40,7 +40,7 @@ public class RegistryCompleter implements Completer {
         StringsCompleter delegate = new StringsCompleter();
         for (org.apache.karaf.vineyard.common.Service vineyardService : 
             registryService.getAll()) {
-            delegate.getStrings().add(vineyardService.name);
+            delegate.getStrings().add(vineyardService.getName());
         }
         return delegate.complete(session, commandLine, list);
     }

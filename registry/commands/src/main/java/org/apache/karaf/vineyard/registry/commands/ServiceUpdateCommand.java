@@ -43,10 +43,10 @@ public class ServiceUpdateCommand extends VineyardRegistryCommandSupport {
         
         if (service != null) {
             if (name != null) {
-                service.name = name;
+                service.setName(name);
             }
             if (description != null) {
-                service.description = description;
+                service.setDescription(description);
             }
             getRegistryService().update(service);
         }

@@ -24,15 +24,47 @@ import java.util.List;
 public class Service {
 
     /** Unique service ID */
-    public String id;
+    private String id;
 
     /** Human readable name/alias for the service */
-    public String name;
+    private String name;
 
     /** Description of the service */
-    public String description;
+    private String description;
 
     /** Description of this service on different environments */
-    public List<ServiceOnEnvironment> environments;
+    private List<ServiceOnEnvironment> environments;
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<ServiceOnEnvironment> getEnvironments() {
+        return environments;
+    }
+
+    public void setEnvironments(List<ServiceOnEnvironment> environments) {
+        this.environments = environments;
+    }
 }

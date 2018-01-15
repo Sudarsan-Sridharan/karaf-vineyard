@@ -36,8 +36,8 @@ public class ServiceAddCommand extends VineyardRegistryCommandSupport {
     protected Object doExecute() throws Exception {
         
         org.apache.karaf.vineyard.common.Service service = new org.apache.karaf.vineyard.common.Service();
-        service.name = name;
-        service.description = description;
+        service.setName(name);
+        service.setDescription(description);
         
         getRegistryService().add(service);
 

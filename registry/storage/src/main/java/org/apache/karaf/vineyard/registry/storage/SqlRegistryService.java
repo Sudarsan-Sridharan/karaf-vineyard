@@ -188,14 +188,6 @@ public class SqlRegistryService implements RegistryService {
             "update " + DATABASE_SCHEMA + ".SERVICE "
             + "set name = ?, description = ? "
             + "where id = ?";
-    private final static String updateEnvironmentForServiceSql = 
-            "update " + DATABASE_SCHEMA + ".X_SRV_ENV "
-            + "set state = ?, version = ?, endpoint = ?, gateway = ? "
-            + "where id_service = ? and id_environment = ?";
-    private final static String updateMetadataEnvironmentForServiceSql = 
-            "update " + DATABASE_SCHEMA + ".X_SRV_ENV_META "
-            + "set metakey = ?, metavalue = ? "
-            + "where id_service = ? and id_environment = ?";
     
     /** Delete queries */
     private final static String deleteEnvironmentSql = 
@@ -296,8 +288,8 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertServiceSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                     // set values
-                    insertStatement.setString(1, service.name);
-                    insertStatement.setString(2, service.description);
+                    insertStatement.setString(1, service.getName());
+                    insertStatement.setString(2, service.getDescription());
                     insertStatement.executeUpdate();
                     
                     int newId = 0;
@@ -309,12 +301,12 @@ public class SqlRegistryService implements RegistryService {
                     
                     connection.commit();
                     
-                    service.id = String.valueOf(newId);
+                    service.setId(String.valueOf(newId));
                     LOGGER.debug("Service created with id = {}", newId);
             
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't insert service with name {}", service.name, exception);
+                LOGGER.error("Can't insert service with name {}", service.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -333,14 +325,14 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement deleteStatement = 
                     connection.prepareStatement(deleteServiceSql)) {
                     // where values
-                    deleteStatement.setString(1, service.id);
+                    deleteStatement.setString(1, service.getId());
                     deleteStatement.executeUpdate();
                     deleteExtraDataForService(connection, service);
                     connection.commit();
-                    LOGGER.debug("Service deleted with id = {}", service.id);
+                    LOGGER.debug("Service deleted with id = {}", service.getId());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't delete service with name {}", service.id, exception);
+                LOGGER.error("Can't delete service with name {}", service.getId(), exception);
             }
             
         } catch (Exception exception) {
@@ -361,12 +353,12 @@ public class SqlRegistryService implements RegistryService {
         
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
             // where values
-            deleteStatement.setString(1, service.id);
+            deleteStatement.setString(1, service.getId());
             deleteStatement.executeUpdate();
             
-            LOGGER.debug("Service updated with id = {}", service.id);
+            LOGGER.debug("Service updated with id = {}", service.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate service with name {}", service.name, exception);
+            LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
             throw exception;
         }
         
@@ -374,12 +366,12 @@ public class SqlRegistryService implements RegistryService {
         
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
             // where values
-            deleteStatement.setString(1, service.id);
+            deleteStatement.setString(1, service.getId());
             deleteStatement.executeUpdate();
             
-            LOGGER.debug("Service updated with id = {}", service.id);
+            LOGGER.debug("Service updated with id = {}", service.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate service with name {}", service.name, exception);
+            LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
             throw exception;
         }
     }
@@ -395,18 +387,18 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement updateStatement = 
                     connection.prepareStatement(updateServiceSql)) {
                     // set values
-                    updateStatement.setString(1, service.name);
-                    updateStatement.setString(2, service.description);
+                    updateStatement.setString(1, service.getName());
+                    updateStatement.setString(2, service.getDescription());
                     // where values
-                    updateStatement.setString(3, service.id);
+                    updateStatement.setString(3, service.getId());
                     updateStatement.executeUpdate();
                     
                     updateExtraDataForService(connection, service);
                     connection.commit();
-                    LOGGER.debug("Service updated with id = {}", service.id);
+                    LOGGER.debug("Service updated with id = {}", service.getId());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't udpate service with name {}", service.name, exception);
+                LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -418,37 +410,37 @@ public class SqlRegistryService implements RegistryService {
         
         deleteExtraDataForService(connection, service);
         
-        for (ServiceOnEnvironment srvOnEnv : service.environments) {
+        for (ServiceOnEnvironment srvOnEnv : service.getEnvironments()) {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertEnvironmentForServiceSql)) {
                 // set values
-                insertStatement.setString(1, service.id);
-                insertStatement.setString(2, srvOnEnv.environment.getId());
-                insertStatement.setString(3, srvOnEnv.state);
-                insertStatement.setString(4, srvOnEnv.version);
-                insertStatement.setString(5, srvOnEnv.endpoint.location);
-                insertStatement.setString(6, srvOnEnv.gateway.location);
+                insertStatement.setString(1, service.getId());
+                insertStatement.setString(2, srvOnEnv.getEnvironment().getId());
+                insertStatement.setString(3, srvOnEnv.getState());
+                insertStatement.setString(4, srvOnEnv.getVersion());
+                insertStatement.setString(5, srvOnEnv.getEndpoint().getLocation());
+                insertStatement.setString(6, srvOnEnv.getGateway().getLocation());
                 insertStatement.executeUpdate();
                 
-                LOGGER.debug("Service updated with id = {}", service.id);
+                LOGGER.debug("Service updated with id = {}", service.getId());
             } catch (SQLException exception) {
-                LOGGER.error("Can't udpate service with name {}", service.name, exception);
+                LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
                 throw exception;
             }
             
-            for (String metadataKey : srvOnEnv.metadata.keySet()) {
+            for (String metadataKey : srvOnEnv.getMetadata().keySet()) {
                 try (PreparedStatement insertStatement = 
                         connection.prepareStatement(insertMetadataEnvironmentForServiceSql)) {
                     // set values
-                    insertStatement.setString(1, service.id);
-                    insertStatement.setString(2, srvOnEnv.environment.getId());
+                    insertStatement.setString(1, service.getId());
+                    insertStatement.setString(2, srvOnEnv.getEnvironment().getId());
                     insertStatement.setString(3, metadataKey);
-                    insertStatement.setString(4, srvOnEnv.metadata.get(metadataKey));
+                    insertStatement.setString(4, srvOnEnv.getMetadata().get(metadataKey));
                     insertStatement.executeUpdate();
                     
-                    LOGGER.debug("Service updated with id = {}", service.id);
+                    LOGGER.debug("Service updated with id = {}", service.getId());
                 } catch (SQLException exception) {
-                    LOGGER.error("Can't udpate service with name {}", service.name, exception);
+                    LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
                     throw exception;
                 }
             }
@@ -468,9 +460,9 @@ public class SqlRegistryService implements RegistryService {
                 
                 if (rs.next()) {
                     service = new Service();
-                    service.id = rs.getString("id");
-                    service.name = rs.getString("name");
-                    service.description = rs.getString("description");
+                    service.setId(rs.getString("id"));
+                    service.setName(rs.getString("name"));
+                    service.setDescription(rs.getString("description"));
                 }
             
             } catch (SQLException exception) {
@@ -483,21 +475,21 @@ public class SqlRegistryService implements RegistryService {
                 ResultSet rs = selectStatement.executeQuery();
                 
                 if (rs.getFetchSize() > 0) {
-                    service.environments = new ArrayList<>();
+                    service.setEnvironments(new ArrayList<>());
                     if (rs.next()) {
                         Environment environment = selectEnvironment(connection, rs.getString("id"));
                         
                         if (environment != null) {
                             ServiceOnEnvironment srvOnEnv = new ServiceOnEnvironment();
-                            srvOnEnv.environment = environment;
-                            srvOnEnv.state = rs.getString("state");
-                            srvOnEnv.version = rs.getString("version");
-                            srvOnEnv.endpoint = selectEndpoint(connection, rs.getString("endpoint"));
-                            srvOnEnv.gateway = selectEndpoint(connection, rs.getString("gateway"));
-                            srvOnEnv.metadata = selectMetadata(connection, environment.getId(), id);
+                            srvOnEnv.setEnvironment(environment);
+                            srvOnEnv.setState(rs.getString("state"));
+                            srvOnEnv.setVersion(rs.getString("version"));
+                            srvOnEnv.setEndpoint(selectEndpoint(connection, rs.getString("endpoint")));
+                            srvOnEnv.setGateway(selectEndpoint(connection, rs.getString("gateway")));
+                            srvOnEnv.setMetadata(selectMetadata(connection, environment.getId(), id));
                             // TODO populate maintainers srvOnEnv.maintainers
                             // TODO populate policies srvOnEnv.policies
-                            service.environments.add(srvOnEnv);
+                            service.getEnvironments().add(srvOnEnv);
                         }
                     }
                 }
@@ -545,9 +537,9 @@ public class SqlRegistryService implements RegistryService {
                     
                     while (rs.next()) {
                         Service service = new Service();
-                        service.id = rs.getString("id");
-                        service.name = rs.getString("name");
-                        service.description = rs.getString("description");
+                        service.setId(rs.getString("id"));
+                        service.setName(rs.getString("name"));
+                        service.setDescription(rs.getString("description"));
                         services.add(service);
                         // TODO get extra content
                     }
@@ -573,9 +565,9 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertEnvironmentSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 // set values
-                insertStatement.setString(1, environment.name);
-                insertStatement.setString(2, environment.description);
-                insertStatement.setString(3, environment.scope);
+                insertStatement.setString(1, environment.getName());
+                insertStatement.setString(2, environment.getDescription());
+                insertStatement.setString(3, environment.getScope());
                 insertStatement.executeUpdate();
                 
                 int newId = 0;
@@ -592,7 +584,7 @@ public class SqlRegistryService implements RegistryService {
             
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't insert environment with name {}", environment.name, exception);
+                LOGGER.error("Can't insert environment with name {}", environment.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -676,9 +668,9 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement updateStatement = 
                     connection.prepareStatement(updateEnvironmentSql)) {
                 // set values
-                updateStatement.setString(1, environment.name);
-                updateStatement.setString(2, environment.description);
-                updateStatement.setString(3, environment.scope);
+                updateStatement.setString(1, environment.getName());
+                updateStatement.setString(2, environment.getDescription());
+                updateStatement.setString(3, environment.getScope());
                 // where values
                 updateStatement.setString(4, environment.getId());
                 updateStatement.executeUpdate();
@@ -689,7 +681,7 @@ public class SqlRegistryService implements RegistryService {
                 LOGGER.debug("Environment updated with id = {}", environment.getId());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't udpate environment with name {}", environment.name, exception);
+                LOGGER.error("Can't udpate environment with name {}", environment.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -709,22 +701,22 @@ public class SqlRegistryService implements RegistryService {
             
             LOGGER.debug("Environment updated with id = {}", environment.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate environment with name {}", environment.name, exception);
+            LOGGER.error("Can't udpate environment with name {}", environment.getName(), exception);
             throw exception;
         }
         
-        for (Maintainer maintainer : environment.maintainers.keySet()) {
+        for (Maintainer maintainer : environment.getMaintainers().keySet()) {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertMaintainerForEnvironmentSql)) {
                 // set values
                 insertStatement.setString(1, environment.getId());
-                insertStatement.setString(2, maintainer.name);
-                insertStatement.setString(3, environment.maintainers.get(maintainer).name());
+                insertStatement.setString(2, maintainer.getName());
+                insertStatement.setString(3, environment.getMaintainers().get(maintainer).name());
                 insertStatement.executeUpdate();
                 
                 LOGGER.debug("Environment updated with id = {}", environment.getId());
             } catch (SQLException exception) {
-                LOGGER.error("Can't udpate environment with name {}", environment.name, exception);
+                LOGGER.error("Can't udpate environment with name {}", environment.getName(), exception);
                 throw exception;
             }
         }
@@ -753,9 +745,9 @@ public class SqlRegistryService implements RegistryService {
             if (rs.next()) {
                 environment = new Environment();
                 environment.setId(id);
-                environment.name = rs.getString("name");
-                environment.description = rs.getString("description");
-                environment.scope = rs.getString("scope");
+                environment.setName(rs.getString("name"));
+                environment.setDescription(rs.getString("description"));
+                environment.setScope(rs.getString("scope"));
             }
         
         } catch (SQLException exception) {
@@ -769,13 +761,13 @@ public class SqlRegistryService implements RegistryService {
                 ResultSet rs = selectStatement.executeQuery();
                 
                 if (rs.getFetchSize() > 0) {
-                    environment.maintainers = new HashMap<>();
+                    environment.setMaintainers(new HashMap<>());
                     if (rs.next()) {
                         Maintainer maintainer = new Maintainer();
-                        maintainer.name = rs.getString("name");
-                        maintainer.email = rs.getString("email");
-                        maintainer.team = rs.getString("team");
-                        environment.maintainers.put(maintainer, Role.valueOf(rs.getString("role")));
+                        maintainer.setName(rs.getString("name"));
+                        maintainer.setEmail(rs.getString("email"));
+                        maintainer.setTeam(rs.getString("team"));
+                        environment.getMaintainers().put(maintainer, Role.valueOf(rs.getString("role")));
                     }
                 }
         
@@ -798,9 +790,9 @@ public class SqlRegistryService implements RegistryService {
                 while (rs.next()) {
                     Environment environment = new Environment();
                     environment.setId(rs.getString("id"));
-                    environment.name = rs.getString("name");
-                    environment.description = rs.getString("description");
-                    environment.scope = rs.getString("scope");
+                    environment.setName(rs.getString("name"));
+                    environment.setDescription(rs.getString("description"));
+                    environment.setScope(rs.getString("scope"));
                     environments.add(environment);
                     // TODO get extra content
                 }
@@ -826,17 +818,17 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertMaintainerSql)) {
                 // set values
-                insertStatement.setString(1, maintainer.name);
-                insertStatement.setString(2, maintainer.email);
-                insertStatement.setString(3, maintainer.team);
+                insertStatement.setString(1, maintainer.getName());
+                insertStatement.setString(2, maintainer.getEmail());
+                insertStatement.setString(3, maintainer.getTeam());
                 insertStatement.executeUpdate();
                 
                 connection.commit();
-                LOGGER.debug("Maintainer created with name = {}", maintainer.name);
+                LOGGER.debug("Maintainer created with name = {}", maintainer.getName());
             
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't insert maintainer with name {}", maintainer.name, exception);
+                LOGGER.error("Can't insert maintainer with name {}", maintainer.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -846,7 +838,7 @@ public class SqlRegistryService implements RegistryService {
 
     @Override
     public void deleteMaintainer(Maintainer maintainer) {
-        deleteMaintainer(maintainer.name);
+        deleteMaintainer(maintainer.getName());
     }
 
     @Override
@@ -904,16 +896,16 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement updateStatement = 
                     connection.prepareStatement(updateMaintainerSql)) {
                 // set values
-                updateStatement.setString(1, maintainer.email);
-                updateStatement.setString(2, maintainer.team);
+                updateStatement.setString(1, maintainer.getEmail());
+                updateStatement.setString(2, maintainer.getTeam());
                 // where values
-                updateStatement.setString(3, maintainer.name);
+                updateStatement.setString(3, maintainer.getName());
                 updateStatement.executeUpdate();
                 connection.commit();
-                LOGGER.debug("Maintainer updated with name = {}", maintainer.name);
+                LOGGER.debug("Maintainer updated with name = {}", maintainer.getName());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't udpate maintainer with name {}", maintainer.name, exception);
+                LOGGER.error("Can't udpate maintainer with name {}", maintainer.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -933,9 +925,9 @@ public class SqlRegistryService implements RegistryService {
                 
                 if (rs.next()) {
                     Maintainer maintainer = new Maintainer();
-                    maintainer.name = name;
-                    maintainer.email = rs.getString("email");
-                    maintainer.team = rs.getString("team");
+                    maintainer.setName(name);
+                    maintainer.setEmail(rs.getString("email"));
+                    maintainer.setTeam(rs.getString("team"));
                     return maintainer;
                 }
             
@@ -960,9 +952,9 @@ public class SqlRegistryService implements RegistryService {
                 
                 while (rs.next()) {
                     Maintainer maintainer = new Maintainer();
-                    maintainer.name = rs.getString("name");
-                    maintainer.email = rs.getString("email");
-                    maintainer.team = rs.getString("team");
+                    maintainer.setName(rs.getString("name"));
+                    maintainer.setEmail(rs.getString("email"));
+                    maintainer.setTeam(rs.getString("team"));
                     maintainers.add(maintainer);
                 }
             
@@ -987,9 +979,9 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertDataformatSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 // set values
-                insertStatement.setString(1, dataformat.name);
-                insertStatement.setString(2, dataformat.sample);
-                insertStatement.setString(3, dataformat.schema);
+                insertStatement.setString(1, dataformat.getName());
+                insertStatement.setString(2, dataformat.getSample());
+                insertStatement.setString(3, dataformat.getSchema());
                 insertStatement.executeUpdate();
                 
                 int newId = 0;
@@ -1001,12 +993,12 @@ public class SqlRegistryService implements RegistryService {
                 
                 connection.commit();
                 
-                dataformat.id = String.valueOf(newId);
+                dataformat.setId(String.valueOf(newId));
                 LOGGER.debug("Dataformat created with id = {}", newId);
             
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't insert dataformat with name {}", dataformat.name, exception);
+                LOGGER.error("Can't insert dataformat with name {}", dataformat.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -1016,7 +1008,7 @@ public class SqlRegistryService implements RegistryService {
 
     @Override
     public void deleteDataFormat(DataFormat dataformat) {
-        deleteDataFormat(dataformat.id);
+        deleteDataFormat(dataformat.getId());
     }
 
     @Override
@@ -1057,17 +1049,17 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement updateStatement = 
                     connection.prepareStatement(updateDataformatSql)) {
                 // set values
-                updateStatement.setString(1, dataformat.name);
-                updateStatement.setString(2, dataformat.sample);
-                updateStatement.setString(3, dataformat.schema);
+                updateStatement.setString(1, dataformat.getName());
+                updateStatement.setString(2, dataformat.getSample());
+                updateStatement.setString(3, dataformat.getSchema());
                 // where values
-                updateStatement.setString(4, dataformat.id);
+                updateStatement.setString(4, dataformat.getId());
                 updateStatement.executeUpdate();
                 connection.commit();
-                LOGGER.debug("Dataformat updated with id = {}", dataformat.id);
+                LOGGER.debug("Dataformat updated with id = {}", dataformat.getId());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't udpate dataformat with id {}", dataformat.id, exception);
+                LOGGER.error("Can't udpate dataformat with id {}", dataformat.getId(), exception);
             }
             //TODO update extra content
             
@@ -1096,10 +1088,10 @@ public class SqlRegistryService implements RegistryService {
             
             if (rs.next()) {
                 DataFormat dataformat = new DataFormat();
-                dataformat.id = id;
-                dataformat.name = rs.getString("name");
-                dataformat.sample = rs.getString("sample");
-                dataformat.schema = rs.getString("schema");
+                dataformat.setId(id);
+                dataformat.setName(rs.getString("name"));
+                dataformat.setSample(rs.getString("sample"));
+                dataformat.setSchema(rs.getString("schema"));
                 return dataformat;
             }
         
@@ -1120,10 +1112,10 @@ public class SqlRegistryService implements RegistryService {
                 
                 while (rs.next()) {
                     DataFormat dataformat = new DataFormat();
-                    dataformat.id = rs.getString("id");
-                    dataformat.name = rs.getString("name");
-                    dataformat.sample = rs.getString("sample");
-                    dataformat.schema = rs.getString("schema");
+                    dataformat.setId(rs.getString("id"));
+                    dataformat.setName(rs.getString("name"));
+                    dataformat.setSample(rs.getString("sample"));
+                    dataformat.setSchema(rs.getString("schema"));
                     dataformats.add(dataformat);
                 }
             
@@ -1148,17 +1140,17 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertEndpointSql)) {
                 // set values
-                insertStatement.setString(1, endpoint.location);
-                insertStatement.setString(2, endpoint.input.id);
-                insertStatement.setString(3, endpoint.output.id);
+                insertStatement.setString(1, endpoint.getLocation());
+                insertStatement.setString(2, endpoint.getInput().getId());
+                insertStatement.setString(3, endpoint.getOutput().getId());
                 insertStatement.executeUpdate();
                 connection.commit();
                 
-                LOGGER.debug("Endpoint created with location = {}", endpoint.location);
+                LOGGER.debug("Endpoint created with location = {}", endpoint.getLocation());
             
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't insert endpoint with location {}", endpoint.location, exception);
+                LOGGER.error("Can't insert endpoint with location {}", endpoint.getLocation(), exception);
             }
             
         } catch (Exception exception) {
@@ -1168,7 +1160,7 @@ public class SqlRegistryService implements RegistryService {
 
     @Override
     public void deleteEndpoint(Endpoint endpoint) {
-        deleteEndpoint(endpoint.location);
+        deleteEndpoint(endpoint.getLocation());
     }
 
     @Override
@@ -1208,16 +1200,16 @@ public class SqlRegistryService implements RegistryService {
             try (PreparedStatement updateStatement = 
                     connection.prepareStatement(updateEndpointSql)) {
                 // set values
-                updateStatement.setString(1, endpoint.input.id);
-                updateStatement.setString(2, endpoint.output.id);
+                updateStatement.setString(1, endpoint.getInput().getId());
+                updateStatement.setString(2, endpoint.getOutput().getId());
                 // where values
-                updateStatement.setString(4, endpoint.location);
+                updateStatement.setString(4, endpoint.getLocation());
                 updateStatement.executeUpdate();
                 connection.commit();
-                LOGGER.debug("Endpoint updated with location = {}", endpoint.location);
+                LOGGER.debug("Endpoint updated with location = {}", endpoint.getLocation());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't udpate endpoint with location {}", endpoint.location, exception);
+                LOGGER.error("Can't udpate endpoint with location {}", endpoint.getLocation(), exception);
             }
             
         } catch (Exception exception) {
@@ -1245,14 +1237,14 @@ public class SqlRegistryService implements RegistryService {
             
             if (rs.next()) {
                 Endpoint endpoint = new Endpoint();
-                endpoint.location = location;
+                endpoint.setLocation(location);
                 int inputId = rs.getInt("input");
                 int outputId = rs.getInt("output");
                 if (inputId != 0) {
-                    endpoint.input = selectDataFormat(connection, String.valueOf(inputId));
+                    endpoint.setInput(selectDataFormat(connection, String.valueOf(inputId)));
                 }
                 if (outputId != 0) {
-                    endpoint.output = selectDataFormat(connection, String.valueOf(outputId));
+                    endpoint.setOutput(selectDataFormat(connection, String.valueOf(outputId)));
                 }
                 return endpoint;
             }
@@ -1274,14 +1266,14 @@ public class SqlRegistryService implements RegistryService {
                 
                 while (rs.next()) {
                     Endpoint endpoint = new Endpoint();
-                    endpoint.location = rs.getString("location");
+                    endpoint.setLocation(rs.getString("location"));
                     int inputId = rs.getInt("input");
                     int outputId = rs.getInt("output");
                     if (inputId != 0) {
-                        endpoint.input = selectDataFormat(connection, String.valueOf(inputId));
+                        endpoint.setInput(selectDataFormat(connection, String.valueOf(inputId)));
                     }
                     if (outputId != 0) {
-                        endpoint.output = selectDataFormat(connection, String.valueOf(outputId));
+                        endpoint.setOutput(selectDataFormat(connection, String.valueOf(outputId)));
                     }
                     endpoints.add(endpoint);
                 }

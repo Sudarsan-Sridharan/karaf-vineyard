@@ -16,15 +16,42 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.List;
-
 /**
  * Describe a service maintainer.
  */
 public class Maintainer {
 
-    public String name;
-    public String email;
-    public String team;
+    /** Name of the maintainer */
+    private String name;
+    
+    /** Email of the maintainer */
+    private String email;
+    
+    /** Team of the maintainer */
+    private String team;
 
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
 }

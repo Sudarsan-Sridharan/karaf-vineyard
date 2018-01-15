@@ -22,12 +22,36 @@ package org.apache.karaf.vineyard.common;
 public class Endpoint {
 
     /** Location (URI) of the service */
-    public String location;
+    private String location;
 
     /** Input data format */
-    public DataFormat input;
+    private DataFormat input;
 
     /** Output data format */
-    public DataFormat output;
+    private DataFormat output;
+    
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public DataFormat getInput() {
+        return input;
+    }
+
+    public void setInput(DataFormat input) {
+        this.input = input;
+    }
+
+    public DataFormat getOutput() {
+        return output;
+    }
+
+    public void setOutput(DataFormat output) {
+        this.output = output;
+    }
 }

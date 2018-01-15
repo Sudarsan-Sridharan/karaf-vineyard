@@ -39,7 +39,7 @@ public class ServicesListCommand extends VineyardRegistryCommandSupport {
         table.column("Description");
         // TODO add extra content
         for (org.apache.karaf.vineyard.common.Service service : services) {
-            table.addRow().addContent(service.id, service.name, service.description);
+            table.addRow().addContent(service.getId(), service.getName(), service.getDescription());
         }
 
         table.print(System.out);
