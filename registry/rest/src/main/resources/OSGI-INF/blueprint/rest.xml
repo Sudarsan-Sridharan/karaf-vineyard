@@ -35,7 +35,7 @@
         <property name="resourcePackage" value="org.apache.karaf.vineyard.registry.rest"/>
         <property name="title" value="Vineyard Registry API"/>
         <property name="version" value="1.0.0-SNAPSHOT"/>
-    </bean>
+    </bean> 
     
     <reference id="registry" interface="org.apache.karaf.vineyard.registry.api.RegistryService"/>
 
