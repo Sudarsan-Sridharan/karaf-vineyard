@@ -57,6 +57,35 @@
         <module>itests</module>
     </modules>
 
+    <repositories>
+        <!-- Apache snapshots -->
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshots Repository</name>
+            <url>http://repository.apache.org/content/groups/snapshots-group</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <!-- Apache snapshots -->
+        <pluginRepository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshots Repository</name>
+            <url>http://repository.apache.org/content/groups/snapshots-group</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
     <scm>
         <connection>https://github.com/jbonofre/karaf-vineyard</connection>
         <developerConnection>https://github.com/jbonofre/karaf-vineyard</developerConnection>
