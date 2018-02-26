@@ -35,6 +35,8 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.security.auth.Subject;
 
+import org.apache.karaf.jaas.boot.principal.RolePrincipal;
+import org.apache.karaf.jaas.boot.principal.UserPrincipal;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.api.console.SessionFactory;
 import org.ops4j.pax.exam.*;
@@ -56,11 +58,6 @@ public class VineyardTestSupport {
     static final String GROUP_ID = "org.apache.karaf";
     static final String ARTIFACT_ID = "apache-karaf";
 
-    static final String INSTANCE_STARTED = "Started";
-    static final String INSTANCE_STARTING = "Starting";
-
-    static final String DEBUG_OPTS = " --java-opts \"-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=%s\"";
-
     ExecutorService executor = Executors.newCachedThreadPool();
 
     @Inject
@@ -69,11 +66,6 @@ public class VineyardTestSupport {
     @Inject
     protected SessionFactory sessionFactory;
 
-
-    /**
-     * @param probe
-     * @return
-     */
     @ProbeBuilder
     public TestProbeBuilder probeConfiguration(TestProbeBuilder probe) {
         probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE, "*,org.apache.felix.service.*;status=provisional");
@@ -84,10 +76,10 @@ public class VineyardTestSupport {
      * Installs the Vineyard feature
      */
     protected void installVineyard() {
-        System.err.println(executeCommand("feature:repo-add " + System.getProperty("vineyard.feature.url")));
-        System.err.println(executeCommand("feature:repo-list"));
-        System.err.println(executeCommand("feature:list"));
-        executeCommand("feature:install vineyard");
+        System.out.println(executeCommand("feature:repo-add " + System.getProperty("vineyard.feature.url")));
+        System.out.println(executeCommand("feature:repo-list"));
+        System.out.println(executeCommand("feature:list"));
+        System.out.println(executeCommand("feature:install vineyard", new RolePrincipal("admin")));
     }
 
     protected void unInstallVineyard() {

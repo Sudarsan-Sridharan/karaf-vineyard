@@ -13,6 +13,7 @@
  */
 package org.apache.karaf.vineyard.itests;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -27,7 +28,9 @@ public class VineyardInstallationTest extends VineyardTestSupport {
     public void testInstallation() throws InterruptedException {
         installVineyard();
         Thread.sleep(20000);
-        System.err.println(executeCommand("osgi:list"));
+        String bundleList = executeCommand("bundle:list");
+        System.out.println(bundleList);
+        Assert.assertTrue(bundleList.contains("Vineyard"));
     }
 
 }
