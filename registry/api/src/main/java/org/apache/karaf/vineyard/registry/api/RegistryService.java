@@ -141,7 +141,7 @@ public interface RegistryService {
     void deleteMaintainer(String name);
 
     /**
-     * Update an existing mainainer.
+     * Update an existing maintainer.
      *
      * @param maintainer The maintainer details.
      */
@@ -185,7 +185,7 @@ public interface RegistryService {
     void deleteDataFormat(String id);
 
     /**
-     * Update an existing mainainer.
+     * Update an existing dataformat.
      *
      * @param dataformat The dataformat details.
      */

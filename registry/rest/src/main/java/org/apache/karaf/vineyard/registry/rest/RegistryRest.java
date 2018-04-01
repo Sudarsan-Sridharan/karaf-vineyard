@@ -31,6 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
@@ -228,7 +229,7 @@ public class RegistryRest {
 
     @Path("/maintainer/{name}")
     @DELETE
-    @ApiOperation(value = "Delete an Maintainer", notes = "Delete an maintainer to find in the registry")
+    @ApiOperation(value = "Delete an Maintainer", notes = "Delete a maintainer to find in the registry")
     public Response deleteMaintainer(@ApiParam(value = "name of the maintainer", required = true) @PathParam("name") String name) {
         if (registry != null) {
             registry.deleteMaintainer(name);
@@ -268,6 +269,82 @@ public class RegistryRest {
             List<Maintainer> maintainers = registry.getAllMaintainers();
             if (maintainers != null) {
                 return Response.ok(maintainers).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @POST
+    @ApiOperation(value = "Create a DataFormat", notes = "Create a new dataformat in the registry")
+    public Response addDataFormat(@ApiParam(value = "the DataFormat to create",
+            required = true) DataFormat dataformat) {
+        if (registry != null) {
+            registry.addDataFormat(dataformat);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @DELETE
+    @ApiOperation(value = "Delete an DataFormat", notes = "Delete a dataformat to find in the registry")
+    public Response deleteDataFormat(@ApiParam(value = "the DataFormat to delete",
+            required = true) DataFormat dataformat) {
+        if (registry != null) {
+            registry.deleteDataFormat(dataformat);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat/{id}")
+    @DELETE
+    @ApiOperation(value = "Delete an DataFormat", notes = "Delete a maintainer to find in the registry")
+    public Response deleteDataFormat(@ApiParam(value = "id of the maintainer", required = true) @PathParam("id") String id) {
+        if (registry != null) {
+            registry.deleteDataFormat(id);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat/{id}")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Find one DataFormat", notes = "DataFormat name of the dataformat to find in the registry",
+            response = DataFormat.class, responseContainer = "DataFormat")
+    public Response getDataFormat(@ApiParam(value = "name of the dataformat", required = true) @PathParam("id") String id) {
+
+        if (registry != null) {
+            DataFormat dataformat = registry.getDataFormat(id);
+            if (dataformat != null) {
+                return Response.ok(dataformat).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Retrieve all the dataformat in the registry", notes = "n/a",
+            response = DataFormat.class, responseContainer = "DataFormat")
+    public Response listDataFormats() {
+
+        if (registry != null) {
+            List<DataFormat> dataformats = registry.getAllDataFormats();
+            if (dataformats != null) {
+                return Response.ok(dataformats).build();
             } else {
                 return Response.noContent().build();
             }
