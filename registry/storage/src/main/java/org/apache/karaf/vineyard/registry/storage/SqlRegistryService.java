@@ -132,7 +132,9 @@ public class SqlRegistryService implements RegistryService {
             + "and x.id_service = ?";
     private final static String selectMetadataEnvironmentForServiceSql = 
             "select id_service, id_environment, metakey, metavalue "
-            + "from " + DATABASE_SCHEMA + ".X_SRV_ENV_META";
+            + "from " + DATABASE_SCHEMA + ".X_SRV_ENV_META "
+            + "where id_environment = ? "
+            + " and id_service = ?";
     
     /** Insert queries */
     private final static String insertEnvironmentSql = 
@@ -705,12 +707,12 @@ public class SqlRegistryService implements RegistryService {
             throw exception;
         }
         
-        for (Maintainer maintainer : environment.getMaintainers().keySet()) {
+        for (String maintainer : environment.getMaintainers().keySet()) {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertMaintainerForEnvironmentSql)) {
                 // set values
                 insertStatement.setString(1, environment.getId());
-                insertStatement.setString(2, maintainer.getName());
+                insertStatement.setString(2, maintainer);
                 insertStatement.setString(3, environment.getMaintainers().get(maintainer).name());
                 insertStatement.executeUpdate();
                 
@@ -767,7 +769,7 @@ public class SqlRegistryService implements RegistryService {
                         maintainer.setName(rs.getString("name"));
                         maintainer.setEmail(rs.getString("email"));
                         maintainer.setTeam(rs.getString("team"));
-                        environment.getMaintainers().put(maintainer, Role.valueOf(rs.getString("role")));
+                        environment.getMaintainers().put(maintainer.getName(), Role.valueOf(rs.getString("role")));
                     }
                 }
         
@@ -1203,7 +1205,7 @@ public class SqlRegistryService implements RegistryService {
                 updateStatement.setString(1, endpoint.getInput().getId());
                 updateStatement.setString(2, endpoint.getOutput().getId());
                 // where values
-                updateStatement.setString(4, endpoint.getLocation());
+                updateStatement.setString(3, endpoint.getLocation());
                 updateStatement.executeUpdate();
                 connection.commit();
                 LOGGER.debug("Endpoint updated with location = {}", endpoint.getLocation());

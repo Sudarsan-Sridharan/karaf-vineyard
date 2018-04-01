@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 import org.apache.karaf.vineyard.common.Service;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 
-@Path("/registry")
+@Path("/")
 @Consumes({"application/json"})
 @Produces({"application/json"})
 @Api(tags = {"registryRest"})

@@ -37,7 +37,7 @@ public class ServiceOnEnvironment {
     private String version;
 
     /** The service maintainers with corresponding roles */
-    private Map<Maintainer, Role> maintainers;
+    private Map<String, Role> maintainers;
 
     /** The actual location (endpoint) of the service */
     private Endpoint endpoint;
@@ -83,11 +83,11 @@ public class ServiceOnEnvironment {
         this.version = version;
     }
 
-    public Map<Maintainer, Role> getMaintainers() {
+    public Map<String, Role> getMaintainers() {
         return maintainers;
     }
 
-    public void setMaintainers(Map<Maintainer, Role> maintainers) {
+    public void setMaintainers(Map<String, Role> maintainers) {
         this.maintainers = maintainers;
     }
 

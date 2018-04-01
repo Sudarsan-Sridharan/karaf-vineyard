@@ -69,11 +69,11 @@
         <feature dependency="true">aries-blueprint</feature>
         <feature version="${cxf.version}">cxf-jaxrs</feature>
         <feature version="${cxf.version}">cxf-rs-description-swagger2</feature>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/2.4.6</bundle>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/2.4.6</bundle>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/2.4.6</bundle>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.4.6</bundle>
-        <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/2.4.6</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.api/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.commands/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.rest/${project.version}</bundle>

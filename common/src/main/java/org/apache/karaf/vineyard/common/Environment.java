@@ -36,7 +36,7 @@ public class Environment {
     private String scope;
 
     /** The environment maintainers with roles */
-    private Map<Maintainer, Role> maintainers;
+    private Map<String, Role> maintainers;
 
     
     public String getId() {
@@ -71,11 +71,11 @@ public class Environment {
         this.scope = scope;
     }
 
-    public Map<Maintainer, Role> getMaintainers() {
+    public Map<String, Role> getMaintainers() {
         return maintainers;
     }
 
-    public void setMaintainers(Map<Maintainer, Role> maintainers) {
+    public void setMaintainers(Map<String, Role> maintainers) {
         this.maintainers = maintainers;
     }
 }
