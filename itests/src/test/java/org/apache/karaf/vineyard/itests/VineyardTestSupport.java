@@ -13,6 +13,8 @@
  */
 package org.apache.karaf.vineyard.itests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
@@ -333,4 +335,11 @@ public class VineyardTestSupport {
         return references != null ? Arrays.asList(references) : Collections.<ServiceReference>emptyList();
     }
 
+    public void assertContains(String expectedPart, String actual) {
+        assertTrue("Should contain '" + expectedPart + "' but was : " + actual, actual.contains(expectedPart));
+    }
+
+    public void assertContainsNot(String expectedPart, String actual) {
+        assertFalse("Should not contain '" + expectedPart + "' but was : " + actual, actual.contains(expectedPart));
+    }
 }

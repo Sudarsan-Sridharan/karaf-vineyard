@@ -13,10 +13,9 @@
  */
 package org.apache.karaf.vineyard.itests;
 
-import static org.junit.Assert.assertTrue;
-
+import org.apache.karaf.jaas.boot.principal.RolePrincipal;
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -27,13 +26,24 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 @ExamReactorStrategy(PerClass.class)
 public class VineyardFeaturesTest extends VineyardTestSupport {
 
-    private static final String UNINSTALLED = "[uninstalled]";
-    private static final String INSTALLED = "[installed  ]";
+    private static final RolePrincipal[] ADMIN_ROLES = {
+            new RolePrincipal("admin"),
+            new RolePrincipal("manager")
+    };
 
     @Test
-    public void testVineyardFeaturesModule() throws InterruptedException {
+    public void testVineyardRegistryFeature() throws InterruptedException {
         installVineyard();
         Thread.sleep(DEFAULT_TIMEOUT);
+        System.out.println(executeCommand("feature:install vineyard-registry", ADMIN_ROLES));
+
+        String bundleList = executeCommand("bundle:list");
+        System.out.println(bundleList);
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Storage"));
+
+        String jdbcList = executeCommand("jdbc:ds-list");
+        System.out.println(jdbcList);
+        Assert.assertTrue(jdbcList.contains("jdbc:derby:data/vineyard/derby │ OK"));
     }
 
     @After

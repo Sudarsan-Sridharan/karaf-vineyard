@@ -17,9 +17,9 @@
     limitations under the License.
 -->
 <features name="karaf-vineyard-${project.version}" 
-    xmlns="http://karaf.apache.org/xmlns/features/v1.5.0" 
+    xmlns="http://karaf.apache.org/xmlns/features/v1.4.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0 http://karaf.apache.org/xmlns/features/v1.4.0">
 
     <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
     
