@@ -31,10 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.apache.karaf.vineyard.common.DataFormat;
-import org.apache.karaf.vineyard.common.Environment;
-import org.apache.karaf.vineyard.common.Maintainer;
-import org.apache.karaf.vineyard.common.Service;
+import org.apache.karaf.vineyard.common.*;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 
 @Path("/")
@@ -305,8 +302,8 @@ public class RegistryRest {
 
     @Path("/dataformat/{id}")
     @DELETE
-    @ApiOperation(value = "Delete an DataFormat", notes = "Delete a maintainer to find in the registry")
-    public Response deleteDataFormat(@ApiParam(value = "id of the maintainer", required = true) @PathParam("id") String id) {
+    @ApiOperation(value = "Delete an DataFormat", notes = "Delete a dataformat to find in the registry")
+    public Response deleteDataFormat(@ApiParam(value = "id of the dataformat", required = true) @PathParam("id") String id) {
         if (registry != null) {
             registry.deleteDataFormat(id);
             return Response.ok().build();
@@ -345,6 +342,82 @@ public class RegistryRest {
             List<DataFormat> dataformats = registry.getAllDataFormats();
             if (dataformats != null) {
                 return Response.ok(dataformats).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/endpoint")
+    @POST
+    @ApiOperation(value = "Create a Endpoint", notes = "Create a new endpoint in the registry")
+    public Response addEndpoint(@ApiParam(value = "the Endpoint to create",
+            required = true) Endpoint endpoint) {
+        if (registry != null) {
+            registry.addEndpoint(endpoint);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/endpoint")
+    @DELETE
+    @ApiOperation(value = "Delete an Endpoint", notes = "Delete a endpoint to find in the registry")
+    public Response deleteEndpoint(@ApiParam(value = "the Endpoint to delete",
+            required = true) Endpoint endpoint) {
+        if (registry != null) {
+            registry.deleteEndpoint(endpoint);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/endpoint/{location}")
+    @DELETE
+    @ApiOperation(value = "Delete an Endpoint", notes = "Delete a endpoint to find in the registry")
+    public Response deleteEndpoint(@ApiParam(value = "id of the endpoint", required = true) @PathParam("location") String location) {
+        if (registry != null) {
+            registry.deleteEndpoint(location);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/endpoint/{location}")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Find one Endpoint", notes = "Endpoint name of the endpoint to find in the registry",
+            response = Endpoint.class, responseContainer = "Endpoint")
+    public Response getEndpoint(@ApiParam(value = "name of the endpoint", required = true) @PathParam("location") String location) {
+
+        if (registry != null) {
+            Endpoint endpoint = registry.getEndpoint(location);
+            if (endpoint != null) {
+                return Response.ok(endpoint).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/endpoint")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Retrieve all the endpoint in the registry", notes = "n/a",
+            response = Endpoint.class, responseContainer = "Endpoint")
+    public Response listEndpoints() {
+
+        if (registry != null) {
+            List<Endpoint> endpoints = registry.getAllEndpoints();
+            if (endpoints != null) {
+                return Response.ok(endpoints).build();
             } else {
                 return Response.noContent().build();
             }
