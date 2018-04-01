@@ -32,6 +32,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import org.apache.karaf.vineyard.common.Environment;
+import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Service;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 
@@ -191,6 +192,82 @@ public class RegistryRest {
             List<Environment> environments = registry.getAllEnvironments();
             if (environments != null) {
                 return Response.ok(environments).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/maintainer")
+    @POST
+    @ApiOperation(value = "Create a Maintainer", notes = "Create a new maintainer in the registry")
+    public Response addMaintainer(@ApiParam(value = "the Maintainer to create",
+            required = true) Maintainer maintainer) {
+        if (registry != null) {
+            registry.addMaintainer(maintainer);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/maintainer")
+    @DELETE
+    @ApiOperation(value = "Delete an Maintainer", notes = "Delete a maintainer to find in the registry")
+    public Response deleteMaintainer(@ApiParam(value = "the Maintainer to delete",
+            required = true) Maintainer maintainer) {
+        if (registry != null) {
+            registry.deleteMaintainer(maintainer);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/maintainer/{name}")
+    @DELETE
+    @ApiOperation(value = "Delete an Maintainer", notes = "Delete an maintainer to find in the registry")
+    public Response deleteMaintainer(@ApiParam(value = "name of the maintainer", required = true) @PathParam("name") String name) {
+        if (registry != null) {
+            registry.deleteMaintainer(name);
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/maintainer/{name}")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Find one Maintainer", notes = "Maintainer name of the maintainer to find in the registry",
+            response = Maintainer.class, responseContainer = "Maintainer")
+    public Response getMaintainer(@ApiParam(value = "name of the maintainer", required = true) @PathParam("name") String name) {
+
+        if (registry != null) {
+            Maintainer maintainer = registry.getMaintainer(name);
+            if (maintainer != null) {
+                return Response.ok(maintainer).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/maintainer")
+    @GET
+    @Produces("application/json")
+    @ApiOperation(value = "Retrieve all the maintainer in the registry", notes = "n/a",
+            response = Maintainer.class, responseContainer = "Maintainer")
+    public Response listMaintainers() {
+
+        if (registry != null) {
+            List<Maintainer> maintainers = registry.getAllMaintainers();
+            if (maintainers != null) {
+                return Response.ok(maintainers).build();
             } else {
                 return Response.noContent().build();
             }
