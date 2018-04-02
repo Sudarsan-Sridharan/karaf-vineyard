@@ -144,7 +144,7 @@ public class SqlRegistryService implements RegistryService {
     private final static String insertMaintainerSql = 
             "insert into " + DATABASE_SCHEMA + ".MAINTAINER "
             + "(name, email, team) "
-            + "values (?, ?, ?, ?)";
+            + "values (?, ?, ?)";
     private final static String insertDataformatSql = 
             "insert into " + DATABASE_SCHEMA + ".DATAFORMAT "
             + "(name, sample, dataschema) "
@@ -819,6 +819,8 @@ public class SqlRegistryService implements RegistryService {
             
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertMaintainerSql)) {
+                // replace space caracters for URI encoding
+                maintainer.setName(maintainer.getName().replace(" ","-"));
                 // set values
                 insertStatement.setString(1, maintainer.getName());
                 insertStatement.setString(2, maintainer.getEmail());

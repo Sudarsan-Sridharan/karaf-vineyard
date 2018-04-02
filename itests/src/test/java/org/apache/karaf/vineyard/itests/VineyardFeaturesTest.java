@@ -25,6 +25,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import javax.ws.rs.HttpMethod;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -59,9 +60,41 @@ public class VineyardFeaturesTest extends VineyardTestSupport {
             String URL = "http://localhost:8181/cxf/vineyard/registry/service";
             URL urlGetListServices = new URL(URL);
 
+            // Call add maintainer service
+            String jsonAddMaintainer = "{\n" +
+                    "  \"name\": \"obiwan kenobi\",\n" +
+                    "  \"email\": \"okenobi@jedi.org\",\n" +
+                    "  \"team\": \"master jedi\"\n" +
+                    "}";
+            System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/maintainer");
+            HttpURLConnection connection = (HttpURLConnection) urlGetListServices.openConnection();
+            connection.setRequestMethod(HttpMethod.POST);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            OutputStream os = connection.getOutputStream();
+            os.write(jsonAddMaintainer.getBytes());
+            os.flush();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuffer sb = new StringBuffer();
+                while ((line = buffer.readLine()) != null) {
+                    sb.append(line);
+                }
+                if (sb.length() == 0) {
+                    System.out.println("Maintainer is null");
+                } else {
+                    System.out.println(sb.toString());
+                }
+            } else {
+                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+            }
+
             // Call list service
             System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/service");
-            HttpURLConnection connection = (HttpURLConnection) urlGetListServices.openConnection();
+            connection = (HttpURLConnection) urlGetListServices.openConnection();
             connection.setRequestMethod(HttpMethod.GET);
             connection.connect();
 
@@ -80,6 +113,7 @@ public class VineyardFeaturesTest extends VineyardTestSupport {
             } else {
                 System.out.println("Error when sending GET method : HTTP_CODE = " + connection.getResponseCode());
             }
+            connection.disconnect();
         } catch (Exception e) {
             // nothing to do
         }

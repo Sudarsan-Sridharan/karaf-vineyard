@@ -20,25 +20,25 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import org.apache.karaf.vineyard.common.*;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/")
 @Consumes({"application/json"})
 @Produces({"application/json"})
-@Api(tags = {"registryRest"})
+@Api(tags = {"registry rest service"})
 public class RegistryRest {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(RegistryRest.class);
 
     private RegistryService registry;
     
@@ -205,8 +205,14 @@ public class RegistryRest {
             required = true) Maintainer maintainer) {
         if (registry != null) {
             registry.addMaintainer(maintainer);
-            return Response.ok().build();
+            try {
+                return Response.created(new URI("/maintainer/" + maintainer.getName())).build();
+            } catch (URISyntaxException e) {
+                LOGGER.error(e.getMessage());
+                return Response.serverError().build();
+            }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -219,6 +225,24 @@ public class RegistryRest {
         if (registry != null) {
             registry.deleteMaintainer(maintainer);
             return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/maintainer")
+    @PUT
+    @ApiOperation(value = "Update an Maintainer", notes = "Update an existing maintainer in the registry")
+    public Response updateMaintainer(@ApiParam(value = "the Maintainer to update",
+            required = true) Maintainer maintainer) {
+        if (registry != null) {
+            Maintainer origin = registry.getMaintainer(maintainer.getName());
+            if (origin != null) {
+                registry.updateMaintainer(maintainer);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
         } else {
             return Response.serverError().build();
         }
