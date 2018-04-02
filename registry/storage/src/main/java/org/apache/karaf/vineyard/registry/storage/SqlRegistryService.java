@@ -1095,7 +1095,7 @@ public class SqlRegistryService implements RegistryService {
                 dataformat.setId(id);
                 dataformat.setName(rs.getString("name"));
                 dataformat.setSample(rs.getString("sample"));
-                dataformat.setSchema(rs.getString("schema"));
+                dataformat.setSchema(rs.getString("dataschema"));
                 return dataformat;
             }
         
@@ -1119,7 +1119,7 @@ public class SqlRegistryService implements RegistryService {
                     dataformat.setId(rs.getString("id"));
                     dataformat.setName(rs.getString("name"));
                     dataformat.setSample(rs.getString("sample"));
-                    dataformat.setSchema(rs.getString("schema"));
+                    dataformat.setSchema(rs.getString("dataschema"));
                     dataformats.add(dataformat);
                 }
             

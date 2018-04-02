@@ -226,13 +226,14 @@ public class RegistryRest {
             registry.deleteMaintainer(maintainer);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
 
     @Path("/maintainer")
     @PUT
-    @ApiOperation(value = "Update an Maintainer", notes = "Update an existing maintainer in the registry")
+    @ApiOperation(value = "Update a Maintainer", notes = "Update an existing maintainer in the registry")
     public Response updateMaintainer(@ApiParam(value = "the Maintainer to update",
             required = true) Maintainer maintainer) {
         if (registry != null) {
@@ -244,6 +245,7 @@ public class RegistryRest {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -256,6 +258,7 @@ public class RegistryRest {
             registry.deleteMaintainer(name);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -275,6 +278,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -294,6 +298,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -305,8 +310,14 @@ public class RegistryRest {
             required = true) DataFormat dataformat) {
         if (registry != null) {
             registry.addDataFormat(dataformat);
-            return Response.ok().build();
+            try {
+                return Response.created(new URI("/dataformat/" + dataformat.getId())).build();
+            } catch (URISyntaxException e) {
+                LOGGER.error(e.getMessage());
+                return Response.serverError().build();
+            }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -320,6 +331,26 @@ public class RegistryRest {
             registry.deleteDataFormat(dataformat);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @PUT
+    @ApiOperation(value = "Update a DataFormat", notes = "Update an existing dataFormat in the registry")
+    public Response updateDataFormat(@ApiParam(value = "the DataFormat to update",
+            required = true) DataFormat dataFormat) {
+        if (registry != null) {
+            DataFormat origin = registry.getDataFormat(dataFormat.getId());
+            if (origin != null) {
+                registry.updateDataFormat(dataFormat);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -332,6 +363,7 @@ public class RegistryRest {
             registry.deleteDataFormat(id);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -351,6 +383,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -370,6 +403,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
