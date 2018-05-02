@@ -36,7 +36,7 @@ import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Maintainer;
 import org.apache.karaf.vineyard.common.Role;
 import org.apache.karaf.vineyard.common.Service;
-import org.apache.karaf.vineyard.common.ServiceOnEnvironment;
+import org.apache.karaf.vineyard.common.Registration;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -412,7 +412,7 @@ public class SqlRegistryService implements RegistryService {
         
         deleteExtraDataForService(connection, service);
         
-        for (ServiceOnEnvironment srvOnEnv : service.getEnvironments()) {
+        for (Registration srvOnEnv : service.getRegistrations()) {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(insertEnvironmentForServiceSql)) {
                 // set values
@@ -477,12 +477,12 @@ public class SqlRegistryService implements RegistryService {
                 ResultSet rs = selectStatement.executeQuery();
                 
                 if (rs.getFetchSize() > 0) {
-                    service.setEnvironments(new ArrayList<>());
+                    service.setRegistrations(new ArrayList<>());
                     if (rs.next()) {
                         Environment environment = selectEnvironment(connection, rs.getString("id"));
                         
                         if (environment != null) {
-                            ServiceOnEnvironment srvOnEnv = new ServiceOnEnvironment();
+                            Registration srvOnEnv = new Registration();
                             srvOnEnv.setEnvironment(environment);
                             srvOnEnv.setState(rs.getString("state"));
                             srvOnEnv.setVersion(rs.getString("version"));
@@ -491,7 +491,7 @@ public class SqlRegistryService implements RegistryService {
                             srvOnEnv.setMetadata(selectMetadata(connection, environment.getId(), id));
                             // TODO populate maintainers srvOnEnv.maintainers
                             // TODO populate policies srvOnEnv.policies
-                            service.getEnvironments().add(srvOnEnv);
+                            service.getRegistrations().add(srvOnEnv);
                         }
                     }
                 }

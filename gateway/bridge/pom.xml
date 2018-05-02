@@ -33,11 +33,20 @@
     <packaging>bundle</packaging>
     <name>Apache Karaf :: Vineyard :: Gateway :: Bridge</name>
 
+    <properties>
+        <camel.version>2.20.1</camel.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.karaf.vineyard.gateway</groupId>
             <artifactId>org.apache.karaf.vineyard.gateway.api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
         </dependency>
     </dependencies>
 

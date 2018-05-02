@@ -32,8 +32,8 @@ public class Service {
     /** Description of the service */
     private String description;
 
-    /** Description of this service on different environments */
-    private List<ServiceOnEnvironment> environments;
+    /** Description of this service on different registrations (registration) */
+    private List<Registration> registrations;
 
 
     public String getId() {
@@ -60,11 +60,11 @@ public class Service {
         this.description = description;
     }
 
-    public List<ServiceOnEnvironment> getEnvironments() {
-        return environments;
+    public List<Registration> getRegistrations() {
+        return registrations;
     }
 
-    public void setEnvironments(List<ServiceOnEnvironment> environments) {
-        this.environments = environments;
+    public void setRegistrations(List<Registration> registrations) {
+        this.registrations = registrations;
     }
 }

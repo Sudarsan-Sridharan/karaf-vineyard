@@ -22,7 +22,10 @@ import java.util.Map;
 /**
  * Describe a service on a given environment.
  */
-public class ServiceOnEnvironment {
+public class Registration {
+
+    /** The registration ID */
+    private String id;
 
     /** The service ID */
     private String serviceId;

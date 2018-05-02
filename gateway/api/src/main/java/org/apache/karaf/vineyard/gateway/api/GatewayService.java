@@ -16,8 +16,7 @@
  */
 package org.apache.karaf.vineyard.gateway.api;
 
-import org.apache.karaf.vineyard.common.Environment;
-import org.apache.karaf.vineyard.common.Service;
+import org.apache.karaf.vineyard.common.Registration;
 
 import java.util.Map;
 
@@ -27,33 +26,25 @@ import java.util.Map;
 public interface GatewayService {
 
     /**
-     * Register a service into the gateway.
+     * Register a service into the gateway. It registers the service for all environments.
      *
-     * @param service The service to register.
+     * @param registration The registration to perform.
      */
-    void register(Service service);
-
-    /**
-     * Register a service for a given environment.
-     *
-     * @param service The service to register.
-     * @param environment The environment for which we deploy the service.
-     */
-    void register(Service service, Environment environment);
+    void register(Registration registration);
 
     /**
      * Disable a service in the gateway. The service is not removed and the gateway
      * keeps the metrics for this service, however the service is not accessible for
      * the gateway clients.
      *
-     * @param id The service id.
+     * @param id The registration id.
      */
     void disable(String id);
 
     /**
      * Enable a service in the gateway.
      *
-     * @param id The service id.
+     * @param id The registration id.
      */
     void enable(String id);
 
@@ -61,14 +52,23 @@ public interface GatewayService {
      * Remove a service from the gateway. All data about the service, including metrics are
      * deleted as well.
      *
-     * @param id The service id.
+     * @param id The registration id.
      */
     void remove(String id);
 
     /**
-     * Retrieve the metrics for a given service (as number of call, average response time, ...).
+     * Get the status of the given registration.
      *
-     * @param id The service id.
+     * @param id The registration id.
+     * @return The current status.
+     */
+    String status(String id);
+
+    /**
+     * Retrieve the metrics for a given registration (as number of call, average response time,
+     * ...).
+     *
+     * @param id The registration id.
      * @return THe service metrics.
      */
     Map<String, Object> metrics(String id);
@@ -76,7 +76,7 @@ public interface GatewayService {
     /**
      * Add processing on the service, before calling the actual backend endpoint.
      *
-     * @param id The service id.
+     * @param id The registration id.
      * @param processing The processing definition.
      */
     void addProcessing(String id, Object processing);
