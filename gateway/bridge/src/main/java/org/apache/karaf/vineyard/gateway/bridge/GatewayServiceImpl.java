@@ -16,8 +16,11 @@
  */
 package org.apache.karaf.vineyard.gateway.bridge;
 
+import java.util.HashMap;
 import java.util.Map;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.DefaultRoute;
 import org.apache.karaf.vineyard.common.Registration;
 import org.apache.karaf.vineyard.gateway.api.GatewayService;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -35,28 +38,64 @@ public class GatewayServiceImpl implements GatewayService {
     camelContext.start();
   }
 
-  @Override public void register(Registration registration) {
-
+  @Override public void register(Registration registration) throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
+      @Override public void configure() throws Exception {
+        // TODO improve
+        from(registration.getGateway().getLocation())
+            .id(registration.getId())
+            .to(registration.getEndpoint().getLocation());
+      }
+    });
   }
 
-  @Override public void disable(String id) {
-
+  @Override public void disable(String id) throws Exception {
+    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
+    if (route == null) {
+      throw new IllegalStateException("Service registration not available in the gateway");
+    }
+    route.suspend();
   }
 
-  @Override public void enable(String id) {
-
+  @Override public void enable(String id) throws Exception {
+    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
+    if (route == null) {
+      throw new IllegalStateException("Service registration not available in the gateway");
+    }
+    if (route.isSuspended()) {
+      route.resume();
+    }
   }
 
-  @Override public void remove(String id) {
-
+  @Override public void remove(String id) throws Exception {
+    camelContext.removeRoute(id);
   }
 
   @Override public String status(String id) {
-    return null;
+    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
+    if (route == null) {
+      return "N/A";
+    }
+    if (route.isSuspended()) {
+      return "Disabled";
+    }
+    if (route.isStarted()) {
+      return "Enabled";
+    }
+    return route.getStatus().toString();
   }
 
   @Override public Map<String, Object> metrics(String id) {
-    return null;
+    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
+    Map<String, Object> metrics = new HashMap<>();
+    if (route != null) {
+      // uptime
+      metrics.put("uptimeMillis", route.getUptimeMillis());
+      metrics.put("uptime", route.getUptime());
+      // properties
+      metrics.putAll(route.getProperties());
+    }
+    return metrics;
   }
 
   @Override public void addProcessing(String id, Object processing) {

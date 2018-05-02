@@ -30,7 +30,7 @@ public interface GatewayService {
      *
      * @param registration The registration to perform.
      */
-    void register(Registration registration);
+    void register(Registration registration) throws Exception;
 
     /**
      * Disable a service in the gateway. The service is not removed and the gateway
@@ -39,14 +39,14 @@ public interface GatewayService {
      *
      * @param id The registration id.
      */
-    void disable(String id);
+    void disable(String id) throws Exception;
 
     /**
      * Enable a service in the gateway.
      *
      * @param id The registration id.
      */
-    void enable(String id);
+    void enable(String id) throws Exception;
 
     /**
      * Remove a service from the gateway. All data about the service, including metrics are
@@ -54,7 +54,7 @@ public interface GatewayService {
      *
      * @param id The registration id.
      */
-    void remove(String id);
+    void remove(String id) throws Exception;
 
     /**
      * Get the status of the given registration.

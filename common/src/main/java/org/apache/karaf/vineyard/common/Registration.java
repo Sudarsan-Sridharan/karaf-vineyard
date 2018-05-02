@@ -57,6 +57,14 @@ public class Registration {
     /** The throttling of this service (-1 means no limit) */
     private long throttling;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getServiceId() {
         return serviceId;
     }
