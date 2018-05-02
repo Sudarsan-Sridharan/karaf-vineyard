@@ -78,7 +78,6 @@
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.commands/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.rest/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.storage/${project.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.webconsole/${project.version}</bundle>
     </feature>
 
 </features>
