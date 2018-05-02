@@ -434,27 +434,27 @@ public class RegistryRest {
         }
     }
 
-    @Path("/endpoint/{location}")
+    @Path("/endpoint/{id}")
     @DELETE
     @ApiOperation(value = "Delete an Endpoint", notes = "Delete a endpoint to find in the registry")
-    public Response deleteEndpoint(@ApiParam(value = "id of the endpoint", required = true) @PathParam("location") String location) {
+    public Response deleteEndpoint(@ApiParam(value = "id of the endpoint", required = true) @PathParam("id") String id) {
         if (registry != null) {
-            registry.deleteEndpoint(location);
+            registry.deleteEndpoint(id);
             return Response.ok().build();
         } else {
             return Response.serverError().build();
         }
     }
 
-    @Path("/endpoint/{location}")
+    @Path("/endpoint/{id}")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Find one Endpoint", notes = "Endpoint name of the endpoint to find in the registry",
+    @ApiOperation(value = "Find one Endpoint", notes = "Endpoint id of the endpoint to find in the registry",
             response = Endpoint.class, responseContainer = "Endpoint")
-    public Response getEndpoint(@ApiParam(value = "name of the endpoint", required = true) @PathParam("location") String location) {
+    public Response getEndpoint(@ApiParam(value = "name of the endpoint", required = true) @PathParam("id") String id) {
 
         if (registry != null) {
-            Endpoint endpoint = registry.getEndpoint(location);
+            Endpoint endpoint = registry.getEndpoint(id);
             if (endpoint != null) {
                 return Response.ok(endpoint).build();
             } else {

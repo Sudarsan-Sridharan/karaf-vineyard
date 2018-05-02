@@ -21,6 +21,9 @@ package org.apache.karaf.vineyard.common;
  */
 public class Endpoint {
 
+    /** Data format unique ID */
+    private String id;
+
     /** Location (URI) of the service */
     private String location;
 
@@ -29,7 +32,15 @@ public class Endpoint {
 
     /** Output data format */
     private DataFormat output;
-    
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getLocation() {
         return location;
