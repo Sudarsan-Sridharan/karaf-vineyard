@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.gateway.api;
 
+import org.apache.karaf.vineyard.common.Environment;
 import org.apache.karaf.vineyard.common.Service;
 
 import java.util.Map;
@@ -31,6 +32,14 @@ public interface GatewayService {
      * @param service The service to register.
      */
     void register(Service service);
+
+    /**
+     * Register a service for a given environment.
+     *
+     * @param service The service to register.
+     * @param environment The environment for which we deploy the service.
+     */
+    void register(Service service, Environment environment);
 
     /**
      * Disable a service in the gateway. The service is not removed and the gateway

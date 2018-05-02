@@ -51,6 +51,9 @@ public class ServiceOnEnvironment {
     /** The policies definition of this service */
     private List<Policy> policies;
 
+    /** The throttling of this service (-1 means no limit) */
+    private long throttling;
+
     public String getServiceId() {
         return serviceId;
     }
@@ -121,6 +124,14 @@ public class ServiceOnEnvironment {
 
     public void setPolicies(List<Policy> policies) {
         this.policies = policies;
+    }
+
+    public long getThrottling() {
+        return throttling;
+    }
+
+    public void setThrottling(long throttling) {
+        this.throttling = throttling;
     }
 
 }
