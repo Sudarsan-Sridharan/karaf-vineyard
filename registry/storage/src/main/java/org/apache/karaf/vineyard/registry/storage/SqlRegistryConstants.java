@@ -16,21 +16,8 @@
  */
 package org.apache.karaf.vineyard.registry.storage;
 
-import org.apache.karaf.vineyard.common.*;
-import org.apache.karaf.vineyard.registry.api.RegistryService;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
-
 /**
- * Implementation of the service processing, storing the services into a database.
+ * SQL Queries Constants.
  */
 public final class SqlRegistryConstants {
 
@@ -103,7 +90,7 @@ public final class SqlRegistryConstants {
     public final static String selectRegistrationSql =
             "select e.id id_environment, r.id id, r.state state, r.version version, r.endpoint endpoint, r.gateway gateway, r.throttling throttling "
                     + "from " + DATABASE_SCHEMA + ".ENVIRONMENT e, " + DATABASE_SCHEMA + ".REGISTRATION r "
-                    + "where r.id_service = ?";
+                    + "where r.id = ?";
     public final static String selectMetadataRegistrationSql =
             "select metakey, metavalue "
                     + "from " + DATABASE_SCHEMA + ".X_REG_META "
@@ -162,6 +149,10 @@ public final class SqlRegistryConstants {
     public final static String updateServiceSql =
             "update " + DATABASE_SCHEMA + ".SERVICE "
                     + "set name = ?, description = ? "
+                    + "where id = ?";
+    public final static String updateRegistrationSql =
+            "update " + DATABASE_SCHEMA + ".REGISTRATION "
+                    + "set state = ?, version = ?, throttling = ? "
                     + "where id = ?";
 
     /** Delete queries */

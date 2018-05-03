@@ -18,11 +18,7 @@ package org.apache.karaf.vineyard.registry.api;
 
 import java.util.List;
 
-import org.apache.karaf.vineyard.common.DataFormat;
-import org.apache.karaf.vineyard.common.Endpoint;
-import org.apache.karaf.vineyard.common.Environment;
-import org.apache.karaf.vineyard.common.Maintainer;
-import org.apache.karaf.vineyard.common.Service;
+import org.apache.karaf.vineyard.common.*;
 
 /**
  * Describe the actions and processes that can be done around services and registry.
@@ -72,8 +68,8 @@ public interface RegistryService {
      */
     List<Service> getAll();
     // TODO add same method with filter
-    
-    
+
+
     /**
      * Add a new environment in the registry.
      *
@@ -229,7 +225,7 @@ public interface RegistryService {
     void deleteEndpoint(String location);
 
     /**
-     * Update an existing mainainer.
+     * Update an existing endpoint.
      *
      * @param endpoint The endpoint details.
      */
@@ -249,6 +245,52 @@ public interface RegistryService {
      * @return The list of endpoints.
      */
     List<Endpoint> getAllEndpoints();
+    // TODO add same method with filter
+    // TODO complete
+
+
+    /**
+     * Add a new registration in the registry.
+     *
+     * @param registration The registration to add.
+     */
+    void addRegistration(Registration registration);
+
+    /**
+     * Delete an existing registration from the registry.
+     *
+     * @param registration The registration to remove.
+     */
+    void deleteRegistration(Registration registration);
+
+    /**
+     * Delete an existing registration from the registry, identified by id.
+     *
+     * @param id The registration id.
+     */
+    void deleteRegistration(String id);
+
+    /**
+     * Update an existing registration.
+     *
+     * @param registration The registration details.
+     */
+    void updateRegistration(Registration registration);
+
+    /**
+     * Retrieve registration details.
+     *
+     * @param id The registration id.
+     * @return The registration description.
+     */
+    Registration getRegistration(String id);
+
+    /**
+     * Retrieve all the registrations used in the registry.
+     *
+     * @return The list of registrations.
+     */
+    List<Registration> getAllRegistrations();
     // TODO add same method with filter
     // TODO complete
 }

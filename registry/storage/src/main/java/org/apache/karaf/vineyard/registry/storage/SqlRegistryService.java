@@ -193,29 +193,29 @@ public class SqlRegistryService implements RegistryService {
     }
     
     private void deleteExtraDataForService(Connection connection, Service service) throws SQLException {
-        String sqlQuery = SqlRegistryConstants.deleteMetadataRegistrationSql + " where id_service = ?";
+        String sqlQuery = SqlRegistryConstants.deleteMetadataRegistrationSql;
         
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
             // where values
             deleteStatement.setString(1, service.getId());
             deleteStatement.executeUpdate();
             
-            LOGGER.debug("Service updated with id = {}", service.getId());
+            LOGGER.debug("Service extra data updated with id = {}", service.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
+            LOGGER.error("Can't udpate service extra data with id {}", service.getName(), exception);
             throw exception;
         }
         
-        sqlQuery = SqlRegistryConstants.deleteRegistrationSql + " where id = ?";
+        sqlQuery = SqlRegistryConstants.deleteRegistrationSql;
         
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
             // where values
             deleteStatement.setString(1, service.getId());
             deleteStatement.executeUpdate();
             
-            LOGGER.debug("Service updated with id = {}", service.getId());
+            LOGGER.debug("Service updated registration with id = {}", service.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate service with name {}", service.getName(), exception);
+            LOGGER.error("Can't udpate service registration with id {}", service.getName(), exception);
             throw exception;
         }
     }
@@ -1135,5 +1135,172 @@ public class SqlRegistryService implements RegistryService {
         return endpoints;
     }
 
+    @Override
+    public void addRegistration(Registration registration) {
+        try (Connection connection = dataSource.getConnection()) {
 
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+
+            try (PreparedStatement insertStatement =
+                         connection.prepareStatement(SqlRegistryConstants.insertRegistrationSql)) {
+                // set values
+                insertStatement.setString(1, registration.getServiceId());
+                insertStatement.setString(2, registration.getEnvironment().getId());
+                insertStatement.setString(3, registration.getState());
+                insertStatement.setString(4, registration.getVersion());
+                insertStatement.setString(5, registration.getEndpoint().getId());
+                insertStatement.setString(6, registration.getGateway().getId());
+                insertStatement.setLong(7, registration.getThrottling());
+                insertStatement.executeUpdate();
+                //TODO add metadata
+                //TODO add policies
+
+                connection.commit();
+                LOGGER.debug("Registration created with id = {}", registration.getId());
+
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't insert registration with id {}", registration.getId(), exception);
+            }
+
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public void deleteRegistration(Registration registration) {
+        deleteRegistration(registration.getId());
+    }
+
+    @Override
+    public void deleteRegistration(String id) {
+        try (Connection connection = dataSource.getConnection()) {
+
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+
+            String sqlQuery = SqlRegistryConstants.deleteRegistrationSql;
+
+            try (PreparedStatement deleteStatement =
+                         connection.prepareStatement(sqlQuery)) {
+                // where values
+                deleteStatement.setString(1, id);
+                deleteStatement.executeUpdate();
+
+                LOGGER.debug("Registration deleted with id = {}", id);
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't delete registration with id {}", id, exception);
+                throw exception;
+            }
+
+            connection.commit();
+
+        } catch (Exception exception) {
+            LOGGER.error("Error when deleting registration", exception);
+        }
+    }
+
+    @Override
+    public void updateRegistration(Registration registration) {
+        try (Connection connection = dataSource.getConnection()) {
+
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+            }
+
+            try (PreparedStatement updateStatement =
+                         connection.prepareStatement(SqlRegistryConstants.updateRegistrationSql)) {
+                // set values
+                updateStatement.setString(1, registration.getState());
+                updateStatement.setString(2, registration.getVersion());
+                updateStatement.setLong(3, registration.getThrottling());
+                // where values
+                updateStatement.setString(4, registration.getId());
+                updateStatement.executeUpdate();
+                connection.commit();
+                LOGGER.debug("Registration updated with id = {}", registration.getId());
+            } catch (SQLException exception) {
+                connection.rollback();
+                LOGGER.error("Can't udpate registration with id {}", registration.getId(), exception);
+            }
+
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+    }
+
+    @Override
+    public Registration getRegistration(String id) {
+        try (Connection connection = dataSource.getConnection()) {
+
+            String sqlQuery = SqlRegistryConstants.selectRegistrationSql;
+
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
+                selectStatement.setString(1, id);
+                ResultSet rs = selectStatement.executeQuery();
+
+                if (rs.next()) {
+                    Registration registration = new Registration();
+                    registration.setId(id);
+                    registration.setServiceId(rs.getString("id_service"));
+                    registration.setEnvironment(getEnvironment(rs.getString("id_environment")));
+                    registration.setState(rs.getString("state"));
+                    registration.setVersion(rs.getString("version"));
+                    registration.setEndpoint(getEndpoint(rs.getString("endpoint")));
+                    registration.setGateway(getEndpoint(rs.getString("gateway")));
+                    registration.setThrottling(rs.getLong("throttling"));
+                    //TODO get all metadata
+                    //TODO get all policies
+                    //TODO get all maintainers
+                    return registration;
+                }
+
+            } catch (SQLException exception) {
+                LOGGER.error("Can't find registration with id {}", id, exception);
+            }
+
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Registration> getAllRegistrations() {
+        List<Registration> registrations = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            try (PreparedStatement selectStatement = connection.prepareStatement(SqlRegistryConstants.selectRegistrationSql)) {
+                ResultSet rs = selectStatement.executeQuery();
+
+                while (rs.next()) {
+                    Registration registration = new Registration();
+                    registration.setId(rs.getString("id"));
+                    registration.setServiceId(rs.getString("id_service"));
+                    registration.setEnvironment(getEnvironment(rs.getString("id_environment")));
+                    registration.setState(rs.getString("state"));
+                    registration.setVersion(rs.getString("version"));
+                    registration.setEndpoint(getEndpoint(rs.getString("endpoint")));
+                    registration.setGateway(getEndpoint(rs.getString("gateway")));
+                    registration.setThrottling(rs.getLong("throttling"));
+                    //TODO get all metadata
+                    //TODO get all policies
+                    //TODO get all maintainers
+                }
+
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the registrations", exception);
+            }
+
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return registrations;
+    }
 }

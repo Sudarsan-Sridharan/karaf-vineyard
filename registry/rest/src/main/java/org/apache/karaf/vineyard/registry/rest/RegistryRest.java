@@ -45,9 +45,10 @@ public class RegistryRest {
     @POST
     public Response addService(Service service) {
         if (registry != null) {
-           registry.add(service);
-           return Response.ok().build();
+            registry.add(service);
+            return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -56,9 +57,10 @@ public class RegistryRest {
     @DELETE
     public Response deleteService(Service service) {
         if (registry != null) {
-            registry.delete(service);
-            return Response.ok().build();
+             registry.delete(service);
+             return Response.ok().build();
          } else {
+             LOGGER.error("Registry service is null !");
              return Response.serverError().build();
          }
     }
@@ -67,9 +69,10 @@ public class RegistryRest {
     @DELETE
     public Response deleteService(@PathParam("id") String id) {
         if (registry != null) {
-            registry.delete(id);
-            return Response.ok().build();
+             registry.delete(id);
+             return Response.ok().build();
          } else {
+             LOGGER.error("Registry service is null !");
              return Response.serverError().build();
          }
     }
@@ -87,6 +90,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -104,6 +108,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -115,6 +120,7 @@ public class RegistryRest {
             registry.addEnvironment(environment);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -126,6 +132,7 @@ public class RegistryRest {
             registry.deleteEnvironment(environment);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -137,6 +144,7 @@ public class RegistryRest {
             registry.delete(id);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -154,6 +162,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -171,6 +180,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -370,6 +380,7 @@ public class RegistryRest {
             registry.addEndpoint(endpoint);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -381,6 +392,7 @@ public class RegistryRest {
             registry.deleteEndpoint(endpoint);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -392,6 +404,7 @@ public class RegistryRest {
             registry.deleteEndpoint(id);
             return Response.ok().build();
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -409,6 +422,7 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
@@ -426,6 +440,101 @@ public class RegistryRest {
                 return Response.noContent().build();
             }
         } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/registration")
+    @POST
+    public Response addRegistration(Registration registration) {
+        if (registry != null) {
+            registry.addRegistration(registration);
+            try {
+                return Response.created(new URI("/registration/" + registration.getId())).build();
+            } catch (URISyntaxException e) {
+                LOGGER.error(e.getMessage());
+                return Response.serverError().build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/registration")
+    @DELETE
+    public Response deleteRegistration(Registration registration) {
+        if (registry != null) {
+            registry.deleteRegistration(registration);
+            return Response.ok().build();
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/registration")
+    @PUT
+    public Response updateRegistration(Registration registration) {
+        if (registry != null) {
+            Registration origin = registry.getRegistration(registration.getId());
+            if (origin != null) {
+                registry.updateRegistration(registration);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/registration/{id}")
+    @DELETE
+    public Response deleteRegistration(@PathParam("id") String id) {
+        if (registry != null) {
+            registry.deleteRegistration(id);
+            return Response.ok().build();
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/registration/{id}")
+    @GET
+    @Produces("application/json")
+    public Response getRegistration(@PathParam("id") String id) {
+
+        if (registry != null) {
+            Registration registration = registry.getRegistration(id);
+            if (registration != null) {
+                return Response.ok(registration).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/registration")
+    @GET
+    @Produces("application/json")
+    public Response listRegistrations() {
+
+        if (registry != null) {
+            List<Registration> registrations = registry.getAllRegistrations();
+            if (registrations != null) {
+                return Response.ok(registrations).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
             return Response.serverError().build();
         }
     }
