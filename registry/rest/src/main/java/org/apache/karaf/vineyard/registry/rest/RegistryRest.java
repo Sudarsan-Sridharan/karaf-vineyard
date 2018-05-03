@@ -16,10 +16,6 @@
  */
 package org.apache.karaf.vineyard.registry.rest;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -35,7 +31,6 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 @Consumes({"application/json"})
 @Produces({"application/json"})
-@Api(tags = {"registry rest service"})
 public class RegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(RegistryRest.class);
@@ -48,9 +43,7 @@ public class RegistryRest {
     
     @Path("/service")
     @POST
-    @ApiOperation(value = "Create a Service", notes = "Create a new service in the registry")
-    public Response addService(@ApiParam(value = "the Service to create",
-            required = true) Service service) {
+    public Response addService(Service service) {
         if (registry != null) {
            registry.add(service);
            return Response.ok().build();
@@ -61,9 +54,7 @@ public class RegistryRest {
 
     @Path("/service")
     @DELETE
-    @ApiOperation(value = "Delete a Service", notes = "Delete a service to find in the registry")
-    public Response deleteService(@ApiParam(value = "the Service to delete",
-            required = true) Service service) {
+    public Response deleteService(Service service) {
         if (registry != null) {
             registry.delete(service);
             return Response.ok().build();
@@ -74,8 +65,7 @@ public class RegistryRest {
     
     @Path("/service/{id}")
     @DELETE
-    @ApiOperation(value = "Delete a Service", notes = "Delete a service to find in the registry")
-    public Response deleteService(@ApiParam(value = "id of the service", required = true) @PathParam("id") String id) {
+    public Response deleteService(@PathParam("id") String id) {
         if (registry != null) {
             registry.delete(id);
             return Response.ok().build();
@@ -87,9 +77,7 @@ public class RegistryRest {
     @Path("/service/{id}")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Find one Service", notes = "Service id of the service to find in the registry", 
-        response = Service.class, responseContainer = "Service")
-    public Response getService(@ApiParam(value = "id of the service", required = true) @PathParam("id") String id) {
+    public Response getService(@PathParam("id") String id) {
         
         if (registry != null) {
             Service service = registry.get(id);
@@ -106,8 +94,6 @@ public class RegistryRest {
     @Path("/service")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Retrieve all the services in the registry", notes = "n/a",
-            response = Service.class, responseContainer = "Service")
     public Response listServices() {
         
         if (registry != null) {
@@ -124,9 +110,7 @@ public class RegistryRest {
 
     @Path("/environment")
     @POST
-    @ApiOperation(value = "Create an Environment", notes = "Create a new environment in the registry")
-    public Response addEnvironment(@ApiParam(value = "the Environment to create",
-            required = true) Environment environment) {
+    public Response addEnvironment(Environment environment) {
         if (registry != null) {
             registry.addEnvironment(environment);
             return Response.ok().build();
@@ -137,9 +121,7 @@ public class RegistryRest {
 
     @Path("/environment")
     @DELETE
-    @ApiOperation(value = "Delete an Environment", notes = "Delete an environment to find in the registry")
-    public Response deleteEnvironment(@ApiParam(value = "the Environment to delete",
-            required = true) Environment environment) {
+    public Response deleteEnvironment(Environment environment) {
         if (registry != null) {
             registry.deleteEnvironment(environment);
             return Response.ok().build();
@@ -150,8 +132,7 @@ public class RegistryRest {
 
     @Path("/environment/{id}")
     @DELETE
-    @ApiOperation(value = "Delete an Environment", notes = "Delete an environment to find in the registry")
-    public Response deleteEnvironment(@ApiParam(value = "id of the environment", required = true) @PathParam("id") String id) {
+    public Response deleteEnvironment(@PathParam("id") String id) {
         if (registry != null) {
             registry.delete(id);
             return Response.ok().build();
@@ -163,9 +144,7 @@ public class RegistryRest {
     @Path("/environment/{id}")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Find one Environment", notes = "Environment id of the environment to find in the registry",
-            response = Environment.class, responseContainer = "Environment")
-    public Response getEnvironment(@ApiParam(value = "id of the environment", required = true) @PathParam("id") String id) {
+    public Response getEnvironment(@PathParam("id") String id) {
 
         if (registry != null) {
             Environment environment = registry.getEnvironment(id);
@@ -182,8 +161,6 @@ public class RegistryRest {
     @Path("/environment")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Retrieve all the environment in the registry", notes = "n/a",
-            response = Environment.class, responseContainer = "Environment")
     public Response listEnvironments() {
 
         if (registry != null) {
@@ -200,9 +177,7 @@ public class RegistryRest {
 
     @Path("/maintainer")
     @POST
-    @ApiOperation(value = "Create a Maintainer", notes = "Create a new maintainer in the registry")
-    public Response addMaintainer(@ApiParam(value = "the Maintainer to create",
-            required = true) Maintainer maintainer) {
+    public Response addMaintainer(Maintainer maintainer) {
         if (registry != null) {
             registry.addMaintainer(maintainer);
             try {
@@ -219,9 +194,7 @@ public class RegistryRest {
 
     @Path("/maintainer")
     @DELETE
-    @ApiOperation(value = "Delete an Maintainer", notes = "Delete a maintainer to find in the registry")
-    public Response deleteMaintainer(@ApiParam(value = "the Maintainer to delete",
-            required = true) Maintainer maintainer) {
+    public Response deleteMaintainer(Maintainer maintainer) {
         if (registry != null) {
             registry.deleteMaintainer(maintainer);
             return Response.ok().build();
@@ -233,9 +206,7 @@ public class RegistryRest {
 
     @Path("/maintainer")
     @PUT
-    @ApiOperation(value = "Update a Maintainer", notes = "Update an existing maintainer in the registry")
-    public Response updateMaintainer(@ApiParam(value = "the Maintainer to update",
-            required = true) Maintainer maintainer) {
+    public Response updateMaintainer(Maintainer maintainer) {
         if (registry != null) {
             Maintainer origin = registry.getMaintainer(maintainer.getName());
             if (origin != null) {
@@ -252,8 +223,7 @@ public class RegistryRest {
 
     @Path("/maintainer/{name}")
     @DELETE
-    @ApiOperation(value = "Delete an Maintainer", notes = "Delete a maintainer to find in the registry")
-    public Response deleteMaintainer(@ApiParam(value = "name of the maintainer", required = true) @PathParam("name") String name) {
+    public Response deleteMaintainer(@PathParam("name") String name) {
         if (registry != null) {
             registry.deleteMaintainer(name);
             return Response.ok().build();
@@ -266,9 +236,7 @@ public class RegistryRest {
     @Path("/maintainer/{name}")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Find one Maintainer", notes = "Maintainer name of the maintainer to find in the registry",
-            response = Maintainer.class, responseContainer = "Maintainer")
-    public Response getMaintainer(@ApiParam(value = "name of the maintainer", required = true) @PathParam("name") String name) {
+    public Response getMaintainer(@PathParam("name") String name) {
 
         if (registry != null) {
             Maintainer maintainer = registry.getMaintainer(name);
@@ -286,8 +254,6 @@ public class RegistryRest {
     @Path("/maintainer")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Retrieve all the maintainer in the registry", notes = "n/a",
-            response = Maintainer.class, responseContainer = "Maintainer")
     public Response listMaintainers() {
 
         if (registry != null) {
@@ -305,9 +271,7 @@ public class RegistryRest {
 
     @Path("/dataformat")
     @POST
-    @ApiOperation(value = "Create a DataFormat", notes = "Create a new dataformat in the registry")
-    public Response addDataFormat(@ApiParam(value = "the DataFormat to create",
-            required = true) DataFormat dataformat) {
+    public Response addDataFormat(DataFormat dataformat) {
         if (registry != null) {
             registry.addDataFormat(dataformat);
             try {
@@ -324,9 +288,7 @@ public class RegistryRest {
 
     @Path("/dataformat")
     @DELETE
-    @ApiOperation(value = "Delete an DataFormat", notes = "Delete a dataformat to find in the registry")
-    public Response deleteDataFormat(@ApiParam(value = "the DataFormat to delete",
-            required = true) DataFormat dataformat) {
+    public Response deleteDataFormat(DataFormat dataformat) {
         if (registry != null) {
             registry.deleteDataFormat(dataformat);
             return Response.ok().build();
@@ -338,9 +300,7 @@ public class RegistryRest {
 
     @Path("/dataformat")
     @PUT
-    @ApiOperation(value = "Update a DataFormat", notes = "Update an existing dataFormat in the registry")
-    public Response updateDataFormat(@ApiParam(value = "the DataFormat to update",
-            required = true) DataFormat dataFormat) {
+    public Response updateDataFormat(DataFormat dataFormat) {
         if (registry != null) {
             DataFormat origin = registry.getDataFormat(dataFormat.getId());
             if (origin != null) {
@@ -357,8 +317,7 @@ public class RegistryRest {
 
     @Path("/dataformat/{id}")
     @DELETE
-    @ApiOperation(value = "Delete an DataFormat", notes = "Delete a dataformat to find in the registry")
-    public Response deleteDataFormat(@ApiParam(value = "id of the dataformat", required = true) @PathParam("id") String id) {
+    public Response deleteDataFormat(@PathParam("id") String id) {
         if (registry != null) {
             registry.deleteDataFormat(id);
             return Response.ok().build();
@@ -371,9 +330,7 @@ public class RegistryRest {
     @Path("/dataformat/{id}")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Find one DataFormat", notes = "DataFormat name of the dataformat to find in the registry",
-            response = DataFormat.class, responseContainer = "DataFormat")
-    public Response getDataFormat(@ApiParam(value = "name of the dataformat", required = true) @PathParam("id") String id) {
+    public Response getDataFormat(@PathParam("id") String id) {
 
         if (registry != null) {
             DataFormat dataformat = registry.getDataFormat(id);
@@ -391,8 +348,6 @@ public class RegistryRest {
     @Path("/dataformat")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Retrieve all the dataformat in the registry", notes = "n/a",
-            response = DataFormat.class, responseContainer = "DataFormat")
     public Response listDataFormats() {
 
         if (registry != null) {
@@ -410,9 +365,7 @@ public class RegistryRest {
 
     @Path("/endpoint")
     @POST
-    @ApiOperation(value = "Create a Endpoint", notes = "Create a new endpoint in the registry")
-    public Response addEndpoint(@ApiParam(value = "the Endpoint to create",
-            required = true) Endpoint endpoint) {
+    public Response addEndpoint(Endpoint endpoint) {
         if (registry != null) {
             registry.addEndpoint(endpoint);
             return Response.ok().build();
@@ -423,9 +376,7 @@ public class RegistryRest {
 
     @Path("/endpoint")
     @DELETE
-    @ApiOperation(value = "Delete an Endpoint", notes = "Delete a endpoint to find in the registry")
-    public Response deleteEndpoint(@ApiParam(value = "the Endpoint to delete",
-            required = true) Endpoint endpoint) {
+    public Response deleteEndpoint(Endpoint endpoint) {
         if (registry != null) {
             registry.deleteEndpoint(endpoint);
             return Response.ok().build();
@@ -436,8 +387,7 @@ public class RegistryRest {
 
     @Path("/endpoint/{id}")
     @DELETE
-    @ApiOperation(value = "Delete an Endpoint", notes = "Delete a endpoint to find in the registry")
-    public Response deleteEndpoint(@ApiParam(value = "id of the endpoint", required = true) @PathParam("id") String id) {
+    public Response deleteEndpoint(@PathParam("id") String id) {
         if (registry != null) {
             registry.deleteEndpoint(id);
             return Response.ok().build();
@@ -449,9 +399,7 @@ public class RegistryRest {
     @Path("/endpoint/{id}")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Find one Endpoint", notes = "Endpoint id of the endpoint to find in the registry",
-            response = Endpoint.class, responseContainer = "Endpoint")
-    public Response getEndpoint(@ApiParam(value = "name of the endpoint", required = true) @PathParam("id") String id) {
+    public Response getEndpoint(@PathParam("id") String id) {
 
         if (registry != null) {
             Endpoint endpoint = registry.getEndpoint(id);
@@ -468,8 +416,6 @@ public class RegistryRest {
     @Path("/endpoint")
     @GET
     @Produces("application/json")
-    @ApiOperation(value = "Retrieve all the endpoint in the registry", notes = "n/a",
-            response = Endpoint.class, responseContainer = "Endpoint")
     public Response listEndpoints() {
 
         if (registry != null) {
