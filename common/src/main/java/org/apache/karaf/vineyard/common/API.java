@@ -16,25 +16,22 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.List;
-
 /**
- * Describe a service registered in Karaf Vineyard.
+ * This is a API abstract view, containing attributes common to any concrete API in Vineyard.
  */
-public class Service {
+public abstract class API {
 
-    /** Unique service ID */
+    /** Unique API ID */
     private String id;
 
-    /** Human readable name/alias for the service */
+    /** Name of the API */
     private String name;
 
-    /** Description of the service */
+    /** Open text describing the API */
     private String description;
 
-    /** Description of this service on different registrations (registration) */
-    private List<Registration> registrations;
-
+    /** The API maintener */
+    private Maintainer maintainer;
 
     public String getId() {
         return id;
@@ -60,11 +57,11 @@ public class Service {
         this.description = description;
     }
 
-    public List<Registration> getRegistrations() {
-        return registrations;
+    public Maintainer getMaintainer() {
+        return maintainer;
     }
 
-    public void setRegistrations(List<Registration> registrations) {
-        this.registrations = registrations;
+    public void setMaintainer(Maintainer maintainer) {
+        this.maintainer = maintainer;
     }
 }

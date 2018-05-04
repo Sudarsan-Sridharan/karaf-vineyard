@@ -16,8 +16,17 @@
  */
 package org.apache.karaf.vineyard.common;
 
+import java.util.Collection;
+
 /**
- * Generic policy container. It's extended by specific policy type (like security, QoS, ...).
+ * Concrete REST API.
  */
-public abstract class Policy {
+public class RestAPI extends API {
+
+    /** Base context of this Rest API */
+    private String context;
+
+    /** List of resources in the Rest API */
+    private Collection<RestAPIResource> resources;
+
 }
