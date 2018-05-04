@@ -16,9 +16,6 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.Collection;
-import java.util.Map;
-
 public class JmsAPI extends API {
 
     /** The identifier of the connection factory (JNDI name) */
@@ -30,19 +27,6 @@ public class JmsAPI extends API {
     /** The JMS destination type */
     private String type;
 
-    /** The resource operation data format (json, xml, ...) */
-    private DataFormat format;
-
-    private Environment environment;
-
-    private long throttling;
-
-    private Collection<Policy> policies;
-
-    private Map<String, String> metadata;
-
-    /** The resource endpoint location */
-    private String endpoint;
 
     public String getConnectionFactory() {
         return connectionFactory;
@@ -68,51 +52,4 @@ public class JmsAPI extends API {
         this.type = type;
     }
 
-    public DataFormat getFormat() {
-        return format;
-    }
-
-    public void setFormat(DataFormat format) {
-        this.format = format;
-    }
-
-    public Environment getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
-    public long getThrottling() {
-        return throttling;
-    }
-
-    public void setThrottling(long throttling) {
-        this.throttling = throttling;
-    }
-
-    public Collection<Policy> getPolicies() {
-        return policies;
-    }
-
-    public void setPolicies(Collection<Policy> policies) {
-        this.policies = policies;
-    }
-
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, String> metadata) {
-        this.metadata = metadata;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
 }
