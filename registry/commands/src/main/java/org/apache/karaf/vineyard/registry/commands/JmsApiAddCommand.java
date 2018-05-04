@@ -18,39 +18,32 @@ package org.apache.karaf.vineyard.registry.commands;
 
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.vineyard.common.JmsAPI;
+import org.apache.karaf.vineyard.common.RestAPI;
 
 /**
- * Command to list all Registry services
+ * Command to list all Registry jmsapi
  */
-@Command(scope = "vineyard", name = "service-update", description = "Update a service in the Registry")
+@Command(scope = "vineyard", name = "jmsapi-add", description = "Add a jmsapi in the Registry")
 @Service
-public class ServiceUpdateCommand extends VineyardRegistryCommandSupport {
+public class JmsApiAddCommand extends VineyardRegistryCommandSupport {
     
-    @Argument(index = 0, name = "id", description = "Id of the service", required = true, multiValued = false)
-    private String id;
-    
-    @Option(name = "-n", aliases = { "--name" }, description = "Shortcut name of the service", required = false, multiValued = false)
+    @Argument(index = 0, name = "name", description = "Shortcut name of the jmsapi", required = true, multiValued = false)
     private String name;
     
-    @Option(name = "-d", aliases = { "--description" }, description = "Description of the service", required = false, multiValued = false)
+    @Argument(index = 1, name = "description", description = "Description of the jmsapi", required = false, multiValued = false)
     private String description;
-    
+
     protected Object doExecute() throws Exception {
         
-        org.apache.karaf.vineyard.common.Service service = getRegistryService().get(id);
+        JmsAPI api = new JmsAPI();
+        api.setName(name);
+        api.setDescription(description);
         
-        if (service != null) {
-            if (name != null) {
-                service.setName(name);
-            }
-            if (description != null) {
-                service.setDescription(description);
-            }
-            getRegistryService().update(service);
-        }
+        getRegistryService().addJmsAPI(api);
 
         return null;
     }
+
 }

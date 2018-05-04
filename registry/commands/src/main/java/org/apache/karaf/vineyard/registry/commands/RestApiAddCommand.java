@@ -19,20 +19,30 @@ package org.apache.karaf.vineyard.registry.commands;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.vineyard.common.RestAPI;
 
 /**
- * Command to list all Registry services
+ * Command to list all Registry restapi
  */
-@Command(scope = "vineyard", name = "service-delete", description = "Delete a service in the Registry")
+@Command(scope = "vineyard", name = "restapi-add", description = "Add a restapi in the Registry")
 @Service
-public class ServiceDeleteCommand extends VineyardRegistryCommandSupport {
+public class RestApiAddCommand extends VineyardRegistryCommandSupport {
     
-    @Argument(index = 0, name = "id", description = "Id of the service", required = true, multiValued = false)
-    private String id;
+    @Argument(index = 0, name = "name", description = "Shortcut name of the restapi", required = true, multiValued = false)
+    private String name;
     
+    @Argument(index = 1, name = "description", description = "Description of the restapi", required = false, multiValued = false)
+    private String description;
+
     protected Object doExecute() throws Exception {
         
-        getRegistryService().delete(id);
+        RestAPI api = new RestAPI();
+        api.setName(name);
+        api.setDescription(description);
+        
+        getRegistryService().addRestAPI(api);
+
         return null;
     }
+
 }

@@ -21,25 +21,26 @@ import java.util.List;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
+import org.apache.karaf.vineyard.common.RestAPI;
 
 /**
- * Command to list all Registry services
+ * Command to list all Registry restapi
  */
-@Command(scope = "vineyard", name = "services", description = "List all Registry services")
+@Command(scope = "vineyard", name = "restapi", description = "List all Registry restapi")
 @Service
-public class ServicesListCommand extends VineyardRegistryCommandSupport {
+public class RestApiListCommand extends VineyardRegistryCommandSupport {
 
     protected Object doExecute() throws Exception {
-        List<org.apache.karaf.vineyard.common.Service> services = 
-                getRegistryService().getAll();
+        List<RestAPI> apis =
+                getRegistryService().getAllRestAPI();
 
         ShellTable table = new ShellTable();
         table.column("Id");
         table.column("Name");
         table.column("Description");
         // TODO add extra content
-        for (org.apache.karaf.vineyard.common.Service service : services) {
-            table.addRow().addContent(service.getId(), service.getName(), service.getDescription());
+        for (RestAPI api : apis) {
+            table.addRow().addContent(api.getId(), api.getName(), api.getDescription());
         }
 
         table.print(System.out);
