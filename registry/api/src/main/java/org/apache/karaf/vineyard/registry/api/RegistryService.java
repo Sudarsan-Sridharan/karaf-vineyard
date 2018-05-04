@@ -291,6 +291,15 @@ public interface RegistryService {
      * @return The list of registrations.
      */
     List<Registration> getAllRegistrations();
+
+    /**
+     * Retrieve all the registrations for a service used in the registry.
+     *
+     * @param service The service of the registrations.
+     * @return The list of registrations.
+     */
+    List<Registration> getAllRegistrations(Service service);
+
     // TODO add same method with filter
     // TODO complete
 }

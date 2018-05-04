@@ -88,9 +88,8 @@ public final class SqlRegistryConstants {
                     + "where x.name_maintainer = m.name "
                     + "and x.id_environment = ?";
     public final static String selectRegistrationSql =
-            "select e.id id_environment, r.id id, r.state state, r.version version, r.endpoint endpoint, r.gateway gateway, r.throttling throttling "
-                    + "from " + DATABASE_SCHEMA + ".ENVIRONMENT e, " + DATABASE_SCHEMA + ".REGISTRATION r "
-                    + "where r.id = ?";
+            "select id, id_environment, id_service, state, version, endpoint, gateway, throttling "
+                    + "from " + DATABASE_SCHEMA + ".REGISTRATION ";
     public final static String selectMetadataRegistrationSql =
             "select metakey, metavalue "
                     + "from " + DATABASE_SCHEMA + ".X_REG_META "
@@ -178,5 +177,5 @@ public final class SqlRegistryConstants {
             "delete from " + DATABASE_SCHEMA + ".X_ENV_MNT ";
     public final static String deleteMetadataRegistrationSql =
             "delete from " + DATABASE_SCHEMA + ".X_REG_META "
-                    + "where id = ?";
+                    + "where id_registration = ?";
 }

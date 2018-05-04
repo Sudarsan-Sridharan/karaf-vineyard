@@ -193,6 +193,9 @@ public class SqlRegistryService implements RegistryService {
     }
     
     private void deleteExtraDataForService(Connection connection, Service service) throws SQLException {
+
+        getAllRegistrations(service);
+
         String sqlQuery = SqlRegistryConstants.deleteMetadataRegistrationSql;
         
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
@@ -313,35 +316,7 @@ public class SqlRegistryService implements RegistryService {
                 LOGGER.error("Can't find service with id {}", id, exception);
             }
             
-            sqlQuery = SqlRegistryConstants.selectRegistrationSql;
-            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
-                selectStatement.setString(1, id);
-                ResultSet rs = selectStatement.executeQuery();
-                
-                if (rs.getFetchSize() > 0) {
-                    service.setRegistrations(new ArrayList<>());
-                    if (rs.next()) {
-                        Environment environment = selectEnvironment(connection, rs.getString("id"));
-                        
-                        if (environment != null) {
-                            Registration registration = new Registration();
-                            registration.setEnvironment(environment);
-                            registration.setState(rs.getString("state"));
-                            registration.setVersion(rs.getString("version"));
-                            registration.setEndpoint(selectEndpoint(connection, rs.getString("endpoint")));
-                            registration.setGateway(selectEndpoint(connection, rs.getString("gateway")));
-                            registration.setThrottling(rs.getLong("throttling"));
-                            registration.setMetadata(selectMetadata(connection, registration.getId()));
-                            // TODO populate maintainers registration.maintainers
-                            // TODO populate policies registration.policies
-                            service.getRegistrations().add(registration);
-                        }
-                    }
-                }
-        
-            } catch (SQLException exception) {
-                LOGGER.error("Can't find service with id {}", id, exception);
-            }
+            service.setRegistrations(getAllRegistrations(service));
             
         } catch (Exception exception) {
             LOGGER.error("Error getting connection ", exception);
@@ -1277,6 +1252,43 @@ public class SqlRegistryService implements RegistryService {
         try (Connection connection = dataSource.getConnection()) {
 
             try (PreparedStatement selectStatement = connection.prepareStatement(SqlRegistryConstants.selectRegistrationSql)) {
+                ResultSet rs = selectStatement.executeQuery();
+
+                while (rs.next()) {
+                    Registration registration = new Registration();
+                    registration.setId(rs.getString("id"));
+                    registration.setServiceId(rs.getString("id_service"));
+                    registration.setEnvironment(getEnvironment(rs.getString("id_environment")));
+                    registration.setState(rs.getString("state"));
+                    registration.setVersion(rs.getString("version"));
+                    registration.setEndpoint(getEndpoint(rs.getString("endpoint")));
+                    registration.setGateway(getEndpoint(rs.getString("gateway")));
+                    registration.setThrottling(rs.getLong("throttling"));
+                    //TODO get all metadata
+                    //TODO get all policies
+                    //TODO get all maintainers
+                }
+
+            } catch (SQLException exception) {
+                LOGGER.error("Can't retreive the registrations", exception);
+            }
+
+        } catch (Exception exception) {
+            LOGGER.error("Error getting connection ", exception);
+        }
+        return registrations;
+    }
+
+    @Override
+    public List<Registration> getAllRegistrations(Service service) {
+        List<Registration> registrations = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+
+            String sqlQuery = SqlRegistryConstants.selectRegistrationSql + " where id_service = ?";
+
+            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
+                selectStatement.setString(1, service.getId());
                 ResultSet rs = selectStatement.executeQuery();
 
                 while (rs.next()) {

@@ -31,7 +31,7 @@ import java.net.URL;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class VineyardFeaturesTest extends VineyardTestSupport {
+public class VineyardRegistryCommandTest extends VineyardTestSupport {
 
     private static final RolePrincipal[] ADMIN_ROLES = {
             new RolePrincipal("admin"),
@@ -39,23 +39,23 @@ public class VineyardFeaturesTest extends VineyardTestSupport {
     };
 
     @Test
-    public void testVineyardRegistryFeatureInstall() throws InterruptedException {
+    public void testVineyardRegistryStorage() throws InterruptedException {
         installVineyard();
         Thread.sleep(DEFAULT_TIMEOUT);
         System.out.println(executeCommand("feature:install vineyard-registry", ADMIN_ROLES));
         Thread.sleep(DEFAULT_TIMEOUT);
 
-        String bundleList = executeCommand("bundle:list");
-        System.out.println(bundleList);
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Common"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: API"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Commands"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: REST"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Storage"));
+        System.out.println(executeCommand("vineyard:services", ADMIN_ROLES));
+        System.out.println(executeCommand("vineyard:service-add my-service service-for-test", ADMIN_ROLES));
 
-        String jdbcList = executeCommand("jdbc:ds-list");
-        System.out.println(jdbcList);
-        Assert.assertTrue(jdbcList.contains("jdbc:derby:data/vineyard/derby │ OK"));
+        String serviceList = executeCommand("vineyard:services", ADMIN_ROLES);
+        System.out.println(serviceList);
+        Assert.assertTrue(serviceList.contains("my-service"));
+
+        System.out.println(executeCommand("vineyard:service-delete 1", ADMIN_ROLES));
+        serviceList = executeCommand("vineyard:services", ADMIN_ROLES);
+        System.out.println(serviceList);
+        Assert.assertFalse(serviceList.contains("my-service"));
     }
 
 
