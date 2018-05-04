@@ -16,17 +16,15 @@
  */
 package org.apache.karaf.vineyard.registry.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-
-import org.apache.karaf.vineyard.common.*;
+import org.apache.karaf.vineyard.common.JmsAPI;
+import org.apache.karaf.vineyard.common.RestAPI;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/")
 @Consumes({"application/json"})
@@ -41,11 +39,11 @@ public class RegistryRest {
         this.registry = registry;
     }
     
-    @Path("/service")
+    @Path("/rest-api")
     @POST
-    public Response addService(Service service) {
+    public Response addRestAPI(RestAPI restAPI) {
         if (registry != null) {
-            registry.add(service);
+            registry.addRestAPI(restAPI);
             return Response.ok().build();
         } else {
             LOGGER.error("Registry service is null !");
@@ -53,11 +51,11 @@ public class RegistryRest {
         }
     }
 
-    @Path("/service")
+    @Path("/rest-api")
     @DELETE
-    public Response deleteService(Service service) {
+    public Response deleteRestAPI(RestAPI restAPI) {
         if (registry != null) {
-             registry.delete(service);
+             registry.deleteRestAPI(restAPI);
              return Response.ok().build();
          } else {
              LOGGER.error("Registry service is null !");
@@ -65,11 +63,11 @@ public class RegistryRest {
          }
     }
     
-    @Path("/service/{id}")
+    @Path("/rest-api/{id}")
     @DELETE
-    public Response deleteService(@PathParam("id") String id) {
+    public Response deleteRestAPI(@PathParam("id") String id) {
         if (registry != null) {
-             registry.delete(id);
+             registry.deleteRestAPI(id);
              return Response.ok().build();
          } else {
              LOGGER.error("Registry service is null !");
@@ -77,15 +75,15 @@ public class RegistryRest {
          }
     }
     
-    @Path("/service/{id}")
+    @Path("/rest-api/{id}")
     @GET
     @Produces("application/json")
-    public Response getService(@PathParam("id") String id) {
+    public Response getRestAPI(@PathParam("id") String id) {
         
         if (registry != null) {
-            Service service = registry.get(id);
-            if (service != null) {
-                return Response.ok(service).build();
+            RestAPI restAPI = registry.getRestAPI(id);
+            if (restAPI != null) {
+                return Response.ok(restAPI).build();
             } else {
                 return Response.noContent().build();
             }
@@ -95,15 +93,15 @@ public class RegistryRest {
         }
     }
 
-    @Path("/service")
+    @Path("/rest-api")
     @GET
     @Produces("application/json")
-    public Response listServices() {
+    public Response listRestAPI() {
         
         if (registry != null) {
-            List<Service> services = registry.getAll();
-            if (services != null) {
-                return Response.ok(services).build();
+            List<RestAPI> restAPIs = registry.getAllRestAPI();
+            if (restAPIs != null) {
+                return Response.ok(restAPIs).build();
             } else {
                 return Response.noContent().build();
             }
@@ -113,11 +111,11 @@ public class RegistryRest {
         }
     }
 
-    @Path("/environment")
+    @Path("/jms-api")
     @POST
-    public Response addEnvironment(Environment environment) {
+    public Response addJmsAPI(JmsAPI jmsAPI) {
         if (registry != null) {
-            registry.addEnvironment(environment);
+            registry.addJmsAPI(jmsAPI);
             return Response.ok().build();
         } else {
             LOGGER.error("Registry service is null !");
@@ -125,11 +123,11 @@ public class RegistryRest {
         }
     }
 
-    @Path("/environment")
+    @Path("/jms-api")
     @DELETE
-    public Response deleteEnvironment(Environment environment) {
+    public Response deleteJmsAPI(JmsAPI jmsAPI) {
         if (registry != null) {
-            registry.deleteEnvironment(environment);
+            registry.deleteJmsAPI(jmsAPI);
             return Response.ok().build();
         } else {
             LOGGER.error("Registry service is null !");
@@ -137,11 +135,11 @@ public class RegistryRest {
         }
     }
 
-    @Path("/environment/{id}")
+    @Path("/jms-api/{id}")
     @DELETE
-    public Response deleteEnvironment(@PathParam("id") String id) {
+    public Response deleteJmsAPI(@PathParam("id") String id) {
         if (registry != null) {
-            registry.delete(id);
+            registry.deleteJmsAPI(id);
             return Response.ok().build();
         } else {
             LOGGER.error("Registry service is null !");
@@ -149,15 +147,15 @@ public class RegistryRest {
         }
     }
 
-    @Path("/environment/{id}")
+    @Path("/jms-api/{id}")
     @GET
     @Produces("application/json")
-    public Response getEnvironment(@PathParam("id") String id) {
+    public Response getJmsAPI(@PathParam("id") String id) {
 
         if (registry != null) {
-            Environment environment = registry.getEnvironment(id);
-            if (environment != null) {
-                return Response.ok(environment).build();
+            JmsAPI jmsAPI = registry.getJmsAPI(id);
+            if (jmsAPI != null) {
+                return Response.ok(jmsAPI).build();
             } else {
                 return Response.noContent().build();
             }
@@ -167,369 +165,15 @@ public class RegistryRest {
         }
     }
 
-    @Path("/environment")
+    @Path("/jms-api")
     @GET
     @Produces("application/json")
-    public Response listEnvironments() {
+    public Response listJmsAPI() {
 
         if (registry != null) {
-            List<Environment> environments = registry.getAllEnvironments();
-            if (environments != null) {
-                return Response.ok(environments).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/maintainer")
-    @POST
-    public Response addMaintainer(Maintainer maintainer) {
-        if (registry != null) {
-            registry.addMaintainer(maintainer);
-            try {
-                return Response.created(new URI("/maintainer/" + maintainer.getName())).build();
-            } catch (URISyntaxException e) {
-                LOGGER.error(e.getMessage());
-                return Response.serverError().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/maintainer")
-    @DELETE
-    public Response deleteMaintainer(Maintainer maintainer) {
-        if (registry != null) {
-            registry.deleteMaintainer(maintainer);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/maintainer")
-    @PUT
-    public Response updateMaintainer(Maintainer maintainer) {
-        if (registry != null) {
-            Maintainer origin = registry.getMaintainer(maintainer.getName());
-            if (origin != null) {
-                registry.updateMaintainer(maintainer);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/maintainer/{name}")
-    @DELETE
-    public Response deleteMaintainer(@PathParam("name") String name) {
-        if (registry != null) {
-            registry.deleteMaintainer(name);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/maintainer/{name}")
-    @GET
-    @Produces("application/json")
-    public Response getMaintainer(@PathParam("name") String name) {
-
-        if (registry != null) {
-            Maintainer maintainer = registry.getMaintainer(name);
-            if (maintainer != null) {
-                return Response.ok(maintainer).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/maintainer")
-    @GET
-    @Produces("application/json")
-    public Response listMaintainers() {
-
-        if (registry != null) {
-            List<Maintainer> maintainers = registry.getAllMaintainers();
-            if (maintainers != null) {
-                return Response.ok(maintainers).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @POST
-    public Response addDataFormat(DataFormat dataformat) {
-        if (registry != null) {
-            registry.addDataFormat(dataformat);
-            try {
-                return Response.created(new URI("/dataformat/" + dataformat.getId())).build();
-            } catch (URISyntaxException e) {
-                LOGGER.error(e.getMessage());
-                return Response.serverError().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @DELETE
-    public Response deleteDataFormat(DataFormat dataformat) {
-        if (registry != null) {
-            registry.deleteDataFormat(dataformat);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @PUT
-    public Response updateDataFormat(DataFormat dataFormat) {
-        if (registry != null) {
-            DataFormat origin = registry.getDataFormat(dataFormat.getId());
-            if (origin != null) {
-                registry.updateDataFormat(dataFormat);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat/{id}")
-    @DELETE
-    public Response deleteDataFormat(@PathParam("id") String id) {
-        if (registry != null) {
-            registry.deleteDataFormat(id);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat/{id}")
-    @GET
-    @Produces("application/json")
-    public Response getDataFormat(@PathParam("id") String id) {
-
-        if (registry != null) {
-            DataFormat dataformat = registry.getDataFormat(id);
-            if (dataformat != null) {
-                return Response.ok(dataformat).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @GET
-    @Produces("application/json")
-    public Response listDataFormats() {
-
-        if (registry != null) {
-            List<DataFormat> dataformats = registry.getAllDataFormats();
-            if (dataformats != null) {
-                return Response.ok(dataformats).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/endpoint")
-    @POST
-    public Response addEndpoint(Endpoint endpoint) {
-        if (registry != null) {
-            registry.addEndpoint(endpoint);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/endpoint")
-    @DELETE
-    public Response deleteEndpoint(Endpoint endpoint) {
-        if (registry != null) {
-            registry.deleteEndpoint(endpoint);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/endpoint/{id}")
-    @DELETE
-    public Response deleteEndpoint(@PathParam("id") String id) {
-        if (registry != null) {
-            registry.deleteEndpoint(id);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/endpoint/{id}")
-    @GET
-    @Produces("application/json")
-    public Response getEndpoint(@PathParam("id") String id) {
-
-        if (registry != null) {
-            Endpoint endpoint = registry.getEndpoint(id);
-            if (endpoint != null) {
-                return Response.ok(endpoint).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/endpoint")
-    @GET
-    @Produces("application/json")
-    public Response listEndpoints() {
-
-        if (registry != null) {
-            List<Endpoint> endpoints = registry.getAllEndpoints();
-            if (endpoints != null) {
-                return Response.ok(endpoints).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/registration")
-    @POST
-    public Response addRegistration(Registration registration) {
-        if (registry != null) {
-            registry.addRegistration(registration);
-            try {
-                return Response.created(new URI("/registration/" + registration.getId())).build();
-            } catch (URISyntaxException e) {
-                LOGGER.error(e.getMessage());
-                return Response.serverError().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/registration")
-    @DELETE
-    public Response deleteRegistration(Registration registration) {
-        if (registry != null) {
-            registry.deleteRegistration(registration);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/registration")
-    @PUT
-    public Response updateRegistration(Registration registration) {
-        if (registry != null) {
-            Registration origin = registry.getRegistration(registration.getId());
-            if (origin != null) {
-                registry.updateRegistration(registration);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/registration/{id}")
-    @DELETE
-    public Response deleteRegistration(@PathParam("id") String id) {
-        if (registry != null) {
-            registry.deleteRegistration(id);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/registration/{id}")
-    @GET
-    @Produces("application/json")
-    public Response getRegistration(@PathParam("id") String id) {
-
-        if (registry != null) {
-            Registration registration = registry.getRegistration(id);
-            if (registration != null) {
-                return Response.ok(registration).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/registration")
-    @GET
-    @Produces("application/json")
-    public Response listRegistrations() {
-
-        if (registry != null) {
-            List<Registration> registrations = registry.getAllRegistrations();
-            if (registrations != null) {
-                return Response.ok(registrations).build();
+            List<JmsAPI> jmsAPIs = registry.getAllJmsAPI();
+            if (jmsAPIs != null) {
+                return Response.ok(jmsAPIs).build();
             } else {
                 return Response.noContent().build();
             }

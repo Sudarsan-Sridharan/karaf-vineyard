@@ -26,280 +26,91 @@ import org.apache.karaf.vineyard.common.*;
 public interface RegistryService {
 
     /**
-     * Add a new service in the registry.
+     * Add a new restAPI in the registry.
      *
-     * @param service The service to add.
+     * @param restAPI The restAPI to add.
      */
-    void add(Service service);
+    void addRestAPI(RestAPI restAPI);
 
     /**
-     * Delete an existing service from the registry.
+     * Delete an existing restAPI from the registry.
      *
-     * @param service The service to remove.
+     * @param restAPI The restAPI to remove.
      */
-    void delete(Service service);
+    void deleteRestAPI(RestAPI restAPI);
 
     /**
-     * Delete an existing service from the registry, identified by ID.
+     * Delete an existing restAPI from the registry, identified by ID.
      *
-     * @param id The service ID.
+     * @param id The restAPI ID.
      */
-    void delete(String id);
+    void deleteRestAPI(String id);
 
     /**
-     * Update an existing service.
+     * Update an existing restAPI.
      *
-     * @param service The service details.
+     * @param restAPI The restAPI details.
      */
-    void update(Service service);
+    void updateRestAPI(RestAPI restAPI);
 
     /**
-     * Retrieve service details.
+     * Retrieve restAPI details.
      *
-     * @param id The service ID.
-     * @return The service description.
+     * @param id The restAPI ID.
+     * @return The restAPI description.
      */
-    Service get(String id);
+    RestAPI getRestAPI(String id);
 
     /**
-     * Retrieve all the services in the registry.
+     * Retrieve all the restAPI in the registry.
      *
-     * @return The list of services.
+     * @return The list of restAPI.
      */
-    List<Service> getAll();
-    // TODO add same method with filter
-
-
-    /**
-     * Add a new environment in the registry.
-     *
-     * @param environment The environment to add.
-     */
-    void addEnvironment(Environment environment);
-    
-    /**
-     * Delete an existing environment from the registry.
-     *
-     * @param environment The environment to remove.
-     */
-    void deleteEnvironment(Environment environment);
-
-    /**
-     * Delete an existing environment from the registry, identified by ID.
-     *
-     * @param id The environment ID.
-     */
-    void deleteEnvironment(String id);
-
-    /**
-     * Update an existing environment.
-     *
-     * @param environment The environment details.
-     */
-    void updateEnvironment(Environment environment);
-
-    /**
-     * Retrieve environment details.
-     *
-     * @param id The environment ID.
-     * @return The environment description.
-     */
-    Environment getEnvironment(String id);
-
-    /**
-     * Retrieve all the environments used in the registry.
-     *
-     * @return The list of environments.
-     */
-    List<Environment> getAllEnvironments();
-    // TODO add same method with filter
-
-    
-    /**
-     * Add a new maintainer in the registry.
-     *
-     * @param maintainer The maintainer to add.
-     */
-    void addMaintainer(Maintainer maintainer);
-    
-    /**
-     * Delete an existing maintainer from the registry.
-     *
-     * @param maintainer The maintainer to remove.
-     */
-    void deleteMaintainer(Maintainer maintainer);
-
-    /**
-     * Delete an existing maintainer from the registry, identified by name.
-     *
-     * @param name The maintainer name.
-     */
-    void deleteMaintainer(String name);
-
-    /**
-     * Update an existing maintainer.
-     *
-     * @param maintainer The maintainer details.
-     */
-    void updateMaintainer(Maintainer maintainer);
-
-    /**
-     * Retrieve maintainer details.
-     *
-     * @param name The maintainer name.
-     * @return The maintainer description.
-     */
-    Maintainer getMaintainer(String name);
-
-    /**
-     * Retrieve all the maintainers used in the registry.
-     *
-     * @return The list of maintainers.
-     */
-    List<Maintainer> getAllMaintainers();
-    // TODO add same method with filter
-    
-    /**
-     * Add a new dataformat in the registry.
-     *
-     * @param dataformat The dataformat to add.
-     */
-    void addDataFormat(DataFormat dataformat);
-    
-    /**
-     * Delete an existing dataformat from the registry.
-     *
-     * @param dataformat The dataformat to remove.
-     */
-    void deleteDataFormat(DataFormat dataformat);
-
-    /**
-     * Delete an existing dataformat from the registry, identified by ID.
-     *
-     * @param id The dataformat ID.
-     */
-    void deleteDataFormat(String id);
-
-    /**
-     * Update an existing dataformat.
-     *
-     * @param dataformat The dataformat details.
-     */
-    void updateDataFormat(DataFormat dataformat);
-
-    /**
-     * Retrieve dataformat details.
-     *
-     * @param id The dataformat ID.
-     * @return The dataformat description.
-     */
-    DataFormat getDataFormat(String id);
-
-    /**
-     * Retrieve all the dataformats used in the registry.
-     *
-     * @return The list of dataformats.
-     */
-    List<DataFormat> getAllDataFormats();
+    List<RestAPI> getAllRestAPI();
     // TODO add same method with filter
 
     /**
-     * Add a new endpoint in the registry.
+     * Add a new jmsAPI in the registry.
      *
-     * @param endpoint The endpoint to add.
+     * @param jmsAPI The jmsAPI to add.
      */
-    void addEndpoint(Endpoint endpoint);
-    
-    /**
-     * Delete an existing endpoint from the registry.
-     *
-     * @param endpoint The endpoint to remove.
-     */
-    void deleteEndpoint(Endpoint endpoint);
+    void addJmsAPI(JmsAPI jmsAPI);
 
     /**
-     * Delete an existing endpoint from the registry, identified by localtion (URI).
+     * Delete an existing jmsAPI from the registry.
      *
-     * @param location The endpoint location (URI).
+     * @param jmsAPI The jmsAPI to remove.
      */
-    void deleteEndpoint(String location);
+    void deleteJmsAPI(JmsAPI jmsAPI);
 
     /**
-     * Update an existing endpoint.
+     * Delete an existing jmsAPI from the registry, identified by ID.
      *
-     * @param endpoint The endpoint details.
+     * @param id The jmsAPI ID.
      */
-    void updateEndpoint(Endpoint endpoint);
+    void deleteJmsAPI(String id);
 
     /**
-     * Retrieve endpoint details.
+     * Update an existing jmsAPI.
      *
-     * @param location The endpoint location (URI).
-     * @return The endpoint description.
+     * @param jmsAPI The jmsAPI details.
      */
-    Endpoint getEndpoint(String location);
+    void updateJmsAPI(JmsAPI jmsAPI);
 
     /**
-     * Retrieve all the endpoints used in the registry.
+     * Retrieve jmsAPI details.
      *
-     * @return The list of endpoints.
+     * @param id The jmsAPI ID.
+     * @return The jmsAPI description.
      */
-    List<Endpoint> getAllEndpoints();
+    JmsAPI getJmsAPI(String id);
+
+    /**
+     * Retrieve all the jmsAPI in the registry.
+     *
+     * @return The list of jmsAPI.
+     */
+    List<JmsAPI> getAllJmsAPI();
     // TODO add same method with filter
-    // TODO complete
 
-
-    /**
-     * Add a new registration in the registry.
-     *
-     * @param registration The registration to add.
-     */
-    void addRegistration(Registration registration);
-
-    /**
-     * Delete an existing registration from the registry.
-     *
-     * @param registration The registration to remove.
-     */
-    void deleteRegistration(Registration registration);
-
-    /**
-     * Delete an existing registration from the registry, identified by id.
-     *
-     * @param id The registration id.
-     */
-    void deleteRegistration(String id);
-
-    /**
-     * Update an existing registration.
-     *
-     * @param registration The registration details.
-     */
-    void updateRegistration(Registration registration);
-
-    /**
-     * Retrieve registration details.
-     *
-     * @param id The registration id.
-     * @return The registration description.
-     */
-    Registration getRegistration(String id);
-
-    /**
-     * Retrieve all the registrations used in the registry.
-     *
-     * @return The list of registrations.
-     */
-    List<Registration> getAllRegistrations();
-
-    /**
-     * Retrieve all the registrations for a service used in the registry.
-     *
-     * @param service The service of the registrations.
-     * @return The list of registrations.
-     */
-    List<Registration> getAllRegistrations(Service service);
-
-    // TODO add same method with filter
-    // TODO complete
 }
