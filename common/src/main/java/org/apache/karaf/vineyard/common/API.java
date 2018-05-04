@@ -16,24 +16,34 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 /**
- * Describe a service registered in Karaf Vineyard.
+ * This is a API abstract view, containing attributes common to any concrete API in Vineyard.
  */
-public class Service {
+public abstract class API {
 
-    /** Unique service ID */
+    /** Unique API ID */
     private String id;
 
-    /** Human readable name/alias for the service */
+    /** Name of the API */
     private String name;
 
-    /** Description of the service */
+    /** Open text describing the API */
     private String description;
 
-    /** Description of this service on different registrations (registration) */
-    private List<Registration> registrations;
+    /** The resource operation data format (json, xml, ...) */
+    private DataFormat format;
+
+    /** The policies define for the API */
+    private Collection<Policy> policies;
+
+    /** Additional data functional and technical related to the API */
+    private Map<String, String> metadata;
+
+    /** The resource endpoint location */
+    private String endpoint;
 
 
     public String getId() {
@@ -60,11 +70,35 @@ public class Service {
         this.description = description;
     }
 
-    public List<Registration> getRegistrations() {
-        return registrations;
+    public DataFormat getFormat() {
+        return format;
     }
 
-    public void setRegistrations(List<Registration> registrations) {
-        this.registrations = registrations;
+    public void setFormat(DataFormat format) {
+        this.format = format;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    public Collection<Policy> getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(Collection<Policy> policies) {
+        this.policies = policies;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 }

@@ -17,41 +17,30 @@
 package org.apache.karaf.vineyard.common;
 
 /**
- * Describe a service maintainer.
+ * Describe a resource in a Rest API.
  */
-public class Maintainer {
+public class RestAPIResource {
 
-    /** Name of the maintainer */
-    private String name;
-    
-    /** Email of the maintainer */
-    private String email;
-    
-    /** Team of the maintainer */
-    private String team;
+    /** The resource path */
+    private String path;
 
-    
-    public String getName() {
-        return name;
+    /** The resource operation method */
+    private String method;
+
+    public String getPath() {
+        return path;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMethod() {
+        return method;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMethod(String method) {
+        this.method = method;
     }
 
-    public String getTeam() {
-        return team;
-    }
-
-    public void setTeam(String team) {
-        this.team = team;
-    }
 }

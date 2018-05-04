@@ -16,12 +16,17 @@
  */
 package org.apache.karaf.vineyard.common;
 
+import java.util.Collection;
+
 /**
- * Role of a maintainer for an environment.
+ * Concrete REST API.
  */
-public enum Role {
-    OWNER,
-    ADMIN,
-    MANAGER,
-    VIEWER;
+public class RestAPI extends API {
+
+    /** Base context of this Rest API */
+    private String context;
+
+    /** List of resources in the Rest API */
+    private Collection<RestAPIResource> resources;
+
 }

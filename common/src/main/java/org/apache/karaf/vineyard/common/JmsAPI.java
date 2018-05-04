@@ -16,53 +16,40 @@
  */
 package org.apache.karaf.vineyard.common;
 
-/**
- * Describe a service endpoint (actual or on the gateway).
- */
-public class Endpoint {
+public class JmsAPI extends API {
 
-    /** Data format unique ID */
-    private String id;
+    /** The identifier of the connection factory (JNDI name) */
+    private String connectionFactory;
 
-    /** Location (URI) of the service */
-    private String location;
+    /** The JMS destination */
+    private String destination;
 
-    /** Input data format */
-    private DataFormat input;
-
-    /** Output data format */
-    private DataFormat output;
+    /** The JMS destination type */
+    private String type;
 
 
-    public String getId() {
-        return id;
+    public String getConnectionFactory() {
+        return connectionFactory;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setConnectionFactory(String connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
-    public String getLocation() {
-        return location;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
-    public DataFormat getInput() {
-        return input;
+    public String getType() {
+        return type;
     }
 
-    public void setInput(DataFormat input) {
-        this.input = input;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public DataFormat getOutput() {
-        return output;
-    }
-
-    public void setOutput(DataFormat output) {
-        this.output = output;
-    }
 }

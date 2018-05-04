@@ -17,7 +17,7 @@
 package org.apache.karaf.vineyard.common;
 
 /**
- * Generic policy container. It's extended by specific policy type.
+ * Generic policy container. It's extended by specific policy type (like security, QoS, ...).
  */
 public abstract class Policy {
 }
