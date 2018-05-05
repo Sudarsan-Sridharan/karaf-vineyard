@@ -29,4 +29,19 @@ public class RestAPI extends API {
     /** List of resources in the Rest API */
     private Collection<RestAPIResource> resources;
 
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public Collection<RestAPIResource> getResources() {
+        return resources;
+    }
+
+    public void setResources(Collection<RestAPIResource> resources) {
+        this.resources = resources;
+    }
 }
