@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.registry.rest;
 
+import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.JmsAPI;
 import org.apache.karaf.vineyard.common.RestAPI;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
@@ -174,6 +175,78 @@ public class RegistryRest {
             List<JmsAPI> jmsAPIs = registry.getAllJmsAPI();
             if (jmsAPIs != null) {
                 return Response.ok(jmsAPIs).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @POST
+    public Response addDataFormat(DataFormat dataformat) {
+        if (registry != null) {
+            registry.addDataFormat(dataformat);
+            return Response.ok().build();
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @DELETE
+    public Response deleteDataFormat(DataFormat dataformat) {
+        if (registry != null) {
+            registry.deleteDataFormat(dataformat);
+            return Response.ok().build();
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat/{id}")
+    @DELETE
+    public Response deleteDataFormat(@PathParam("id") String id) {
+        if (registry != null) {
+            registry.deleteDataFormat(id);
+            return Response.ok().build();
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat/{id}")
+    @GET
+    @Produces("application/json")
+    public Response getDataFormat(@PathParam("id") String id) {
+
+        if (registry != null) {
+            DataFormat dataformat = registry.getDataFormat(id);
+            if (dataformat != null) {
+                return Response.ok(dataformat).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @GET
+    @Produces("application/json")
+    public Response listDataFormat() {
+
+        if (registry != null) {
+            List<DataFormat> dataformats = registry.getAllDataFormats();
+            if (dataformats != null) {
+                return Response.ok(dataformats).build();
             } else {
                 return Response.noContent().build();
             }
