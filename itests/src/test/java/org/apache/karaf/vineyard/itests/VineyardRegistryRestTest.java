@@ -46,23 +46,23 @@ public class VineyardRegistryRestTest extends VineyardTestSupport {
         Thread.sleep(DEFAULT_TIMEOUT);
 
         try {
-            String URL = "http://localhost:8181/cxf/vineyard/registry/maintainer";
-            URL urlGetListServices = new URL(URL);
+            String URL = "http://localhost:8181/cxf/vineyard/registry/dataformat";
+            URL urlDataformat = new URL(URL);
 
-            // Call add maintainer service
-            String jsonAddMaintainer = "{\n" +
-                    "  \"name\": \"obiwan kenobi\",\n" +
-                    "  \"email\": \"okenobi@jedi.org\",\n" +
-                    "  \"team\": \"master jedi\"\n" +
+            // Call add dataformat service
+            String soapAddDataformat = "{\n" +
+                    "  \"name\": \"soap-xml\",\n" +
+                    "  \"schema\": \"xml\",\n" +
+                    "  \"sample\": \"soap-xml-sample\"\n" +
                     "}";
-            System.out.println("Call POST http://localhost:8181/cxf/vineyard/registry/maintainer");
-            HttpURLConnection connection = (HttpURLConnection) urlGetListServices.openConnection();
+            System.out.println("Call POST http://localhost:8181/cxf/vineyard/registry/dataformat");
+            HttpURLConnection connection = (HttpURLConnection) urlDataformat.openConnection();
             connection.setRequestMethod(HttpMethod.POST);
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             OutputStream os = connection.getOutputStream();
-            os.write(jsonAddMaintainer.getBytes());
+            os.write(soapAddDataformat.getBytes());
             os.flush();
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
@@ -72,9 +72,32 @@ public class VineyardRegistryRestTest extends VineyardTestSupport {
                 Assert.assertTrue(false);
             }
 
-            // Call list service
-            System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/maintainer");
-            connection = (HttpURLConnection) urlGetListServices.openConnection();
+            // Call add dataformat service
+            String jsonAddDataformat = "{\n" +
+                    "  \"name\": \"json\",\n" +
+                    "  \"schema\": \"json\",\n" +
+                    "  \"sample\": \"json-sample\"\n" +
+                    "}";
+            System.out.println("Call POST http://localhost:8181/cxf/vineyard/registry/dataformat");
+            connection = (HttpURLConnection) urlDataformat.openConnection();
+            connection.setRequestMethod(HttpMethod.POST);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            os = connection.getOutputStream();
+            os.write(jsonAddDataformat.getBytes());
+            os.flush();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
+                Assert.assertTrue(true);
+            } else {
+                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+                Assert.assertTrue(false);
+            }
+
+            // Call list dataformat
+            System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/dataformat");
+            connection = (HttpURLConnection) urlDataformat.openConnection();
             connection.setRequestMethod(HttpMethod.GET);
             connection.connect();
 
@@ -86,7 +109,70 @@ public class VineyardRegistryRestTest extends VineyardTestSupport {
                     sb.append(line);
                 }
                 if (sb.length() == 0) {
-                    System.out.println("Maintainer list is empty");
+                    System.out.println("Dataformat list is empty");
+                    Assert.assertTrue(false);
+                } else {
+                    System.out.println(sb.toString());
+                    Assert.assertTrue(true);
+                }
+            } else {
+                System.out.println("Error when sending GET method : HTTP_CODE = " + connection.getResponseCode());
+                Assert.assertTrue(false);
+            }
+            connection.disconnect();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.assertTrue(false);
+        }
+
+        try {
+            String URL = "http://localhost:8181/cxf/vineyard/registry/rest-api";
+            URL urlDataformat = new URL(URL);
+
+            // Call add rest-api
+            String jsonAddRestApi = "{\n" +
+                    "  \"name\": \"authenticate service\",\n" +
+                    "  \"description\": \"use to authenticate user with token\",\n" +
+                    "  \"endpoint\": \"http://localhost:8181/cxf\"\n" +
+                    "  \"context\": \"api/authenticate\"\n" +
+                    "  \"format\": {\n" +
+                        "  \"name\": \"json\",\n" +
+                        "  \"schema\": \"json\",\n" +
+                        "  \"sample\": \"json-sample\"\n" +
+                        "}" +
+                    "}";
+            System.out.println("Call POST http://localhost:8181/cxf/vineyard/registry/rest-api");
+            HttpURLConnection connection = (HttpURLConnection) urlDataformat.openConnection();
+            connection.setRequestMethod(HttpMethod.POST);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            OutputStream os = connection.getOutputStream();
+            os.write(jsonAddRestApi.getBytes());
+            os.flush();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
+                Assert.assertTrue(true);
+            } else {
+                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+                Assert.assertTrue(false);
+            }
+
+            // Call list rest-api
+            System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/rest-api");
+            connection = (HttpURLConnection) urlDataformat.openConnection();
+            connection.setRequestMethod(HttpMethod.GET);
+            connection.connect();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuffer sb = new StringBuffer();
+                while ((line = buffer.readLine()) != null) {
+                    sb.append(line);
+                }
+                if (sb.length() == 0) {
+                    System.out.println("Rest-api list is empty");
                     Assert.assertTrue(false);
                 } else {
                     System.out.println(sb.toString());

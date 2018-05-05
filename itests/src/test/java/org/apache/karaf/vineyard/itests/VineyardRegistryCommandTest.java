@@ -44,18 +44,6 @@ public class VineyardRegistryCommandTest extends VineyardTestSupport {
         Thread.sleep(DEFAULT_TIMEOUT);
         System.out.println(executeCommand("feature:install vineyard-registry", ADMIN_ROLES));
         Thread.sleep(DEFAULT_TIMEOUT);
-
-        System.out.println(executeCommand("vineyard:services", ADMIN_ROLES));
-        System.out.println(executeCommand("vineyard:service-add my-service service-for-test", ADMIN_ROLES));
-
-        String serviceList = executeCommand("vineyard:services", ADMIN_ROLES);
-        System.out.println(serviceList);
-        Assert.assertTrue(serviceList.contains("my-service"));
-
-        System.out.println(executeCommand("vineyard:service-delete 1", ADMIN_ROLES));
-        serviceList = executeCommand("vineyard:services", ADMIN_ROLES);
-        System.out.println(serviceList);
-        Assert.assertFalse(serviceList.contains("my-service"));
     }
 
 
