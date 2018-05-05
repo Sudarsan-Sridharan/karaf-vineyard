@@ -16,7 +16,7 @@
  */
 package org.apache.karaf.vineyard.discovery.api;
 
-import org.apache.karaf.vineyard.common.Service;
+import org.apache.karaf.vineyard.common.API;
 
 import java.util.List;
 
@@ -30,6 +30,6 @@ public interface DiscoveryService {
      *
      * @return The discovered services.
      */
-    List<Service> scan();
+    List<API> scan();
 
 }

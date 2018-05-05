@@ -16,14 +16,15 @@
  */
 package org.apache.karaf.vineyard.gateway.bridge;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultRoute;
-import org.apache.karaf.vineyard.common.Registration;
+import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.gateway.api.GatewayService;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GatewayServiceImpl implements GatewayService {
 
@@ -38,13 +39,13 @@ public class GatewayServiceImpl implements GatewayService {
     camelContext.start();
   }
 
-  @Override public void register(Registration registration) throws Exception {
+  @Override public void register(API api) throws Exception {
     camelContext.addRoutes(new RouteBuilder() {
       @Override public void configure() throws Exception {
         // TODO improve
-        from(registration.getGateway().getLocation())
-            .id(registration.getId())
-            .to(registration.getEndpoint().getLocation());
+        from(api.getEndpoint())
+            .id(api.getId())
+            .to(api.getEndpoint());
       }
     });
   }

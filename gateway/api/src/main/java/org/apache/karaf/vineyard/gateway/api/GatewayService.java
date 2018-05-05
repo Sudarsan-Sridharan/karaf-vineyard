@@ -16,7 +16,7 @@
  */
 package org.apache.karaf.vineyard.gateway.api;
 
-import org.apache.karaf.vineyard.common.Registration;
+import org.apache.karaf.vineyard.common.API;
 
 import java.util.Map;
 
@@ -28,9 +28,9 @@ public interface GatewayService {
     /**
      * Register a service into the gateway. It registers the service for all environments.
      *
-     * @param registration The registration to perform.
+     * @param api The registration to perform.
      */
-    void register(Registration registration) throws Exception;
+    void register(API api) throws Exception;
 
     /**
      * Disable a service in the gateway. The service is not removed and the gateway
