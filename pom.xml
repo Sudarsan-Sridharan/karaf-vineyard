@@ -58,6 +58,10 @@
         <module>itests</module>
     </modules>
 
+    <prerequisites>
+        <maven>3.0.5</maven>
+    </prerequisites>
+
     <repositories>
         <!-- Apache snapshots -->
         <repository>
@@ -183,6 +187,28 @@
                             <comparisonVersion>1.0.0</comparisonVersion>
                             <skip>true</skip>
                             <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.3.9,4)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[1.8,)</version>
+                                </requireJavaVersion>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
