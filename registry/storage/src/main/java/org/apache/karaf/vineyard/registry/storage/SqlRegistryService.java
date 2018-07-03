@@ -19,7 +19,7 @@ package org.apache.karaf.vineyard.registry.storage;
 import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.JmsAPI;
 import org.apache.karaf.vineyard.common.RestAPI;
-import org.apache.karaf.vineyard.common.RestAPIResource;
+import org.apache.karaf.vineyard.common.Resource;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -257,7 +257,7 @@ public class SqlRegistryService implements RegistryService {
         
         deleteExtraDataForRestApi(connection, api);
         
-        for (RestAPIResource resource : api.getResources()) {
+        for (Resource resource : api.getResources()) {
             try (PreparedStatement insertStatement = 
                     connection.prepareStatement(SqlRegistryConstants.insertRestApiResourcesSql)) {
                 // set values
@@ -383,7 +383,7 @@ public class SqlRegistryService implements RegistryService {
         return null;
     }
 
-    private Collection<RestAPIResource> selectRestApiResources(Connection connection, String idRestApi) {
+    private Collection<Resource> selectRestApiResources(Connection connection, String idRestApi) {
 
         try (PreparedStatement selectStatement =
                      connection.prepareStatement(SqlRegistryConstants.selectRestApiResourcesSql)) {
@@ -391,9 +391,9 @@ public class SqlRegistryService implements RegistryService {
             ResultSet rs = selectStatement.executeQuery();
 
             if (rs.getFetchSize() > 0) {
-                Collection<RestAPIResource> resources = new ArrayList<>();
+                Collection<Resource> resources = new ArrayList<>();
                 while (rs.next()) {
-                    RestAPIResource resource = new RestAPIResource();
+                    Resource resource = new Resource();
                     resource.setMethod(rs.getString("method"));
                     resource.setMethod(rs.getString("path"));
                     resources.add(resource);

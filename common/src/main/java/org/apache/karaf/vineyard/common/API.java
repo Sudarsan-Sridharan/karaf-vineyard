@@ -30,21 +30,20 @@ public abstract class API {
     /** Name of the API */
     private String name;
 
+    /** Base contaext of this API */
+    private String context;
+
     /** Open text describing the API */
     private String description;
 
-    /** The resource operation data format (json, xml, ...) */
-    private DataFormat format;
-
-    /** The policies define for the API */
-    private Collection<Policy> policies;
+    /** Explicit version of this API */
+    private String version;
 
     /** Additional data functional and technical related to the API */
     private Map<String, String> metadata;
 
-    /** The resource endpoint location */
-    private String endpoint;
-
+    /** Collection of resources linked to this API. */
+    private Collection<Resource> resources;
 
     public String getId() {
         return id;
@@ -62,6 +61,14 @@ public abstract class API {
         this.name = name;
     }
 
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -70,28 +77,12 @@ public abstract class API {
         this.description = description;
     }
 
-    public DataFormat getFormat() {
-        return format;
+    public String getVersion() {
+        return version;
     }
 
-    public void setFormat(DataFormat format) {
-        this.format = format;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    public Collection<Policy> getPolicies() {
-        return policies;
-    }
-
-    public void setPolicies(Collection<Policy> policies) {
-        this.policies = policies;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public Map<String, String> getMetadata() {
@@ -101,4 +92,13 @@ public abstract class API {
     public void setMetadata(Map<String, String> metadata) {
         this.metadata = metadata;
     }
+
+    public Collection<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(Collection<Resource> resources) {
+        this.resources = resources;
+    }
+
 }

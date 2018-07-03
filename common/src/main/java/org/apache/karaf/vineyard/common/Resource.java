@@ -19,29 +19,38 @@ package org.apache.karaf.vineyard.common;
 import java.util.Collection;
 
 /**
- * Concrete REST API.
+ * Describe a resource in a Rest API.
  */
-public class RestAPI extends API {
+public class Resource {
 
-    /** Base context of this Rest API */
-    private String context;
+    /** The resource path */
+    private String path;
 
-    /** List of resources in the Rest API */
-    private Collection<RestAPIResource> resources;
+    /** The resource operation method */
+    private String method;
 
-    public String getContext() {
-        return context;
+    private DataFormat inFormat;
+
+    private DataFormat outFormat;
+
+    private Collection<Policy> policies;
+
+    private String bridge;
+
+    public String getPath() {
+        return path;
     }
 
-    public void setContext(String context) {
-        this.context = context;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public Collection<RestAPIResource> getResources() {
-        return resources;
+    public String getMethod() {
+        return method;
     }
 
-    public void setResources(Collection<RestAPIResource> resources) {
-        this.resources = resources;
+    public void setMethod(String method) {
+        this.method = method;
     }
+
 }

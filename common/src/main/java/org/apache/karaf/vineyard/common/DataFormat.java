@@ -32,7 +32,6 @@ public class DataFormat {
 
     /** Data format sample used to simulate and test */
     private String sample;
-
     
     public String getId() {
         return id;
