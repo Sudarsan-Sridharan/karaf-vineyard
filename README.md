@@ -26,25 +26,14 @@ API in your ecosystem.
 
 Karaf Vineyard is composed by three main modules:
 
-* Karaf Vineyard Registry is where the services and API are stored. It's where you can describe the services and add
-metadata. Based on this metadata, you can define additional policies (security, workflow, update, ...).
-Karaf Vineyard Registry UI provides convenient way to enhance the service description, see the impact map (which services
-use which other services), and interact with other Vineyard modules.
-* Karaf Vineyard Gateway is a service gateway. Other applications and services in your ecosystem will only use
-the Vineyard Gateway to use the actual underlying services. Karaf Vineyard Gateway façade the services and proxy
-to the backend services. It can also do extra data format transformation, protocol transformation, implement
-additional policies (as security for instance). Vineyard Gateway can interact with the Vineyard Registry to
-retrieve and expose services, including the required transformations. Gateway also provides some convenient
-endpoint plugins (for Apache Camel, Apache CXF, Apache Beam, Apache Tika, ...) to be able to directly and
-easily use the Vineyard Gateway in client applications (the client applications don't use the actual service
-directly anymore, they use the service exposed in Vineyard Gateway).
-* Karaf Vineyard Discovery is a set of plugins that can be executed (for instance by the Vineyard Registry) to
-automatically discover services on your on premise ecosystem, but also on your cloud ecosystem. The goal is to avoid
-a long process of services description (most of the time made by hand) and be able to detect unexpected services
-creation.
-
-Each module can be use independently. However, using all modules all together gives you all features and a
-powerful platform.
+* Karaf Vineyard Registry is where the services and API definitions are stored. It's where you can describe the API,
+ including resources, policies, metadata. The registry can be manipulated by a REST API.
+* Karaf Vineyard Gateway is the API gateway. Other applications and services in your ecosystem will only use
+ the Vineyard Gateway to use the actual underlying services and API. Karaf Vineyard Gateway façade the services and proxy
+ to the concrete backend services. Vineyard Gateway can interact with the Vineyard Registry to
+ retrieve and expose API.
+* Karaf Vineyard Discovery is a set of plugins that you can execute to discover the existing services present in your
+ecosystem, creating the corresponding entry in the registry and exposing them in the gateway.
 
 ## Getting Started
 
