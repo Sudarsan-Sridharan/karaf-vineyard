@@ -16,7 +16,7 @@
  */
 package org.apache.karaf.vineyard.registry.api;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.karaf.vineyard.common.*;
 
@@ -26,134 +26,89 @@ import org.apache.karaf.vineyard.common.*;
 public interface RegistryService {
 
     /**
-     * Add a new restAPI in the registry.
+     * Add a new API in the registry.
      *
-     * @param restAPI The restAPI to add.
+     * @param api The API to add.
      */
-    void addRestAPI(RestAPI restAPI);
+    void addApi(API api);
 
     /**
-     * Delete an existing restAPI from the registry.
+     * Delete an existing API from the registry.
      *
-     * @param restAPI The restAPI to remove.
+     * @param api The API to remove.
      */
-    void deleteRestAPI(RestAPI restAPI);
+    void deleteApi(API api);
 
     /**
-     * Delete an existing restAPI from the registry, identified by ID.
+     * Delete an existing API from the registry, identified by ID.
      *
-     * @param id The restAPI ID.
+     * @param id The API ID.
      */
-    void deleteRestAPI(String id);
+    void deleteApi(String id);
 
     /**
-     * Update an existing restAPI.
+     * Update an existing API.
      *
-     * @param restAPI The restAPI details.
+     * @param api The API details.
      */
-    void updateRestAPI(RestAPI restAPI);
+    void updateApi(API api);
 
     /**
-     * Retrieve restAPI details.
+     * Retrieve API details.
      *
-     * @param id The restAPI ID.
-     * @return The restAPI description.
+     * @param id The API ID.
+     * @return The API description.
      */
-    RestAPI getRestAPI(String id);
+    API getApi(String id);
 
     /**
-     * Retrieve all the restAPI in the registry.
+     * Retrieve all the APIs in the registry.
      *
-     * @return The list of restAPI.
+     * @return The list of API.
      */
-    List<RestAPI> getAllRestAPI();
-    // TODO add same method with filter
+    Collection<API> getApis();
 
     /**
-     * Add a new jmsAPI in the registry.
+     * Add a new data format in the registry.
      *
-     * @param jmsAPI The jmsAPI to add.
+     * @param dataFormat The data format to add.
      */
-    void addJmsAPI(JmsAPI jmsAPI);
+    void addDataFormat(DataFormat dataFormat);
 
     /**
-     * Delete an existing jmsAPI from the registry.
+     * Delete an existing data format from the registry.
      *
-     * @param jmsAPI The jmsAPI to remove.
+     * @param dataFormat The data format to remove.
      */
-    void deleteJmsAPI(JmsAPI jmsAPI);
+    void deleteDataFormat(DataFormat dataFormat);
 
     /**
-     * Delete an existing jmsAPI from the registry, identified by ID.
+     * Delete an existing data format from the registry, identified by ID.
      *
-     * @param id The jmsAPI ID.
-     */
-    void deleteJmsAPI(String id);
-
-    /**
-     * Update an existing jmsAPI.
-     *
-     * @param jmsAPI The jmsAPI details.
-     */
-    void updateJmsAPI(JmsAPI jmsAPI);
-
-    /**
-     * Retrieve jmsAPI details.
-     *
-     * @param id The jmsAPI ID.
-     * @return The jmsAPI description.
-     */
-    JmsAPI getJmsAPI(String id);
-
-    /**
-     * Retrieve all the jmsAPI in the registry.
-     *
-     * @return The list of jmsAPI.
-     */
-    List<JmsAPI> getAllJmsAPI();
-    // TODO add same method with filter
-
-    /**
-     * Add a new dataformat in the registry.
-     *
-     * @param dataformat The dataformat to add.
-     */
-    void addDataFormat(DataFormat dataformat);
-
-    /**
-     * Delete an existing dataformat from the registry.
-     *
-     * @param dataformat The dataformat to remove.
-     */
-    void deleteDataFormat(DataFormat dataformat);
-
-    /**
-     * Delete an existing dataformat from the registry, identified by ID.
-     *
-     * @param id The dataformat ID.
+     * @param id The data format ID.
      */
     void deleteDataFormat(String id);
 
     /**
-     * Update an existing dataformat.
+     * Update an existing data format.
      *
-     * @param dataformat The dataformat details.
+     * @param dataFormat The data format details.
      */
-    void updateDataFormat(DataFormat dataformat);
+    void updateDataFormat(DataFormat dataFormat);
 
     /**
-     * Retrieve dataformat details.
+     * Retrieve data format details.
      *
-     * @param id The dataformat ID.
-     * @return The dataformat description.
+     * @param id The data format ID.
+     * @return The data format description.
      */
     DataFormat getDataFormat(String id);
 
     /**
-     * Retrieve all the dataformat in the registry.
+     * Retrieve all the data formats in the registry.
      *
-     * @return The list of dataformat.
+     * @return The collectionof data formats.
      */
-    List<DataFormat> getAllDataFormats();
-    // TODO add same method with filter
+    Collection<DataFormat> getDataFormats();
+
 }

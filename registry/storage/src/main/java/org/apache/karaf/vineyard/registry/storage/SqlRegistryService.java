@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.registry.storage;
 
+import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.JmsAPI;
 import org.apache.karaf.vineyard.common.RestAPI;
@@ -33,7 +34,7 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * Implementation of the service processing, storing the services into a database.
+ * Implementation of the API registry service, storing the API into a database.
  */
 @Component(
         name = "org.apache.karaf.vineyard.registry.storage.sqlService",
@@ -43,7 +44,7 @@ public class SqlRegistryService implements RegistryService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SqlRegistryService.class);
 
-    @Reference(target = "(osgi.jndi.service.name=jdbc/vineyard)")
+    @Reference(target = "(osgi.jndi.service.name=jdbc/karaf-vineyard)")
     private DataSource dataSource;
 
     private String dialect;
@@ -109,7 +110,7 @@ public class SqlRegistryService implements RegistryService {
     }
 
     @Override
-    public void addRestAPI(RestAPI api) {
+    public void addApi(API api) {
         try (Connection connection = dataSource.getConnection()) {
             
             if (connection.getAutoCommit()) {
