@@ -43,9 +43,9 @@ public class GatewayServiceImpl implements GatewayService {
     camelContext.addRoutes(new RouteBuilder() {
       @Override public void configure() throws Exception {
         // TODO improve
-        from(api.getEndpoint())
+        /*from(api.getEndpoint())
             .id(api.getId())
-            .to(api.getEndpoint());
+            .to(api.getEndpoint());*/
       }
     });
   }
