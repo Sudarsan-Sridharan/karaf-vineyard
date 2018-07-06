@@ -16,23 +16,22 @@
  */
 package org.apache.karaf.vineyard.registry.commands.completers;
 
+import java.util.List;
+
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.api.console.CommandLine;
 import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
-import org.apache.karaf.vineyard.common.JmsAPI;
-import org.apache.karaf.vineyard.common.RestAPI;
+import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
-
-import java.util.List;
 
 /**
  * Completer of the Karaf Vineyard Registry services.
  */
 @Service
-public class RegistryJmsApiCompleter implements Completer {
+public class RegistryRestApiCompleter implements Completer {
 
     @Reference
     private RegistryService registryService;
@@ -40,9 +39,9 @@ public class RegistryJmsApiCompleter implements Completer {
     @Override
     public int complete(Session session, CommandLine commandLine, List<String> list) {
         StringsCompleter delegate = new StringsCompleter();
-        for (JmsAPI vineyardJmsAPI :
-            registryService.getAllJmsAPI()) {
-            delegate.getStrings().add(vineyardJmsAPI.getName());
+        for (API api :
+            registryService.getApis()) {
+            delegate.getStrings().add(api.getName());
         }
         return delegate.complete(session, commandLine, list);
     }

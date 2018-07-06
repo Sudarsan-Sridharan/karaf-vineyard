@@ -53,4 +53,12 @@ public class Resource {
         this.method = method;
     }
 
+    public String getBridge() {
+        return method;
+    }
+
+    public void setBridge(String method) {
+        this.method = method;
+    }
+
 }
