@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * This is a API abstract view, containing attributes common to any concrete API in Vineyard.
+ * This is a API view, containing attributes common to any concrete API in Vineyard.
  */
-public abstract class API {
+public class API {
 
     /** Unique API ID */
     private String id;
