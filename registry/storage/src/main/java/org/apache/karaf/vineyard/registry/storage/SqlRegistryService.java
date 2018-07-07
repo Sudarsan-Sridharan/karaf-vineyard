@@ -18,8 +18,6 @@ package org.apache.karaf.vineyard.registry.storage;
 
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.DataFormat;
-import org.apache.karaf.vineyard.common.JmsAPI;
-import org.apache.karaf.vineyard.common.RestAPI;
 import org.apache.karaf.vineyard.common.Resource;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.osgi.service.component.ComponentContext;
@@ -44,7 +42,7 @@ public class SqlRegistryService implements RegistryService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SqlRegistryService.class);
 
-    @Reference(target = "(osgi.jndi.service.name=jdbc/karaf-vineyard)")
+    @Reference(target = "(osgi.jndi.service.name=jdbc/vineyard)")
     private DataSource dataSource;
 
     private String dialect;
@@ -78,14 +76,12 @@ public class SqlRegistryService implements RegistryService {
         try {
             dbm = connection.getMetaData();
             
-            tables = dbm.getTables(null, "VINEYARD", "SERVICE", null);
+            tables = dbm.getTables(null, "VINEYARD", "API", null);
             if (!tables.next()) {
                 LOGGER.info("Tables does not exist");
                 // Tables does not exist so we create all the tables
                 String[] createTemplate = null;
-                if (dialect.equalsIgnoreCase("mysql")) {
-                    //TODO createTableQueryMySQLTemplate;
-                } else if (dialect.equalsIgnoreCase("derby")) {
+                if (dialect.equalsIgnoreCase("derby")) {
                     createTemplate = SqlRegistryConstants.createTableQueryDerbyTemplate;
                 } else {
                     //TODO createTableQueryGenericTemplate;
@@ -118,18 +114,13 @@ public class SqlRegistryService implements RegistryService {
             }
             
             try (PreparedStatement insertStatement = 
-                    connection.prepareStatement(SqlRegistryConstants.insertRestApiSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    connection.prepareStatement(SqlRegistryConstants.insertApiSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
                 // set values
                 insertStatement.setString(1, api.getName());
-                insertStatement.setString(2, api.getDescription());
-                insertStatement.setString(3, api.getEndpoint());
-                insertStatement.setString(4, api.getContext());
-                if (api.getFormat() != null) {
-                    insertStatement.setString(5, api.getFormat().getId());
-                } else {
-                    insertStatement.setString(5, null);
-                }
+                insertStatement.setString(2, api.getContext());
+                insertStatement.setString(3, api.getDescription());
+                insertStatement.setString(4, api.getVersion());
                 insertStatement.executeUpdate();
 
                 int newId = 0;
@@ -142,11 +133,11 @@ public class SqlRegistryService implements RegistryService {
                 connection.commit();
 
                 api.setId(String.valueOf(newId));
-                LOGGER.debug("Restapi created with id = {}", newId);
+                LOGGER.debug("Api created with id = {}", newId);
             
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't insert Restapi with name {}", api.getName(), exception);
+                LOGGER.error("Can't insert Api with name {}", api.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -155,7 +146,7 @@ public class SqlRegistryService implements RegistryService {
     }
 
     @Override
-    public void deleteRestAPI(RestAPI api) {
+    public void deleteApi(API api) {
         try (Connection connection = dataSource.getConnection()) {
             
             if (connection.getAutoCommit()) {
@@ -163,16 +154,16 @@ public class SqlRegistryService implements RegistryService {
             }
             
             try (PreparedStatement deleteStatement = 
-                    connection.prepareStatement(SqlRegistryConstants.deleteRestApiSql)) {
+                    connection.prepareStatement(SqlRegistryConstants.deleteApiSql)) {
                 // where values
                 deleteStatement.setString(1, api.getId());
                 deleteStatement.executeUpdate();
-                deleteExtraDataForRestApi(connection, api);
+                deleteExtraDataForApi(connection, api);
                 connection.commit();
-                LOGGER.debug("RestAPI deleted with id = {}", api.getId());
+                LOGGER.debug("API deleted with id = {}", api.getId());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't delete RestAPI with name {}", api.getId(), exception);
+                LOGGER.error("Can't delete API with name {}", api.getId(), exception);
             }
             
         } catch (Exception exception) {
@@ -181,44 +172,44 @@ public class SqlRegistryService implements RegistryService {
     }
 
     @Override
-    public void deleteRestAPI(String id) {
-        RestAPI api = getRestAPI(id);
+    public void deleteApi(String id) {
+        API api = getApi(id);
         if (api != null) {
-            deleteRestAPI(api);
+            deleteApi(api);
         }
     }
     
-    private void deleteExtraDataForRestApi(Connection connection, RestAPI api) throws SQLException {
+    private void deleteExtraDataForApi(Connection connection, API api) throws SQLException {
 
-        String sqlQuery = SqlRegistryConstants.deleteRestApiMetadataSql;
+        String sqlQuery = SqlRegistryConstants.deleteApiMetadataSql;
         
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
             // where values
             deleteStatement.setString(1, api.getId());
             deleteStatement.executeUpdate();
             
-            LOGGER.debug("RestAPI extra data updated with id = {}", api.getId());
+            LOGGER.debug("API extra data updated with id = {}", api.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate RestAPI extra data with id {}", api.getName(), exception);
+            LOGGER.error("Can't udpate API extra data with id {}", api.getName(), exception);
             throw exception;
         }
 
-        sqlQuery = SqlRegistryConstants.deleteRestApiResourcesSql;
+        sqlQuery = SqlRegistryConstants.deleteApiResourcesSql;
 
         try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
             // where values
             deleteStatement.setString(1, api.getId());
             deleteStatement.executeUpdate();
 
-            LOGGER.debug("RestAPI updated resources with id = {}", api.getId());
+            LOGGER.debug("API updated resources with id = {}", api.getId());
         } catch (SQLException exception) {
-            LOGGER.error("Can't udpate RestAPI resources with id {}", api.getName(), exception);
+            LOGGER.error("Can't udpate API resources with id {}", api.getName(), exception);
             throw exception;
         }
     }
 
     @Override
-    public void updateRestAPI(RestAPI api) {
+    public void updateApi(API api) {
         try (Connection connection = dataSource.getConnection()) {
             
             if (connection.getAutoCommit()) {
@@ -226,27 +217,22 @@ public class SqlRegistryService implements RegistryService {
             }
             
             try (PreparedStatement updateStatement = 
-                    connection.prepareStatement(SqlRegistryConstants.updateRestApiSql)) {
+                    connection.prepareStatement(SqlRegistryConstants.updateApiSql)) {
                 // set values
                 updateStatement.setString(1, api.getName());
-                updateStatement.setString(2, api.getDescription());
-                updateStatement.setString(3, api.getEndpoint());
-                updateStatement.setString(4, api.getContext());
-                if (api.getFormat() != null) {
-                    updateStatement.setString(5, api.getFormat().getId());
-                } else {
-                    updateStatement.setString(5, null);
-                }
+                updateStatement.setString(2, api.getContext());
+                updateStatement.setString(3, api.getDescription());
+                updateStatement.setString(4, api.getVersion());
                 // where values
-                updateStatement.setString(6, api.getId());
+                updateStatement.setString(5, api.getId());
                 updateStatement.executeUpdate();
 
-                updateExtraDataForRestApi(connection, api);
+                updateExtraDataForApi(connection, api);
                 connection.commit();
-                LOGGER.debug("RestAPI updated with id = {}", api.getId());
+                LOGGER.debug("API updated with id = {}", api.getId());
             } catch (SQLException exception) {
                 connection.rollback();
-                LOGGER.error("Can't udpate RestAPI with name {}", api.getName(), exception);
+                LOGGER.error("Can't udpate API with name {}", api.getName(), exception);
             }
             
         } catch (Exception exception) {
@@ -254,69 +240,68 @@ public class SqlRegistryService implements RegistryService {
         }
     }
     
-    private void updateExtraDataForRestApi(Connection connection, RestAPI api) throws SQLException {
+    private void updateExtraDataForApi(Connection connection, API api) throws SQLException {
         
-        deleteExtraDataForRestApi(connection, api);
+        deleteExtraDataForApi(connection, api);
         
         for (Resource resource : api.getResources()) {
             try (PreparedStatement insertStatement = 
-                    connection.prepareStatement(SqlRegistryConstants.insertRestApiResourcesSql)) {
+                    connection.prepareStatement(SqlRegistryConstants.insertApiResourcesSql)) {
                 // set values
                 insertStatement.setString(1, api.getId());
                 insertStatement.setString(2, resource.getPath());
                 insertStatement.setString(3, resource.getMethod());
                 insertStatement.executeUpdate();
                 
-                LOGGER.debug("RestAPI updated with id = {}", api.getId());
+                LOGGER.debug("API updated with id = {}", api.getId());
             } catch (SQLException exception) {
-                LOGGER.error("Can't udpate RestAPI with name {}", api.getName(), exception);
+                LOGGER.error("Can't udpate API with name {}", api.getName(), exception);
                 throw exception;
             }
         }
 
         for (String metadataKey : api.getMetadata().keySet()) {
             try (PreparedStatement insertStatement =
-                         connection.prepareStatement(SqlRegistryConstants.insertRestApiMetadataSql)) {
+                         connection.prepareStatement(SqlRegistryConstants.insertApiMetadataSql)) {
                 // set values
                 insertStatement.setString(1, api.getId());
                 insertStatement.setString(2, metadataKey);
                 insertStatement.setString(3, api.getMetadata().get(metadataKey));
                 insertStatement.executeUpdate();
 
-                LOGGER.debug("RestAPI updated with id = {}", api.getId());
+                LOGGER.debug("API updated with id = {}", api.getId());
             } catch (SQLException exception) {
-                LOGGER.error("Can't udpate RestAPI with name {}", api.getName(), exception);
+                LOGGER.error("Can't udpate API with name {}", api.getName(), exception);
                 throw exception;
             }
         }
     }
 
     @Override
-    public RestAPI getRestAPI(String id) {
+    public API getApi(String id) {
 
-        RestAPI api = null;
+        API api = null;
         try (Connection connection = dataSource.getConnection()) {
             
-            String sqlQuery = SqlRegistryConstants.selectRestApiSql + " where id = ?";
+            String sqlQuery = SqlRegistryConstants.selectApiSql;
+            sqlQuery +=  " where id = ?";
             try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
                 selectStatement.setString(1, id);
                 ResultSet rs = selectStatement.executeQuery();
                 
                 if (rs.next()) {
-                    api = new RestAPI();
+                    api = new API();
                     api.setId(rs.getString("id"));
                     api.setName(rs.getString("name"));
-                    api.setDescription(rs.getString("description"));
-                    api.setEndpoint(rs.getString("endpoint"));
                     api.setContext(rs.getString("context"));
-                    api.setFormat(getDataFormat(rs.getString("id_dataformat")));
-                    api.setMetadata(selectRestApiMetadata(connection, api.getId()));
-                    api.setResources(selectRestApiResources(connection, api.getId()));
-                    api.setPolicies(null);//TODO get all policies for api
+                    api.setDescription(rs.getString("description"));
+                    api.setVersion(rs.getString("version"));
+                    api.setMetadata(selectApiMetadata(connection, api.getId()));
+                    api.setResources(selectApiResources(connection, api.getId()));
                 }
             
             } catch (SQLException exception) {
-                LOGGER.error("Can't find RestAPI with id {}", id, exception);
+                LOGGER.error("Can't find API with id {}", id, exception);
             }
 
         } catch (Exception exception) {
@@ -327,34 +312,32 @@ public class SqlRegistryService implements RegistryService {
     }
 
     @Override
-    public List<RestAPI> getAllRestAPI() {
+    public Collection<API> getApis() {
 
-        List<RestAPI> apis = new ArrayList<>();
+        Collection<API> apis = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
 
-            String sqlQuery = SqlRegistryConstants.selectRestApiSql;
+            String sqlQuery = SqlRegistryConstants.selectApiSql;
             try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
                 ResultSet rs = selectStatement.executeQuery();
 
                 if (rs.getFetchSize() > 0) {
                     while (rs.next()) {
-                        RestAPI api = new RestAPI();
+                        API api = new API();
                         api.setId(rs.getString("id"));
                         api.setName(rs.getString("name"));
-                        api.setDescription(rs.getString("description"));
-                        api.setEndpoint(rs.getString("endpoint"));
                         api.setContext(rs.getString("context"));
-                        api.setFormat(getDataFormat(rs.getString("id_dataformat")));
-                        api.setMetadata(selectRestApiMetadata(connection, api.getId()));
-                        api.setResources(selectRestApiResources(connection, api.getId()));
-                        api.setPolicies(null);//TODO get all policies for api
+                        api.setDescription(rs.getString("description"));
+                        api.setVersion(rs.getString("version"));
+                        api.setMetadata(selectApiMetadata(connection, api.getId()));
+                        api.setResources(selectApiResources(connection, api.getId()));
                         apis.add(api);
                     }
                 }
 
             } catch (SQLException exception) {
-                LOGGER.error("Can't retrieve all RestAPI", exception);
+                LOGGER.error("Can't retrieve all API", exception);
             }
 
         } catch (Exception exception) {
@@ -364,11 +347,11 @@ public class SqlRegistryService implements RegistryService {
         return apis;
     }
 
-    private Map<String, String> selectRestApiMetadata(Connection connection, String idRestApi) {
+    private Map<String, String> selectApiMetadata(Connection connection, String idAPI) {
 
         try (PreparedStatement selectStatement =
-                     connection.prepareStatement(SqlRegistryConstants.selectRestApiMetadataSql)) {
-            selectStatement.setString(1, idRestApi);
+                     connection.prepareStatement(SqlRegistryConstants.selectApiMetadataSql)) {
+            selectStatement.setString(1, idAPI);
             ResultSet rs = selectStatement.executeQuery();
 
             if (rs.getFetchSize() > 0) {
@@ -379,16 +362,16 @@ public class SqlRegistryService implements RegistryService {
                 return metadatas;
             }
         } catch (SQLException exception) {
-            LOGGER.error("Can't find metadata for restApi with id {}", idRestApi, exception);
+            LOGGER.error("Can't find metadata for API with id {}", idAPI, exception);
         }
         return null;
     }
 
-    private Collection<Resource> selectRestApiResources(Connection connection, String idRestApi) {
+    private Collection<Resource> selectApiResources(Connection connection, String idAPI) {
 
         try (PreparedStatement selectStatement =
-                     connection.prepareStatement(SqlRegistryConstants.selectRestApiResourcesSql)) {
-            selectStatement.setString(1, idRestApi);
+                     connection.prepareStatement(SqlRegistryConstants.selectApiResourcesSql)) {
+            selectStatement.setString(1, idAPI);
             ResultSet rs = selectStatement.executeQuery();
 
             if (rs.getFetchSize() > 0) {
@@ -396,265 +379,16 @@ public class SqlRegistryService implements RegistryService {
                 while (rs.next()) {
                     Resource resource = new Resource();
                     resource.setMethod(rs.getString("method"));
-                    resource.setMethod(rs.getString("path"));
+                    resource.setPath(rs.getString("path"));
+                    resource.setBridge(rs.getString("bridge"));
                     resources.add(resource);
                 }
                 return resources;
             }
         } catch (SQLException exception) {
-            LOGGER.error("Can't find metadata for restApi with id {}", idRestApi, exception);
+            LOGGER.error("Can't find metadata for API with id {}", idAPI, exception);
         }
         return null;
-    }
-
-    @Override
-    public void addJmsAPI(JmsAPI api) {
-        try (Connection connection = dataSource.getConnection()) {
-
-            if (connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
-
-            try (PreparedStatement insertStatement =
-                         connection.prepareStatement(SqlRegistryConstants.insertJmsApiSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-
-                // set values
-                insertStatement.setString(1, api.getName());
-                insertStatement.setString(2, api.getDescription());
-                insertStatement.setString(3, api.getEndpoint());
-                insertStatement.setString(4, api.getConnectionFactory());
-                insertStatement.setString(5, api.getDestination());
-                insertStatement.setString(6, api.getType());
-                if (api.getFormat() != null) {
-                    insertStatement.setString(7, api.getFormat().getId());
-                } else {
-                    insertStatement.setString(7, null);
-                }
-                insertStatement.executeUpdate();
-
-                int newId = 0;
-                ResultSet rs = insertStatement.getGeneratedKeys();
-
-                if (rs.next()) {
-                    newId = rs.getInt(1);
-                }
-
-                connection.commit();
-
-                api.setId(String.valueOf(newId));
-                LOGGER.debug("JmsAPI created with id = {}", newId);
-
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't insert JmsAPI with name {}", api.getName(), exception);
-            }
-
-        } catch (Exception exception) {
-            LOGGER.error("Error getting connection ", exception);
-        }
-    }
-
-    @Override
-    public void deleteJmsAPI(JmsAPI api) {
-        try (Connection connection = dataSource.getConnection()) {
-
-            if (connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
-
-            try (PreparedStatement deleteStatement =
-                         connection.prepareStatement(SqlRegistryConstants.deleteJmsApiSql)) {
-                // where values
-                deleteStatement.setString(1, api.getId());
-                deleteStatement.executeUpdate();
-                deleteExtraDataForJmsApi(connection, api);
-                connection.commit();
-                LOGGER.debug("JmsAPI deleted with id = {}", api.getId());
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't delete JmsAPI with name {}", api.getId(), exception);
-            }
-
-        } catch (Exception exception) {
-            LOGGER.error("Error getting connection ", exception);
-        }
-    }
-
-    private void deleteExtraDataForJmsApi(Connection connection, JmsAPI api) throws SQLException {
-
-        String sqlQuery = SqlRegistryConstants.deleteJmsApiMetadataSql;
-
-        try (PreparedStatement deleteStatement = connection.prepareStatement(sqlQuery)) {
-            // where values
-            deleteStatement.setString(1, api.getId());
-            deleteStatement.executeUpdate();
-
-            LOGGER.debug("JmsAPI extra data updated with id = {}", api.getId());
-        } catch (SQLException exception) {
-            LOGGER.error("Can't udpate JmsAPI extra data with id {}", api.getName(), exception);
-            throw exception;
-        }
-    }
-
-    @Override
-    public void deleteJmsAPI(String id) {
-        JmsAPI api = getJmsAPI(id);
-        if (api != null) {
-            deleteJmsAPI(api);
-        }
-    }
-
-    @Override
-    public void updateJmsAPI(JmsAPI api) {
-        try (Connection connection = dataSource.getConnection()) {
-
-            if (connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
-
-            try (PreparedStatement updateStatement =
-                         connection.prepareStatement(SqlRegistryConstants.updateJmsApiSql)) {
-                // set values
-                updateStatement.setString(1, api.getName());
-                updateStatement.setString(2, api.getDescription());
-                updateStatement.setString(3, api.getEndpoint());
-                updateStatement.setString(4, api.getConnectionFactory());
-                updateStatement.setString(5, api.getDestination());
-                updateStatement.setString(6, api.getType());
-                if (api.getFormat() != null) {
-                    updateStatement.setString(7, api.getFormat().getId());
-                } else {
-                    updateStatement.setString(7, null);
-                }
-                // where values
-                updateStatement.setString(8, api.getId());
-                updateStatement.executeUpdate();
-
-                updateExtraDataForJmsApi(connection, api);
-                connection.commit();
-                LOGGER.debug("JmsAPI updated with id = {}", api.getId());
-            } catch (SQLException exception) {
-                connection.rollback();
-                LOGGER.error("Can't udpate JmsAPI with name {}", api.getName(), exception);
-            }
-
-        } catch (Exception exception) {
-            LOGGER.error("Error getting connection ", exception);
-        }
-    }
-
-    private void updateExtraDataForJmsApi(Connection connection, JmsAPI api) throws SQLException {
-
-        deleteExtraDataForJmsApi(connection, api);
-
-        for (String metadataKey : api.getMetadata().keySet()) {
-            try (PreparedStatement insertStatement =
-                         connection.prepareStatement(SqlRegistryConstants.insertJmsApiMetadataSql)) {
-                // set values
-                insertStatement.setString(1, api.getId());
-                insertStatement.setString(2, metadataKey);
-                insertStatement.setString(3, api.getMetadata().get(metadataKey));
-                insertStatement.executeUpdate();
-
-                LOGGER.debug("JmsAPI updated with id = {}", api.getId());
-            } catch (SQLException exception) {
-                LOGGER.error("Can't update JmsAPI with name {}", api.getName(), exception);
-                throw exception;
-            }
-        }
-    }
-
-    @Override
-    public JmsAPI getJmsAPI(String id) {
-        JmsAPI api = null;
-        try (Connection connection = dataSource.getConnection()) {
-
-            String sqlQuery = SqlRegistryConstants.selectJmsApiSql + " where id = ?";
-            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
-                selectStatement.setString(1, id);
-                ResultSet rs = selectStatement.executeQuery();
-
-                if (rs.next()) {
-                    api = new JmsAPI();
-                    api.setId(rs.getString("id"));
-                    api.setName(rs.getString("name"));
-                    api.setDescription(rs.getString("description"));
-                    api.setEndpoint(rs.getString("endpoint"));
-                    api.setConnectionFactory(rs.getString("connectionFactory"));
-                    api.setDestination(rs.getString("destination"));
-                    api.setType(rs.getString("type"));
-                    api.setFormat(getDataFormat(rs.getString("id_dataformat")));
-                    api.setMetadata(selectJmsApiMetadata(connection, api.getId()));
-                    api.setPolicies(null);//TODO get all policies for api
-                }
-
-            } catch (SQLException exception) {
-                LOGGER.error("Can't find JmsApi with id {}", id, exception);
-            }
-
-        } catch (Exception exception) {
-            LOGGER.error("Error getting connection ", exception);
-        }
-
-        return api;
-    }
-
-    private Map<String, String> selectJmsApiMetadata(Connection connection, String idJmsApi) {
-
-        try (PreparedStatement selectStatement =
-                     connection.prepareStatement(SqlRegistryConstants.selectJmsApiMetadataSql)) {
-            selectStatement.setString(1, idJmsApi);
-            ResultSet rs = selectStatement.executeQuery();
-
-            if (rs.getFetchSize() > 0) {
-                Map<String, String> metadatas = new HashMap<>();
-                while (rs.next()) {
-                    metadatas.put(rs.getString("key"),rs.getString("key"));
-                }
-                return metadatas;
-            }
-        } catch (SQLException exception) {
-            LOGGER.error("Can't find metadata for JmsApi with id {}", idJmsApi, exception);
-        }
-        return null;
-    }
-
-    @Override
-    public List<JmsAPI> getAllJmsAPI() {
-        List<JmsAPI> apis = new ArrayList<>();
-
-        try (Connection connection = dataSource.getConnection()) {
-
-            String sqlQuery = SqlRegistryConstants.selectJmsApiSql;
-            try (PreparedStatement selectStatement = connection.prepareStatement(sqlQuery)) {
-                ResultSet rs = selectStatement.executeQuery();
-
-                if (rs.getFetchSize() > 0) {
-                    while (rs.next()) {
-                        JmsAPI api = new JmsAPI();
-                        api.setId(rs.getString("id"));
-                        api.setName(rs.getString("name"));
-                        api.setDescription(rs.getString("description"));
-                        api.setEndpoint(rs.getString("endpoint"));
-                        api.setConnectionFactory(rs.getString("connectionFactory"));
-                        api.setDestination(rs.getString("destination"));
-                        api.setType(rs.getString("type"));
-                        api.setFormat(getDataFormat(rs.getString("id_dataformat")));
-                        api.setMetadata(selectRestApiMetadata(connection, api.getId()));
-                        api.setPolicies(null);//TODO get all policies for api
-                        apis.add(api);
-                    }
-                }
-
-            } catch (SQLException exception) {
-                LOGGER.error("Can't retrieve all RestAPI", exception);
-            }
-
-        } catch (Exception exception) {
-            LOGGER.error("Error getting connection ", exception);
-        }
-
-        return apis;
     }
 
     @Override
@@ -791,7 +525,7 @@ public class SqlRegistryService implements RegistryService {
     }
 
     @Override
-    public List<DataFormat> getAllDataFormats() {
+    public List<DataFormat> getDataFormats() {
         
         List<DataFormat> dataformats = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {

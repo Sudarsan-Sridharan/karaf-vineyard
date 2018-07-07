@@ -16,31 +16,32 @@
  */
 package org.apache.karaf.vineyard.registry.commands;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
-import org.apache.karaf.vineyard.common.RestAPI;
+import org.apache.karaf.vineyard.common.API;
 
 /**
- * Command to list all Registry restapi
+ * Command to list all apis in the registry.
  */
-@Command(scope = "vineyard", name = "restapi", description = "List all Registry restapi")
+@Command(scope = "vineyard", name = "api-list", description = "List all apis in the registry")
 @Service
-public class RestApiListCommand extends VineyardRegistryCommandSupport {
+public class ApiListCommand extends VineyardRegistryCommandSupport {
 
     protected Object doExecute() throws Exception {
-        List<RestAPI> apis =
-                getRegistryService().getAllRestAPI();
+        Collection<API> apis = getRegistryService().getApis();
 
         ShellTable table = new ShellTable();
         table.column("Id");
         table.column("Name");
+        table.column("Context");
         table.column("Description");
+        table.column("Version");
         // TODO add extra content
-        for (RestAPI api : apis) {
-            table.addRow().addContent(api.getId(), api.getName(), api.getDescription());
+        for (API api : apis) {
+            table.addRow().addContent(api.getId(), api.getName(), api.getContext(), api.getDescription(), api.getVersion());
         }
 
         table.print(System.out);

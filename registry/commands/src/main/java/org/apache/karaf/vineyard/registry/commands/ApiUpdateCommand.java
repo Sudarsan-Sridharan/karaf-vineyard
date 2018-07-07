@@ -20,36 +20,48 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.vineyard.common.RestAPI;
+import org.apache.karaf.vineyard.common.API;
 
 /**
- * Command to list all Registry restapi
+ * Command to update an api in the registry.
  */
-@Command(scope = "vineyard", name = "restapi-update", description = "Update a restapi in the Registry")
+@Command(scope = "vineyard", name = "api-update", description = "Update an api in the registry")
 @Service
-public class RestApiUpdateCommand extends VineyardRegistryCommandSupport {
+public class ApiUpdateCommand extends VineyardRegistryCommandSupport {
     
-    @Argument(index = 0, name = "id", description = "Id of the restapi", required = true, multiValued = false)
+    @Argument(index = 0, name = "id", description = "Id of the api", required = true, multiValued = false)
     private String id;
     
-    @Option(name = "-n", aliases = { "--name" }, description = "Shortcut name of the restapi", required = false, multiValued = false)
+    @Option(name = "-n", aliases = { "--name" }, description = "Shortcut name of the api", required = false, multiValued = false)
     private String name;
+
+    @Option(name = "-c", aliases = { "--context" }, description = "Context of the api", required = false, multiValued = false)
+    private String context;
     
-    @Option(name = "-d", aliases = { "--description" }, description = "Description of the restapi", required = false, multiValued = false)
+    @Option(name = "-d", aliases = { "--description" }, description = "Description of the api", required = false, multiValued = false)
     private String description;
+
+    @Option(name = "-v", aliases = { "--version" }, description = "Version of the api", required = false, multiValued = false)
+    private String version;
     
     protected Object doExecute() throws Exception {
 
-        RestAPI api = getRegistryService().getRestAPI(id);
+        API api = getRegistryService().getApi(id);
         
         if (api != null) {
             if (name != null) {
                 api.setName(name);
             }
+            if (context != null) {
+                api.setContext(context);
+            }
             if (description != null) {
                 api.setDescription(description);
             }
-            getRegistryService().updateRestAPI(api);
+            if (version != null) {
+                api.setVersion(version);
+            }
+            getRegistryService().updateApi(api);
         }
 
         return null;

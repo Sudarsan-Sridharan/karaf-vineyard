@@ -31,7 +31,7 @@ import org.apache.karaf.vineyard.registry.api.RegistryService;
  * Completer of the Karaf Vineyard Registry services.
  */
 @Service
-public class RegistryRestApiCompleter implements Completer {
+public class RegistryApiCompleter implements Completer {
 
     @Reference
     private RegistryService registryService;

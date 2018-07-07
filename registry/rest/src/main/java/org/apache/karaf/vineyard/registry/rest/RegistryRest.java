@@ -16,16 +16,15 @@
  */
 package org.apache.karaf.vineyard.registry.rest;
 
+import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.DataFormat;
-import org.apache.karaf.vineyard.common.JmsAPI;
-import org.apache.karaf.vineyard.common.RestAPI;
 import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import java.util.Collection;
 
 @Path("/")
 @Consumes({"application/json"})
@@ -40,11 +39,11 @@ public class RegistryRest {
         this.registry = registry;
     }
     
-    @Path("/rest-api")
+    @Path("/api")
     @POST
-    public Response addRestAPI(RestAPI restAPI) {
+    public Response addApi(API api) {
         if (registry != null) {
-            registry.addRestAPI(restAPI);
+            registry.addApi(api);
             return Response.ok().build();
         } else {
             LOGGER.error("Registry service is null !");
@@ -52,11 +51,11 @@ public class RegistryRest {
         }
     }
 
-    @Path("/rest-api")
+    @Path("/api")
     @DELETE
-    public Response deleteRestAPI(RestAPI restAPI) {
+    public Response deleteApi(API api) {
         if (registry != null) {
-             registry.deleteRestAPI(restAPI);
+             registry.deleteApi(api);
              return Response.ok().build();
          } else {
              LOGGER.error("Registry service is null !");
@@ -64,11 +63,11 @@ public class RegistryRest {
          }
     }
     
-    @Path("/rest-api/{id}")
+    @Path("/api/{id}")
     @DELETE
-    public Response deleteRestAPI(@PathParam("id") String id) {
+    public Response deleteApi(@PathParam("id") String id) {
         if (registry != null) {
-             registry.deleteRestAPI(id);
+             registry.deleteApi(id);
              return Response.ok().build();
          } else {
              LOGGER.error("Registry service is null !");
@@ -76,15 +75,15 @@ public class RegistryRest {
          }
     }
     
-    @Path("/rest-api/{id}")
+    @Path("/api/{id}")
     @GET
     @Produces("application/json")
-    public Response getRestAPI(@PathParam("id") String id) {
+    public Response getApi(@PathParam("id") String id) {
         
         if (registry != null) {
-            RestAPI restAPI = registry.getRestAPI(id);
-            if (restAPI != null) {
-                return Response.ok(restAPI).build();
+            API api = registry.getApi(id);
+            if (api != null) {
+                return Response.ok(api).build();
             } else {
                 return Response.noContent().build();
             }
@@ -94,87 +93,15 @@ public class RegistryRest {
         }
     }
 
-    @Path("/rest-api")
+    @Path("/api")
     @GET
     @Produces("application/json")
-    public Response listRestAPI() {
+    public Response getApis() {
         
         if (registry != null) {
-            List<RestAPI> restAPIs = registry.getAllRestAPI();
-            if (restAPIs != null) {
-                return Response.ok(restAPIs).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/jms-api")
-    @POST
-    public Response addJmsAPI(JmsAPI jmsAPI) {
-        if (registry != null) {
-            registry.addJmsAPI(jmsAPI);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/jms-api")
-    @DELETE
-    public Response deleteJmsAPI(JmsAPI jmsAPI) {
-        if (registry != null) {
-            registry.deleteJmsAPI(jmsAPI);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/jms-api/{id}")
-    @DELETE
-    public Response deleteJmsAPI(@PathParam("id") String id) {
-        if (registry != null) {
-            registry.deleteJmsAPI(id);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/jms-api/{id}")
-    @GET
-    @Produces("application/json")
-    public Response getJmsAPI(@PathParam("id") String id) {
-
-        if (registry != null) {
-            JmsAPI jmsAPI = registry.getJmsAPI(id);
-            if (jmsAPI != null) {
-                return Response.ok(jmsAPI).build();
-            } else {
-                return Response.noContent().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/jms-api")
-    @GET
-    @Produces("application/json")
-    public Response listJmsAPI() {
-
-        if (registry != null) {
-            List<JmsAPI> jmsAPIs = registry.getAllJmsAPI();
-            if (jmsAPIs != null) {
-                return Response.ok(jmsAPIs).build();
+            Collection<API> apis = registry.getApis();
+            if (apis != null) {
+                return Response.ok(apis).build();
             } else {
                 return Response.noContent().build();
             }
@@ -244,7 +171,7 @@ public class RegistryRest {
     public Response listDataFormat() {
 
         if (registry != null) {
-            List<DataFormat> dataformats = registry.getAllDataFormats();
+            Collection<DataFormat> dataformats = registry.getDataFormats();
             if (dataformats != null) {
                 return Response.ok(dataformats).build();
             } else {

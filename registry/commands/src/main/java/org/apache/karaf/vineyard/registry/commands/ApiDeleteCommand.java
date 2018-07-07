@@ -21,18 +21,18 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 /**
- * Command to list all Registry restapi
+ * Command to delete an api in the registry.
  */
-@Command(scope = "vineyard", name = "restapi-delete", description = "Delete a restapi in the Registry")
+@Command(scope = "vineyard", name = "api-delete", description = "Delete an api in the Registry")
 @Service
-public class RestApiDeleteCommand extends VineyardRegistryCommandSupport {
+public class ApiDeleteCommand extends VineyardRegistryCommandSupport {
     
-    @Argument(index = 0, name = "id", description = "Id of the restapi", required = true, multiValued = false)
+    @Argument(index = 0, name = "id", description = "Id of the api", required = true, multiValued = false)
     private String id;
     
     protected Object doExecute() throws Exception {
         
-        getRegistryService().deleteRestAPI(id);
+        getRegistryService().deleteApi(id);
         return null;
     }
 }

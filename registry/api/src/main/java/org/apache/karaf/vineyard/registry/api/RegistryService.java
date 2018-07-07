@@ -107,7 +107,7 @@ public interface RegistryService {
     /**
      * Retrieve all the data formats in the registry.
      *
-     * @return The collectionof data formats.
+     * @return The collection of data formats.
      */
     Collection<DataFormat> getDataFormats();
 
