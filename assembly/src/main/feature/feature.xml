@@ -75,9 +75,9 @@
         <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.api/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.storage/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.commands/${project.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.rest/${project.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.storage/${project.version}</bundle>
     </feature>
 
 </features>
