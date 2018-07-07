@@ -126,22 +126,17 @@ public class VineyardRegistryRestTest extends VineyardTestSupport {
         }
 
         try {
-            String URL = "http://localhost:8181/cxf/vineyard/registry/rest-api";
+            String URL = "http://localhost:8181/cxf/vineyard/registry/api";
             URL urlDataformat = new URL(URL);
 
             // Call add rest-api
             String jsonAddRestApi = "{\n" +
                     "  \"name\": \"authenticate service\",\n" +
-                    "  \"description\": \"use to authenticate user with token\",\n" +
-                    "  \"endpoint\": \"http://localhost:8181/cxf\"\n" +
                     "  \"context\": \"api/authenticate\"\n" +
-                    "  \"format\": {\n" +
-                        "  \"name\": \"json\",\n" +
-                        "  \"schema\": \"json\",\n" +
-                        "  \"sample\": \"json-sample\"\n" +
-                        "}" +
+                    "  \"description\": \"use to authenticate user with token\",\n" +
+                    "  \"version\": \"1.0.0\"" +
                     "}";
-            System.out.println("Call POST http://localhost:8181/cxf/vineyard/registry/rest-api");
+            System.out.println("Call POST http://localhost:8181/cxf/vineyard/registry/api");
             HttpURLConnection connection = (HttpURLConnection) urlDataformat.openConnection();
             connection.setRequestMethod(HttpMethod.POST);
             connection.setDoOutput(true);
@@ -159,7 +154,7 @@ public class VineyardRegistryRestTest extends VineyardTestSupport {
             }
 
             // Call list rest-api
-            System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/rest-api");
+            System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/api");
             connection = (HttpURLConnection) urlDataformat.openConnection();
             connection.setRequestMethod(HttpMethod.GET);
             connection.connect();
@@ -172,7 +167,7 @@ public class VineyardRegistryRestTest extends VineyardTestSupport {
                     sb.append(line);
                 }
                 if (sb.length() == 0) {
-                    System.out.println("Rest-api list is empty");
+                    System.out.println("api list is empty");
                     Assert.assertTrue(false);
                 } else {
                     System.out.println(sb.toString());
