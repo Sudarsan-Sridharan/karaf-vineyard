@@ -43,6 +43,9 @@ public class ApiUpdateCommand extends VineyardRegistryCommandSupport {
 
     @Option(name = "-v", aliases = { "--version" }, description = "Version of the api", required = false, multiValued = false)
     private String version;
+
+    @Option(name = "-m", aliases = { "--mocked" }, description = "Is the api is mocked", required = false, multiValued = false)
+    private Boolean mocked;
     
     protected Object doExecute() throws Exception {
 
@@ -60,6 +63,9 @@ public class ApiUpdateCommand extends VineyardRegistryCommandSupport {
             }
             if (version != null) {
                 api.setVersion(version);
+            }
+            if (mocked != null) {
+                api.setMocked(mocked);
             }
             getRegistryService().updateApi(api);
         }

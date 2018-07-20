@@ -40,6 +40,9 @@ public class ApiAddCommand extends VineyardRegistryCommandSupport {
     @Argument(index = 3, name = "version", description = "Version of the api", required = false, multiValued = false)
     private String version;
 
+    @Argument(index = 4, name = "mocked", description = "Is the api is mocked", required = false, multiValued = false)
+    private Boolean mocked = false;
+
     protected Object doExecute() throws Exception {
         
         API api = new API();
@@ -47,6 +50,7 @@ public class ApiAddCommand extends VineyardRegistryCommandSupport {
         api.setContext(context);
         api.setDescription(description);
         api.setVersion(version);
+        api.setMocked(mocked);
         
         getRegistryService().addApi(api);
 

@@ -40,7 +40,8 @@ public final class SqlRegistryConstants {
                     " name VARCHAR(200) NOT NULL," +
                     " context VARCHAR(200)," +
                     " description VARCHAR(8192)," +
-                    " version VARCHAR(200))",
+                    " version VARCHAR(200)," +
+                    " mocked BOOLEAN)",
 
             "CREATE TABLE " + DATABASE_SCHEMA + ".METADATA(" +
                     " id_api SMALLINT," +
@@ -66,7 +67,7 @@ public final class SqlRegistryConstants {
                     "from " + DATABASE_SCHEMA + ".DATAFORMAT ";
 
     public final static String selectApiSql =
-            "select id, name, context, description, version " +
+            "select id, name, context, description, version, mocked " +
                     "from " + DATABASE_SCHEMA + ".API ";
 
     public final static String selectApiMetadataSql =
@@ -87,8 +88,8 @@ public final class SqlRegistryConstants {
 
     public final static String insertApiSql =
             "insert into " + DATABASE_SCHEMA + ".API " +
-                    "(name, context, description, version) " +
-                    "values (?, ?, ?, ?)";
+                    "(name, context, description, version, mocked) " +
+                    "values (?, ?, ?, ?, ?)";
 
     public final static String insertApiMetadataSql =
             "insert into " + DATABASE_SCHEMA + ".METADATA " +
@@ -108,7 +109,7 @@ public final class SqlRegistryConstants {
 
     public final static String updateApiSql =
             "update " + DATABASE_SCHEMA + ".API " +
-                    "set name = ?, context = ?, description = ?, version = ? " +
+                    "set name = ?, context = ?, description = ?, version = ? , mocked = ? " +
                     "where id = ?";
 
     public final static String updateApiMetadataSql =
