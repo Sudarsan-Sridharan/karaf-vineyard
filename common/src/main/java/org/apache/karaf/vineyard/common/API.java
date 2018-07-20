@@ -40,7 +40,7 @@ public class API {
     private String version;
 
     /** Indicate if the API is mocked */
-    private boolean mocked;
+    private boolean mocked = false;
 
     /** Additional data functional and technical related to the API */
     private Map<String, String> metadata;
