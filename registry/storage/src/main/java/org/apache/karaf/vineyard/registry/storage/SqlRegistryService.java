@@ -121,7 +121,6 @@ public class SqlRegistryService implements RegistryService {
                 insertStatement.setString(2, api.getContext());
                 insertStatement.setString(3, api.getDescription());
                 insertStatement.setString(4, api.getVersion());
-                insertStatement.setBoolean(5, api.isMocked());
                 insertStatement.executeUpdate();
 
                 int newId = 0;
@@ -224,7 +223,6 @@ public class SqlRegistryService implements RegistryService {
                 updateStatement.setString(2, api.getContext());
                 updateStatement.setString(3, api.getDescription());
                 updateStatement.setString(4, api.getVersion());
-                updateStatement.setBoolean(5, api.isMocked());
                 // where values
                 updateStatement.setString(5, api.getId());
                 updateStatement.executeUpdate();
@@ -253,6 +251,8 @@ public class SqlRegistryService implements RegistryService {
                 insertStatement.setString(1, api.getId());
                 insertStatement.setString(2, resource.getPath());
                 insertStatement.setString(3, resource.getMethod());
+                insertStatement.setBoolean(4, resource.isUseBridge());
+                insertStatement.setString(5, resource.getResponse());
                 insertStatement.executeUpdate();
                 
                 LOGGER.debug("API updated with id = {}", api.getId());
@@ -298,7 +298,6 @@ public class SqlRegistryService implements RegistryService {
                     api.setContext(rs.getString("context"));
                     api.setDescription(rs.getString("description"));
                     api.setVersion(rs.getString("version"));
-                    api.setMocked(rs.getBoolean("mocked"));
                     api.setMetadata(selectApiMetadata(connection, api.getId()));
                     api.setResources(selectApiResources(connection, api.getId()));
                 }
@@ -333,7 +332,6 @@ public class SqlRegistryService implements RegistryService {
                         api.setContext(rs.getString("context"));
                         api.setDescription(rs.getString("description"));
                         api.setVersion(rs.getString("version"));
-                        api.setMocked(rs.getBoolean("mocked"));
                         api.setMetadata(selectApiMetadata(connection, api.getId()));
                         api.setResources(selectApiResources(connection, api.getId()));
                         apis.add(api);
@@ -385,6 +383,8 @@ public class SqlRegistryService implements RegistryService {
                     resource.setMethod(rs.getString("method"));
                     resource.setPath(rs.getString("path"));
                     resource.setBridge(rs.getString("bridge"));
+                    resource.setUseBridge(rs.getBoolean("use_bridge"));
+                    resource.setResponse(rs.getClob("response").toString());
                     resources.add(resource);
                 }
                 return resources;

@@ -39,11 +39,10 @@ public class ApiListCommand extends VineyardRegistryCommandSupport {
         table.column("Context");
         table.column("Description");
         table.column("Version");
-        table.column("Mocked");
         // TODO add extra content
         for (API api : apis) {
             table.addRow().addContent(api.getId(), api.getName(), api.getContext(), api.getDescription(),
-                    api.getVersion(), api.isMocked());
+                    api.getVersion());
         }
 
         table.print(System.out);

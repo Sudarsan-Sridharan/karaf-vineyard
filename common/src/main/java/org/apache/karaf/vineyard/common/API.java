@@ -39,9 +39,6 @@ public class API {
     /** Explicit version of this API */
     private String version;
 
-    /** Indicate if the API is mocked */
-    private boolean mocked = false;
-
     /** Additional data functional and technical related to the API */
     private Map<String, String> metadata;
 
@@ -102,13 +99,5 @@ public class API {
 
     public void setResources(Collection<Resource> resources) {
         this.resources = resources;
-    }
-
-    public boolean isMocked() {
-        return mocked;
-    }
-
-    public void setMocked(boolean mocked) {
-        this.mocked = mocked;
     }
 }

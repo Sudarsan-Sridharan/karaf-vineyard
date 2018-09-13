@@ -40,8 +40,7 @@ public final class SqlRegistryConstants {
                     " name VARCHAR(200) NOT NULL," +
                     " context VARCHAR(200)," +
                     " description VARCHAR(8192)," +
-                    " version VARCHAR(200)," +
-                    " mocked BOOLEAN)",
+                    " version VARCHAR(200))",
 
             "CREATE TABLE " + DATABASE_SCHEMA + ".METADATA(" +
                     " id_api SMALLINT," +
@@ -56,6 +55,8 @@ public final class SqlRegistryConstants {
                     " bridge VARCHAR(200)," +
                     " id_dataformat_in SMALLINT," +
                     " id_dataformat_out SMALLINT," +
+                    " use_bridge BOOLEAN, " +
+                    " response CLOG, " +
                     " CONSTRAINT RESOURCES_DF_IN_FK FOREIGN KEY (id_dataformat_in) REFERENCES " + DATABASE_SCHEMA + ".DATAFORMAT (id), " +
                     " CONSTRAINT RESOURCES_DF_OUT_FK FOREIGN KEY (id_dataformat_out) REFERENCES " + DATABASE_SCHEMA + ".DATAFORMAT (id), " +
                     " CONSTRAINT RESOURCES_API_FK FOREIGN KEY (id_api) REFERENCES " + DATABASE_SCHEMA + ".API (id))"
@@ -67,7 +68,7 @@ public final class SqlRegistryConstants {
                     "from " + DATABASE_SCHEMA + ".DATAFORMAT ";
 
     public final static String selectApiSql =
-            "select id, name, context, description, version, mocked " +
+            "select id, name, context, description, version " +
                     "from " + DATABASE_SCHEMA + ".API ";
 
     public final static String selectApiMetadataSql =
@@ -76,7 +77,7 @@ public final class SqlRegistryConstants {
                     "where id_api = ? ";
 
     public final static String selectApiResourcesSql =
-            "select path, method, bridge, id_dataformat_in, id_dataformat_out " +
+            "select path, method, bridge, use_bridge, response " +
                     "from " + DATABASE_SCHEMA + ".RESOURCES " +
                     "where id_api = ? ";
 
@@ -88,8 +89,8 @@ public final class SqlRegistryConstants {
 
     public final static String insertApiSql =
             "insert into " + DATABASE_SCHEMA + ".API " +
-                    "(name, context, description, version, mocked) " +
-                    "values (?, ?, ?, ?, ?)";
+                    "(name, context, description, version) " +
+                    "values (?, ?, ?, ?)";
 
     public final static String insertApiMetadataSql =
             "insert into " + DATABASE_SCHEMA + ".METADATA " +
@@ -98,7 +99,7 @@ public final class SqlRegistryConstants {
 
     public final static String insertApiResourcesSql =
             "insert into " + DATABASE_SCHEMA + ".RESOURCES " +
-                    "(id_api, path, method, bridge, id_dataformat_in, id_dataformat_out) " +
+                    "(id_api, path, method, bridge use_bridge, response) " +
                     "values (?, ?, ?, ?, ?, ?)";
 
     /** Update queries */
@@ -109,7 +110,7 @@ public final class SqlRegistryConstants {
 
     public final static String updateApiSql =
             "update " + DATABASE_SCHEMA + ".API " +
-                    "set name = ?, context = ?, description = ?, version = ? , mocked = ? " +
+                    "set name = ?, context = ?, description = ?, version = ? " +
                     "where id = ?";
 
     public final static String updateApiMetadataSql =
@@ -119,7 +120,7 @@ public final class SqlRegistryConstants {
 
     public final static String updateApiResourcesSql =
             "update " + DATABASE_SCHEMA + ".RESOURCES " +
-                    "set path = ?, method = ?, bridge = ? , id_dataformat_in = ?, id_dataformat_out = ? " +
+                    "set path = ?, method = ?, bridge = ? , use_bridge = ?, response = ? " +
                     "where id_api = ?";
 
     /** Delete queries */
