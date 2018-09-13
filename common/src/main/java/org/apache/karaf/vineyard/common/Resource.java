@@ -35,6 +35,10 @@ public class Resource {
 
     private Collection<Policy> policies;
 
+    private boolean useBridge;
+
+    private String response;
+
     private String bridge;
 
     public String getPath() {
@@ -53,12 +57,51 @@ public class Resource {
         this.method = method;
     }
 
+    public DataFormat getInFormat() {
+        return inFormat;
+    }
+
+    public void setInFormat(DataFormat inFormat) {
+        this.inFormat = inFormat;
+    }
+
+    public DataFormat getOutFormat() {
+        return outFormat;
+    }
+
+    public void setOutFormat(DataFormat outFormat) {
+        this.outFormat = outFormat;
+    }
+
+    public Collection<Policy> getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(Collection<Policy> policies) {
+        this.policies = policies;
+    }
+
+    public boolean isUseBridge() {
+        return useBridge;
+    }
+
+    public void setUseBridge(boolean useBridge) {
+        this.useBridge = useBridge;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
     public String getBridge() {
-        return method;
+        return bridge;
     }
 
-    public void setBridge(String method) {
-        this.method = method;
+    public void setBridge(String bridge) {
+        this.bridge = bridge;
     }
-
 }

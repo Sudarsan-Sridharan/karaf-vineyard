@@ -30,7 +30,7 @@ public class API {
     /** Name of the API */
     private String name;
 
-    /** Base contaext of this API */
+    /** Base context of this API */
     private String context;
 
     /** Open text describing the API */
