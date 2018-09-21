@@ -64,9 +64,15 @@
         </config>
         
         <feature version="${project.version}">vineyard-common</feature>
-        <feature>jdbc</feature>
+        <feature>transaction</feature>
+        <feature>jndi</feature>
+        <feature>pax-jdbc-config</feature>
         <feature>pax-jdbc-derby</feature>
+        <feature>pax-jdbc-pool-dbcp2</feature>
+        <feature>jdbc</feature>
         <feature dependency="true">aries-blueprint</feature>
+        <feature version="[2,3)">jpa</feature>
+        <feature version="[2,3)">eclipselink</feature>
         <feature version="${cxf.version}">cxf-jaxrs</feature>
         <feature version="${cxf.version}">cxf-rs-description-swagger2</feature>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>

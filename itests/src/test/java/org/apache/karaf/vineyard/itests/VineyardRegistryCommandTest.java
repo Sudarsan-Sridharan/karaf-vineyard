@@ -13,6 +13,7 @@
  */
 package org.apache.karaf.vineyard.itests;
 
+import org.apache.karaf.itests.KarafTestSupport;
 import org.apache.karaf.jaas.boot.principal.RolePrincipal;
 import org.junit.After;
 import org.junit.Assert;
@@ -22,16 +23,10 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
-import javax.ws.rs.HttpMethod;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class VineyardRegistryCommandTest extends VineyardTestSupport {
+public class VineyardRegistryCommandTest extends KarafTestSupport {
 
     private static final RolePrincipal[] ADMIN_ROLES = {
             new RolePrincipal("admin"),
@@ -39,21 +34,33 @@ public class VineyardRegistryCommandTest extends VineyardTestSupport {
     };
 
     @Test
-    public void testVineyardRegistryStorage() throws InterruptedException {
-        installVineyard();
-        Thread.sleep(DEFAULT_TIMEOUT);
-        System.out.println(executeCommand("feature:install vineyard-registry", ADMIN_ROLES));
-        Thread.sleep(DEFAULT_TIMEOUT);
+    public void testVineyardRegistryFeatureInstall() throws Exception {
+        // adding vineyard features repository
+        addFeaturesRepository("mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/1.0.0-SNAPSHOT/xml");
+
+        String featureList = executeCommand("feature:list");
+        System.out.println(featureList);
+
+        executeCommand("feature:install vineyard-registry", ADMIN_ROLES);
+        installAndAssertFeature("vineyard-registry");
+
+        String bundleList = executeCommand("bundle:list");
+        System.out.println(bundleList);
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Common"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: API"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Commands"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: REST"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Storage"));
+
+        String jdbcList = executeCommand("jdbc:ds-list");
+        System.out.println(jdbcList);
+        Assert.assertTrue(jdbcList.contains("jdbc:derby:data/vineyard/derby │ OK"));
     }
 
 
     @After
     public void tearDown() {
-        try {
-            unInstallVineyard();
-        } catch (Exception ex) {
-            //Ignore
-        }
+        executeCommand("feature:uninstall vineyard-registry", ADMIN_ROLES);
     }
 
 }

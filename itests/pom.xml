@@ -33,18 +33,6 @@
     <name>Apache Karaf :: Vineyard :: Integration Tests</name>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.apache.karaf</groupId>
-            <artifactId>apache-karaf</artifactId>
-            <version>${karaf.version}</version>
-            <type>tar.gz</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.karaf.shell</groupId>
-            <artifactId>org.apache.karaf.shell.core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.karaf.vineyard</groupId>
             <artifactId>apache-karaf-vineyard</artifactId>
@@ -58,17 +46,44 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- pax exam -->
+        <!-- Provide the KarafTestSupport -->
         <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-junit4</artifactId>
-            <version>4.11.0</version>
+            <groupId>org.apache.karaf.itests</groupId>
+            <artifactId>common</artifactId>
+            <version>${karaf.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- Define the Apache Karaf version to download and use for the test -->
+        <!-- We use a released version here to avoid SNAPSHOT resolution -->
+        <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>apache-karaf</artifactId>
+            <version>${karaf.version}</version>
+            <scope>test</scope>
+            <type>tar.gz</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Required to use shell commands in the tests -->
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Provide the PaxExam Karaf support -->
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-karaf</artifactId>
-            <version>4.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Provide the PaxExam JUnit extension -->
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit4</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -77,23 +92,46 @@
             <version>1.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>${javax.annotation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.hamcrest</artifactId>
+            <version>1.3_1</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1</version>
-            <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/test/filtered-resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
