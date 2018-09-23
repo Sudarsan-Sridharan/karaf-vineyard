@@ -45,7 +45,7 @@ features:
 
 * karaf-vineyard-registry
 * karaf-vineyard-gateway
-* karaf-vineyard_discovery
+* karaf-vineyard-discovery
 
 Simply register Karaf Vineyard features repository:
 

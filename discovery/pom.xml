@@ -36,6 +36,9 @@
     <modules>
         <module>api</module>
         <!--
+        <module>openapi</module>
+        <module>swagger</module>
+        <module>grahql</module>
         <module>karaf</module>
         <module>jms</module>
         <module>camel</module>
