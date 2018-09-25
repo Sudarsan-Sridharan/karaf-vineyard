@@ -41,29 +41,20 @@
         <feature>vineyard-common</feature>
     </feature>
 
-    <feature name="vineyard-registry" version="${project.version}" description="Karaf Vineyard Registry">
-    
+    <feature name="vineyard-registry-datasource" version="${project.version}">
         <config name="org.ops4j.datasource-vineyard">
             osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
             dataSourceName=jdbc/vineyard
             url=jdbc:derby:data/vineyard/derby;create=true
         </config>
-        
-        <config name="org.apache.karaf.vineyard.registry.storage.jdbc">
-            ###############################################
-            # Vineyard Registry Storage JDBC Configuration
-            ###############################################
-            
-            # Name of the JDBC datasource
-            datasource.name=jdbc/vineyard
-            
-            # Dialect (type of the database)
-            # The dialect is used to create the tables
-            # Supported dialects are: generic, derby, mysql
-            dialect=derby
-        </config>
-        
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/vineyard
+        </capability>
+    </feature>
+
+    <feature name="vineyard-registry" version="${project.version}" description="Karaf Vineyard Registry">
         <feature version="${project.version}">vineyard-common</feature>
+        <feature version="${project.version}">vineyard-registry-datasource</feature>
         <feature>transaction</feature>
         <feature>jndi</feature>
         <feature>pax-jdbc-config</feature>

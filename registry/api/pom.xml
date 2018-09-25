@@ -38,12 +38,6 @@
             <groupId>org.apache.karaf.vineyard</groupId>
             <artifactId>org.apache.karaf.vineyard.common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-
     </dependencies>
     
     <build>
@@ -56,12 +50,6 @@
                         <Export-Package>
                             org.apache.karaf.vineyard.registry.api
                         </Export-Package>
-                        <Import-Package>
-                            javax.persistence;version="[2,3)",
-                            org.hibernate.proxy,
-                            javassist.util.proxy,
-                            *
-                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

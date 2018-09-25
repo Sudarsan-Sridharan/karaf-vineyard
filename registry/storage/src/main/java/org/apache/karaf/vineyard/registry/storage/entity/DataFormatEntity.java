@@ -16,42 +16,36 @@
  */
 package org.apache.karaf.vineyard.registry.storage.entity;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * A regular JPA entity, using JPA annotations.
  */
 @Entity
-@Table(name = "API", schema = "VINEYARD")
-public class ApiEntity implements Serializable {
+@Table(name = "DATA_FORMAT", schema = "VINEYARD")
+public class DataFormatEntity implements Serializable {
 
     @Id
     private String id;
 
     private String name;
 
-    private String context;
+    @Column(name = "DATA_SCHEMA")
+    private String schema;
 
-    private String description;
+    private String sample;
 
-    private String version;
+    @OneToMany(mappedBy = "inFormat")
+    private List<ResourceEntity> resourcesIn;
 
-    @OneToMany(mappedBy="api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MetadataEntity> metadata = new ArrayList<>();
-
-    @OneToMany(mappedBy="api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ResourceEntity> resources = new ArrayList<>();
-
+    @OneToMany(mappedBy = "outFormat")
+    private List<ResourceEntity> resourcesOut;
 
     public String getId() {
         return id;
@@ -69,44 +63,36 @@ public class ApiEntity implements Serializable {
         this.name = name;
     }
 
-    public String getContext() {
-        return context;
+    public String getSchema() {
+        return schema;
     }
 
-    public void setContext(String context) {
-        this.context = context;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
-    public String getDescription() {
-        return description;
+    public String getSample() {
+        return sample;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSample(String sample) {
+        this.sample = sample;
     }
 
-    public String getVersion() {
-        return version;
+    public List<ResourceEntity> getResourcesIn() {
+        return resourcesIn;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setResourcesIn(List<ResourceEntity> resourcesIn) {
+        this.resourcesIn = resourcesIn;
     }
 
-    public Collection<MetadataEntity> getMetadata() {
-        return metadata;
+    public List<ResourceEntity> getResourcesOut() {
+        return resourcesOut;
     }
 
-    public void setMetadata(List<MetadataEntity> metadata) {
-        this.metadata = metadata;
-    }
-
-    public Collection<ResourceEntity> getResources() {
-        return resources;
-    }
-
-    public void setResources(List<ResourceEntity> resources) {
-        this.resources = resources;
+    public void setResourcesOut(List<ResourceEntity> resourcesOut) {
+        this.resourcesOut = resourcesOut;
     }
 
 }

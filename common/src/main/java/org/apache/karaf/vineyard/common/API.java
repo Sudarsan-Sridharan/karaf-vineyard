@@ -16,7 +16,9 @@
  */
 package org.apache.karaf.vineyard.common;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,10 +42,10 @@ public class API {
     private String version;
 
     /** Additional data functional and technical related to the API */
-    private Map<String, String> metadata;
+    private Map<String, String> metadata = new HashMap<>();
 
     /** Collection of resources linked to this API. */
-    private Collection<Resource> resources;
+    private Collection<Resource> resources = new ArrayList<>();
 
     public String getId() {
         return id;
