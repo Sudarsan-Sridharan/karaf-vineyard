@@ -65,6 +65,7 @@
         <feature version="[2,3)">jpa</feature>
         <feature version="[2,3)">eclipselink</feature>
         <feature version="${cxf.version}">cxf-jaxrs</feature>
+        <feature version="${cxf.version}">cxf-rs-security-cors</feature>
         <feature version="${cxf.version}">cxf-rs-description-swagger2</feature>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
