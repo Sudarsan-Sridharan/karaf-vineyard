@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.aries.jpa.template.JpaTemplate;
 import org.apache.aries.jpa.template.TransactionType;
@@ -30,6 +31,7 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override
     public void addApi(API api) {
+        api.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
             entityManager.persist(mapTo(api));
             entityManager.flush();
@@ -78,6 +80,7 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override
     public void addDataFormat(DataFormat dataFormat) {
+        dataFormat.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
             entityManager.persist(mapTo(dataFormat));
             entityManager.flush();

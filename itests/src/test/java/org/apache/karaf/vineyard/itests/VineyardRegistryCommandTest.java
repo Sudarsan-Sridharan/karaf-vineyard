@@ -89,7 +89,7 @@ public class VineyardRegistryCommandTest extends KarafTestSupport {
         System.out.println(featureList);
 
         executeCommand("feature:install vineyard-registry", ADMIN_ROLES);
-        installAndAssertFeature("vineyard-registry");
+        //installAndAssertFeature("vineyard-registry");
 
         String bundleList = executeCommand("bundle:list");
         System.out.println(bundleList);

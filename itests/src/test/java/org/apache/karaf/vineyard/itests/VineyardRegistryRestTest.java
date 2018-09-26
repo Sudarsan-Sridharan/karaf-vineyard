@@ -94,7 +94,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
         System.out.println(featureList);
 
         executeCommand("feature:install vineyard-registry", ADMIN_ROLES);
-        installAndAssertFeature("vineyard-registry");
+        //installAndAssertFeature("vineyard-registry");
 
         String bundleList = executeCommand("bundle:list");
         System.out.println(bundleList);
@@ -113,6 +113,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             URL urlDataformat = new URL(URL);
 
             // Call add dataformat service
+            //curl -v -X POST -H "Content-type: application/json" -d '{"name":"soap/xml", "schema":"xml", "sample":"soap-xml-sample"}' http://localhost:8181/cxf/vineyard/registry/dataformat
             String soapAddDataformat = "{\n" +
                     "  \"name\": \"soap-xml\",\n" +
                     "  \"schema\": \"xml\",\n" +
@@ -136,6 +137,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             }
 
             // Call add dataformat service
+            // curl -v -X POST -H "Content-type: application/json" -d '{"name":"json", "schema":"json", "sample":"json-sample"}' http://localhost:8181/cxf/vineyard/registry/dataformat
             String jsonAddDataformat = "{\n" +
                     "  \"name\": \"json\",\n" +
                     "  \"schema\": \"json\",\n" +
@@ -159,6 +161,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             }
 
             // Call list dataformat
+            // curl -v -X GET http://localhost:8181/cxf/vineyard/registry/dataformat
             System.out.println("Call GET http://localhost:8181/cxf/vineyard/registry/dataformat");
             connection = (HttpURLConnection) urlDataformat.openConnection();
             connection.setRequestMethod(HttpMethod.GET);
