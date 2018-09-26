@@ -55,8 +55,13 @@ public class RegistryRest {
     @DELETE
     public Response deleteApi(API api) {
         if (registry != null) {
-             registry.deleteApi(api);
-             return Response.ok().build();
+            API out = registry.getApi(api.getId());
+            if (out != null) {
+                registry.deleteApi(out);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
          } else {
              LOGGER.error("Registry service is null !");
              return Response.serverError().build();
@@ -67,8 +72,13 @@ public class RegistryRest {
     @DELETE
     public Response deleteApi(@PathParam("id") String id) {
         if (registry != null) {
-             registry.deleteApi(id);
-             return Response.ok().build();
+            API api = registry.getApi(id);
+            if (api != null) {
+                registry.deleteApi(api);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
          } else {
              LOGGER.error("Registry service is null !");
              return Response.serverError().build();
@@ -85,7 +95,7 @@ public class RegistryRest {
             if (api != null) {
                 return Response.ok(api).build();
             } else {
-                return Response.noContent().build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
         } else {
             LOGGER.error("Registry service is null !");
@@ -127,8 +137,13 @@ public class RegistryRest {
     @DELETE
     public Response deleteDataFormat(DataFormat dataformat) {
         if (registry != null) {
-            registry.deleteDataFormat(dataformat);
-            return Response.ok().build();
+            DataFormat out = registry.getDataFormat(dataformat.getId());
+            if (out != null) {
+                registry.deleteDataFormat(out);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
         } else {
             LOGGER.error("Registry service is null !");
             return Response.serverError().build();
@@ -139,8 +154,13 @@ public class RegistryRest {
     @DELETE
     public Response deleteDataFormat(@PathParam("id") String id) {
         if (registry != null) {
-            registry.deleteDataFormat(id);
-            return Response.ok().build();
+            DataFormat out = registry.getDataFormat(id);
+            if (out != null) {
+                registry.deleteDataFormat(out);
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
         } else {
             LOGGER.error("Registry service is null !");
             return Response.serverError().build();
@@ -157,7 +177,7 @@ public class RegistryRest {
             if (dataformat != null) {
                 return Response.ok(dataformat).build();
             } else {
-                return Response.noContent().build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
         } else {
             LOGGER.error("Registry service is null !");
