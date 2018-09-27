@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.registry.storage.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,11 +46,11 @@ public class ResourceEntity implements Serializable {
 
     private String method;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "IN_FORMAT_ID")
     private DataFormatEntity inFormat;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "OUT_FORMAT_ID")
     private DataFormatEntity outFormat;
 

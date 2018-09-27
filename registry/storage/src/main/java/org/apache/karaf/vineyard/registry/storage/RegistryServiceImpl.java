@@ -16,7 +16,9 @@ import org.apache.karaf.vineyard.registry.api.RegistryService;
 import org.apache.karaf.vineyard.registry.storage.entity.ApiEntity;
 import org.apache.karaf.vineyard.registry.storage.entity.DataFormatEntity;
 import org.apache.karaf.vineyard.registry.storage.entity.MetadataEntity;
+import org.apache.karaf.vineyard.registry.storage.entity.MetadataPkEntity;
 import org.apache.karaf.vineyard.registry.storage.entity.ResourceEntity;
+import org.apache.karaf.vineyard.registry.storage.entity.ResourcePkEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -30,12 +32,13 @@ public class RegistryServiceImpl implements RegistryService {
     private JpaTemplate jpaTemplate;
 
     @Override
-    public void addApi(API api) {
+    public API addApi(API api) {
         api.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
             entityManager.persist(mapTo(api));
             entityManager.flush();
         });
+        return api;
     }
 
     @Override
@@ -79,12 +82,95 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public void addDataFormat(DataFormat dataFormat) {
+    public void addResource(API api, Resource resource) {
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            ResourceEntity entity = mapTo(resource);
+            entity.setApi(mapTo(api));
+            entityManager.persist(entity);
+            entityManager.flush();
+        });
+    }
+
+    @Override
+    public void deleteResource(API api, Resource resource) {
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            ResourcePkEntity pk = new ResourcePkEntity();
+            pk.setApi(api.getId());
+            pk.setPath(resource.getPath());
+            ResourceEntity resourceEntity = entityManager.find(ResourceEntity.class, pk);
+            if (resourceEntity !=  null) {
+                entityManager.remove(resourceEntity);
+            }
+        });
+    }
+
+    @Override
+    public void updateResource(API api, Resource resource) {
+        //TODO
+    }
+
+    @Override
+    public Collection<Resource> getResources(API api) {
+        List<ResourceEntity> list = jpaTemplate.txExpr(TransactionType.Supports,
+                entityManager -> entityManager.createQuery("SELECT r FROM ResourceEntity r where r.api.id = :apiId", ResourceEntity.class)
+                        .setParameter("apiId", api.getId())
+                        .getResultList());
+        Collection<Resource> results = new ArrayList<>();
+        for (ResourceEntity entity : list) {
+            results.add(mapTo(entity));
+        }
+        return results;
+    }
+
+    @Override
+    public void addMetadatas(API api, Map<String, String> metadatas) {
+        for (String key : metadatas.keySet()) {
+            jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+                MetadataEntity entity = new MetadataEntity();
+                entity.setKey(key);
+                entity.setValue(metadatas.get(key));
+                entity.setApi(mapTo(api));
+                entityManager.persist(entity);
+                entityManager.flush();
+            });
+        }
+    }
+
+    @Override
+    public void deleteMetadata(API api, String metadataKey) {
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            MetadataPkEntity pk = new MetadataPkEntity();
+            pk.setApi(api.getId());
+            pk.setKey(metadataKey);
+            MetadataEntity metadataEntity = entityManager.find(MetadataEntity.class, pk);
+            if (metadataEntity !=  null) {
+                entityManager.remove(metadataEntity);
+            }
+        });
+    }
+
+    @Override
+    public void updateMetadatas(API api, Map<String, String> metadatas) {
+        //TODO
+    }
+
+    @Override
+    public Map<String, String> getMetadatas(API api) {
+        List<MetadataEntity> list = jpaTemplate.txExpr(TransactionType.Supports,
+                entityManager -> entityManager.createQuery("SELECT m FROM MetadataEntity m where m.api.id = :apiId", MetadataEntity.class)
+                        .setParameter("apiId", api.getId())
+                        .getResultList());
+        return mapTo(list);
+    }
+
+    @Override
+    public DataFormat addDataFormat(DataFormat dataFormat) {
         dataFormat.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
             entityManager.persist(mapTo(dataFormat));
             entityManager.flush();
         });
+        return dataFormat;
     }
 
     @Override
@@ -224,34 +310,26 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     private Collection<MetadataEntity> mapTo(Map<String, String> metadata) {
+        Collection<MetadataEntity> metadataEntities = new ArrayList<>();
         if (metadata != null && !metadata.isEmpty()) {
-            Collection<MetadataEntity> metadataEntities = new ArrayList<>();
-
             for (String key : metadata.keySet()) {
                 MetadataEntity metadataEntity = new MetadataEntity();
                 metadataEntity.setKey(key);
                 metadataEntity.setValue(metadata.get(key));
                 metadataEntities.add(metadataEntity);
             }
-            return metadataEntities;
-
-        } else {
-            return null;
         }
+        return metadataEntities;
     }
 
     private Map<String, String> mapTo(Collection<MetadataEntity> metadataEntities) {
+        Map<String, String> metadatas = new HashMap<>();
         if (metadataEntities != null && !metadataEntities.isEmpty()) {
-            Map<String, String> metadatas = new HashMap<>();
-
             for (MetadataEntity metadataEntity : metadataEntities) {
                 metadatas.put(metadataEntity.getKey(), metadataEntity.getValue());
             }
-            return metadatas;
-
-        } else {
-            return null;
         }
+        return metadatas;
     }
 
 }

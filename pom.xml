@@ -49,6 +49,7 @@
         
         <cxf.version>3.2.6</cxf.version>
         <jackson.version>2.9.5</jackson.version>
+        <json-api.version>1.0</json-api.version>
     </properties>
 
     <modules>
@@ -364,6 +365,18 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>${json-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.johnzon</groupId>
+            <artifactId>johnzon-mapper</artifactId>
+            <version>0.9.3-incubating</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
