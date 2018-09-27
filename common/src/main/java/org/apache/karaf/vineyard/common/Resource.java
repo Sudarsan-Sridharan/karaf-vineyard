@@ -23,6 +23,10 @@ import java.util.Collection;
  */
 public class Resource {
 
+    private String id;
+
+    private String description;
+
     /** The resource path */
     private String path;
 
@@ -40,6 +44,22 @@ public class Resource {
     private String response;
 
     private String bridge;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getPath() {
         return path;

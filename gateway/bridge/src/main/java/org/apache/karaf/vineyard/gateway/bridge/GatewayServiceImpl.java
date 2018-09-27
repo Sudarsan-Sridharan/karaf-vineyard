@@ -16,77 +16,50 @@
  */
 package org.apache.karaf.vineyard.gateway.bridge;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultRoute;
 import org.apache.karaf.vineyard.common.API;
+import org.apache.karaf.vineyard.common.Resource;
 import org.apache.karaf.vineyard.gateway.api.GatewayService;
+import org.osgi.service.http.HttpService;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class GatewayServiceImpl implements GatewayService {
 
-  private DefaultCamelContext camelContext;
+  private HttpService httpService;
 
-  /**
-   * Init the gateway.
-   */
-  public void init() throws Exception {
-    camelContext = new DefaultCamelContext();
-    camelContext.setName("karaf-vineyard-gateway");
-    camelContext.start();
-  }
-
-  @Override public void register(API api) throws Exception {
-    camelContext.addRoutes(new RouteBuilder() {
-      @Override public void configure() throws Exception {
-        // TODO improve
-        /*from(api.getEndpoint())
-            .id(api.getId())
-            .to(api.getEndpoint());*/
-      }
-    });
+  @Override
+  public void register(API api) throws Exception {
+      ApiServlet apiServlet = new ApiServlet(api);
+      httpService.registerServlet(api.getContext(), apiServlet, null, null);
   }
 
   @Override public void disable(String id) throws Exception {
-    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
-    if (route == null) {
-      throw new IllegalStateException("Service registration not available in the gateway");
-    }
-    route.suspend();
+      throw new NotImplementedException();
   }
 
   @Override public void enable(String id) throws Exception {
-    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
-    if (route == null) {
-      throw new IllegalStateException("Service registration not available in the gateway");
-    }
-    if (route.isSuspended()) {
-      route.resume();
-    }
+      throw new NotImplementedException();
   }
 
   @Override public void remove(String id) throws Exception {
-    camelContext.removeRoute(id);
+      httpService.unregister(id);
   }
 
   @Override public String status(String id) {
-    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
-    if (route == null) {
-      return "N/A";
-    }
-    if (route.isSuspended()) {
-      return "Disabled";
-    }
-    if (route.isStarted()) {
-      return "Enabled";
-    }
-    return route.getStatus().toString();
+      throw new NotImplementedException();
   }
 
   @Override public Map<String, Object> metrics(String id) {
+      /**
     DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
     Map<String, Object> metrics = new HashMap<>();
     if (route != null) {
@@ -97,6 +70,8 @@ public class GatewayServiceImpl implements GatewayService {
       metrics.putAll(route.getProperties());
     }
     return metrics;
+       */
+      return new HashMap<>();
   }
 
   @Override public void addProcessing(String id, Object processing) {

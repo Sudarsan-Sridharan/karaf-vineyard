@@ -26,14 +26,14 @@ import java.util.Map;
 public interface GatewayService {
 
     /**
-     * Register a service into the gateway. It registers the service for all environments.
+     * Register a API into the gateway.
      *
      * @param api The registration to perform.
      */
     void register(API api) throws Exception;
 
     /**
-     * Disable a service in the gateway. The service is not removed and the gateway
+     * Disable a API resource in the gateway. The service is not removed and the gateway
      * keeps the metrics for this service, however the service is not accessible for
      * the gateway clients.
      *
@@ -42,14 +42,14 @@ public interface GatewayService {
     void disable(String id) throws Exception;
 
     /**
-     * Enable a service in the gateway.
+     * Enable a API resource in the gateway.
      *
      * @param id The registration id.
      */
     void enable(String id) throws Exception;
 
     /**
-     * Remove a service from the gateway. All data about the service, including metrics are
+     * Remove a API from the gateway. All data about the service, including metrics are
      * deleted as well.
      *
      * @param id The registration id.
@@ -57,9 +57,9 @@ public interface GatewayService {
     void remove(String id) throws Exception;
 
     /**
-     * Get the status of the given registration.
+     * Get the status of the given API resource.
      *
-     * @param id The registration id.
+     * @param id The API resource id.
      * @return The current status.
      */
     String status(String id);
