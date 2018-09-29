@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.cxf.rs.security.cors.CrossOriginResourceSharing;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.DataFormat;
 import org.apache.karaf.vineyard.common.Resource;
@@ -39,6 +40,10 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 @Consumes({"application/json"})
 @Produces({"application/json"})
+@CrossOriginResourceSharing(
+        allowAllOrigins = true,
+        allowCredentials = true
+)
 public class RegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(RegistryRest.class);
