@@ -32,6 +32,9 @@ public class API {
     /** Name of the API */
     private String name;
 
+    /** API type (REST or GraphQL */
+    private Type type;
+
     /** Base context of this API */
     private String context;
 
@@ -47,6 +50,9 @@ public class API {
     /** Collection of resources linked to this API. */
     private Collection<Resource> resources = new ArrayList<>();
 
+    /** Schema definition for GraphQL */
+    private String schema;
+
     public String getId() {
         return id;
     }
@@ -61,6 +67,14 @@ public class API {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public String getContext() {
@@ -101,5 +115,13 @@ public class API {
 
     public void setResources(Collection<Resource> resources) {
         this.resources = resources;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 }
