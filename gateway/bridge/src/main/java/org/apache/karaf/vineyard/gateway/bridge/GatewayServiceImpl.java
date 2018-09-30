@@ -17,6 +17,7 @@
 package org.apache.karaf.vineyard.gateway.bridge;
 
 import org.apache.karaf.vineyard.common.API;
+import org.apache.karaf.vineyard.common.Type;
 import org.apache.karaf.vineyard.gateway.api.GatewayService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,8 +35,13 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Override
     public void register(API api) throws Exception {
-        ApiServlet apiServlet = new ApiServlet(api);
-        httpService.registerServlet(api.getContext(), apiServlet, null, null);
+        if (api.getType() == Type.REST) {
+            RestApiServlet apiServlet = new RestApiServlet(api);
+            httpService.registerServlet(api.getContext(), apiServlet, null, null);
+        }
+        if (api.getType() == Type.GRAPHQL) {
+            // TODO
+        }
     }
 
     @Override

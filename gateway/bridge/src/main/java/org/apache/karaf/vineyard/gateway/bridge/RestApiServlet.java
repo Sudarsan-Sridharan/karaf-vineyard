@@ -31,12 +31,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class ApiServlet extends HttpServlet {
+public class RestApiServlet extends HttpServlet {
 
     private API api;
     private CamelContext camelContext;
 
-    public ApiServlet(API api) {
+    public RestApiServlet(API api) {
         this.api = api;
         this.camelContext = new DefaultCamelContext();
     }
