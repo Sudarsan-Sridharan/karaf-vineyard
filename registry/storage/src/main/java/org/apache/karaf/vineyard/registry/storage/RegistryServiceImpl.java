@@ -54,13 +54,26 @@ public class RegistryServiceImpl implements RegistryService {
             ApiEntity apiEntity = entityManager.find(ApiEntity.class, id);
             if (apiEntity !=  null) {
                 entityManager.remove(apiEntity);
+                entityManager.flush();
             }
         });
     }
 
     @Override
     public void updateApi(API api) {
-        //TODO
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+
+            if (apiEntity !=  null) {
+                // we don't update the PK or the Resources and Metadatas
+                apiEntity.setName(api.getName());
+                apiEntity.setContext(api.getContext());
+                apiEntity.setDescription(api.getDescription());
+                apiEntity.setVersion(api.getVersion());
+                entityManager.merge(apiEntity);
+                entityManager.flush();
+            }
+        });
     }
 
     @Override
@@ -100,13 +113,39 @@ public class RegistryServiceImpl implements RegistryService {
             ResourceEntity resourceEntity = entityManager.find(ResourceEntity.class, pk);
             if (resourceEntity !=  null) {
                 entityManager.remove(resourceEntity);
+                entityManager.flush();
             }
         });
     }
 
     @Override
     public void updateResource(API api, Resource resource) {
-        //TODO
+
+        DataFormatEntity dataFormatEntityIn = jpaTemplate.txExpr(TransactionType.Supports,
+                entityManager -> entityManager.find(DataFormatEntity.class, resource.getInFormat().getId()));
+
+        DataFormatEntity dataFormatEntityOut = jpaTemplate.txExpr(TransactionType.Supports,
+                entityManager -> entityManager.find(DataFormatEntity.class, resource.getOutFormat().getId()));
+
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            ResourcePkEntity pk = new ResourcePkEntity();
+            pk.setApi(api.getId());
+            pk.setPath(resource.getPath());
+            ResourceEntity resourceEntity = entityManager.find(ResourceEntity.class, pk);
+
+            if (resourceEntity != null) {
+                // we don't update the PK
+                resourceEntity.setBridge(resource.getBridge());
+                resourceEntity.setMethod(resource.getMethod());
+                resourceEntity.setResponse(resource.getResponse());
+                resourceEntity.setUseBridge(resource.isUseBridge());
+                resourceEntity.setInFormat(dataFormatEntityIn);
+                resourceEntity.setOutFormat(dataFormatEntityOut);
+
+                entityManager.merge(resourceEntity);
+                entityManager.flush();
+            }
+        });
     }
 
     @Override
@@ -145,13 +184,30 @@ public class RegistryServiceImpl implements RegistryService {
             MetadataEntity metadataEntity = entityManager.find(MetadataEntity.class, pk);
             if (metadataEntity !=  null) {
                 entityManager.remove(metadataEntity);
+                entityManager.flush();
             }
         });
     }
 
     @Override
     public void updateMetadatas(API api, Map<String, String> metadatas) {
-        //TODO
+
+        List<MetadataEntity> listEntity = jpaTemplate.txExpr(TransactionType.Supports,
+                entityManager -> entityManager.createQuery("SELECT m FROM MetadataEntity m where m.api.id = :apiId", MetadataEntity.class)
+                        .setParameter("apiId", api.getId())
+                        .getResultList());
+
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+
+            for (MetadataEntity metadataEntity : listEntity) {
+                String value = metadatas.get(metadataEntity.getKey());
+                if (value != null) {
+                    metadataEntity.setValue(value);
+                    entityManager.merge(metadataEntity);
+                    entityManager.flush();
+                }
+            }
+        });
     }
 
     @Override
@@ -186,13 +242,25 @@ public class RegistryServiceImpl implements RegistryService {
             DataFormatEntity dataFormatEntity = entityManager.find(DataFormatEntity.class, id);
             if (dataFormatEntity !=  null) {
                 entityManager.remove(dataFormatEntity);
+                entityManager.flush();
             }
         });
     }
 
     @Override
     public void updateDataFormat(DataFormat dataFormat) {
-        //TODO
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            DataFormatEntity dataFormatEntity = entityManager.find(DataFormatEntity.class, dataFormat.getId());
+
+            if (dataFormatEntity !=  null) {
+                // we don't update the PK
+                dataFormatEntity.setName(dataFormat.getName());
+                dataFormatEntity.setSample(dataFormat.getSample());
+                dataFormatEntity.setSchema(dataFormat.getSchema());
+                entityManager.merge(dataFormatEntity);
+                entityManager.flush();
+            }
+        });
     }
 
     @Override

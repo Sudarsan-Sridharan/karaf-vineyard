@@ -36,7 +36,6 @@ public class RegistryRestTest {
     @Test
     @Ignore
     public void testCreateData() throws Exception {
-
         String dataformatId = "";
         String apiId = "";
 
@@ -312,6 +311,78 @@ public class RegistryRestTest {
             System.out.println(e.getMessage());
             Assert.assertTrue(false);
         }
-    }
 
+        // UPDATE DATA_FORMAT
+        try {
+            String URL = "http://localhost:8181/cxf/vineyard/registry/dataformat";
+            java.net.URL urlDataformat = new URL(URL);
+
+            // Call update dataformat service
+            String jsonAddDataformat = "{\n" +
+                    "  \"id\": \"" + dataformatId + "\",\n" +
+                    "  \"name\": \"json-v2\",\n" +
+                    "  \"schema\": \"json-v2\",\n" +
+                    "  \"sample\": \"json-sample-v2\"\n" +
+                    "}";
+            System.out.println("Call PUT " + URL);
+            HttpURLConnection connection = (HttpURLConnection) urlDataformat.openConnection();
+            connection.setRequestMethod(HttpMethod.PUT);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/json");
+            OutputStream os = connection.getOutputStream();
+            os.write(jsonAddDataformat.getBytes());
+            os.flush();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Assert.assertTrue(true);
+            } else {
+                System.out.println("Error when sending PUT method : HTTP_CODE = " + connection.getResponseCode());
+                Assert.assertTrue(false);
+            }
+
+            connection.disconnect();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.assertTrue(false);
+        }
+
+        // UPDATE API
+        try {
+            String URL = "http://localhost:8181/cxf/vineyard/registry/api";
+            java.net.URL urlApi = new URL(URL);
+
+            // Call update API service
+            String jsonAddDataformat = "{\n" +
+                    "  \"id\": \"" + apiId + "\",\n" +
+                    "  \"name\": \"authenticate service 2\",\n" +
+                    "  \"context\": \"api/authenticate 2\",\n" +
+                    "  \"description\": \"use to authenticate user with token 2\",\n" +
+                    "  \"version\": \"2.0.0\"" +
+                    "}";
+            System.out.println("Call PUT " + URL);
+            HttpURLConnection connection = (HttpURLConnection) urlApi.openConnection();
+            connection.setRequestMethod(HttpMethod.PUT);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/json");
+            OutputStream os = connection.getOutputStream();
+            os.write(jsonAddDataformat.getBytes());
+            os.flush();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Assert.assertTrue(true);
+            } else {
+                System.out.println("Error when sending PUT method : HTTP_CODE = " + connection.getResponseCode());
+                Assert.assertTrue(false);
+            }
+
+            connection.disconnect();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Assert.assertTrue(false);
+        }
+    }
 }
