@@ -16,66 +16,68 @@
  */
 package org.apache.karaf.vineyard.gateway.bridge;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.Route;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.DefaultRoute;
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.Resource;
 import org.apache.karaf.vineyard.gateway.api.GatewayService;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
+@Component(name = "vineyard-gateway-service")
 public class GatewayServiceImpl implements GatewayService {
 
-  private HttpService httpService;
+    @Reference
+    private HttpService httpService;
 
-  @Override
-  public void register(API api) throws Exception {
-      ApiServlet apiServlet = new ApiServlet(api);
-      httpService.registerServlet(api.getContext(), apiServlet, null, null);
-  }
-
-  @Override public void disable(String id) throws Exception {
-      throw new NotImplementedException();
-  }
-
-  @Override public void enable(String id) throws Exception {
-      throw new NotImplementedException();
-  }
-
-  @Override public void remove(String id) throws Exception {
-      httpService.unregister(id);
-  }
-
-  @Override public String status(String id) {
-      throw new NotImplementedException();
-  }
-
-  @Override public Map<String, Object> metrics(String id) {
-      /**
-    DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
-    Map<String, Object> metrics = new HashMap<>();
-    if (route != null) {
-      // uptime
-      metrics.put("uptimeMillis", route.getUptimeMillis());
-      metrics.put("uptime", route.getUptime());
-      // properties
-      metrics.putAll(route.getProperties());
+    @Override
+    public void register(API api) throws Exception {
+        ApiServlet apiServlet = new ApiServlet(api);
+        httpService.registerServlet(api.getContext(), apiServlet, null, null);
     }
-    return metrics;
-       */
-      return new HashMap<>();
-  }
 
-  @Override public void addProcessing(String id, Object processing) {
-    throw new NotImplementedException();
-  }
+    @Override
+    public void disable(String id) throws Exception {
+        throw new OperationNotSupportedException();
+    }
+
+    @Override
+    public void enable(String id) throws Exception {
+        throw new OperationNotSupportedException();
+    }
+
+    @Override
+    public void remove(String id) throws Exception {
+        httpService.unregister(id);
+    }
+
+    @Override
+    public String status(String id) {
+        return "N/A";
+    }
+
+    @Override
+    public Map<String, Object> metrics(String id) {
+        /**
+         DefaultRoute route = (DefaultRoute) camelContext.getRoute(id);
+         Map<String, Object> metrics = new HashMap<>();
+         if (route != null) {
+         // uptime
+         metrics.put("uptimeMillis", route.getUptimeMillis());
+         metrics.put("uptime", route.getUptime());
+         // properties
+         metrics.putAll(route.getProperties());
+         }
+         return metrics;
+         */
+        return new HashMap<>();
+    }
+
+    @Override
+    public void addProcessing(String id, Object processing) {
+        // TODO
+    }
 
 }

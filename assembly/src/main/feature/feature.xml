@@ -22,6 +22,7 @@
     xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0 http://karaf.apache.org/xmlns/features/v1.4.0">
 
     <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
+    <repository>mvn:org.apache.camel.karaf/apache-camel/2.21.1/xml/features</repository>
     
     <feature name="vineyard" version="${project.version}" description="Meta feature installing common Vineyard features">
         <feature version="${project.version}">vineyard-common</feature>
@@ -39,6 +40,11 @@
     
     <feature name="vineyard-gateway" version="${project.version}" description="Karaf Vineyard Gateway">
         <feature>vineyard-common</feature>
+        <feature prerequisite="true">http</feature>
+        <feature prerequisite="true">scr</feature>
+        <feature>camel-core</feature>
+        <bundle>mvn:org.apache.karaf.vineyard.gateway/org.apache.karaf.vineyard.gateway.api/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.gateway/org.apache.karaf.vineyard.gateway.bridge/${project.version}</bundle>
     </feature>
 
     <feature name="vineyard-registry-datasource" version="${project.version}">
