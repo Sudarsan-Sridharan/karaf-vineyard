@@ -24,12 +24,16 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.rs.security.cors.CrossOriginResourceSharing;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.DataFormat;
@@ -39,8 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Path("/")
-@Consumes({"application/json"})
-@Produces({"application/json"})
+@Consumes({MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_JSON})
 @CrossOriginResourceSharing(
         allowAllOrigins = true,
         allowCredentials = true
@@ -56,7 +60,7 @@ public class RegistryRest {
     }
     
     @Path("/api")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @POST
     public Response addApi(API api) {
         if (registry != null) {
@@ -71,9 +75,29 @@ public class RegistryRest {
             return Response.serverError().build();
         }
     }
+    
+    @Path("/api/{id}/upload-definition")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Multipart(value = "root", type = MediaType.APPLICATION_OCTET_STREAM)
+    @PUT
+    public Response uploadDefinitionApi(@PathParam("id") String id, MultipartBody body) {
+        if (registry != null) {
+            API api = registry.getApi(id);
+            try (InputStream inputStream = body.getRootAttachment().getDataHandler().getInputStream()) {
+                registry.updateApiDefinition(api, inputStream);
+            } catch (Exception exception) {
+                return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
+                        exception.getMessage()).build();
+            }
+            return Response.ok().build();
+        } else {
+            LOGGER.error("Registry service is null !");
+            return Response.serverError().build();
+        }
+    }
 
     @Path("/api")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @PUT
     public Response updateApi(API api) {
         if (registry != null) {
@@ -121,7 +145,7 @@ public class RegistryRest {
     
     @Path("/api/{id}")
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getApi(@PathParam("id") String id) {
         
         if (registry != null) {
@@ -139,7 +163,7 @@ public class RegistryRest {
 
     @Path("/api")
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getApis() {
         
         if (registry != null) {
@@ -156,7 +180,7 @@ public class RegistryRest {
     }
 
     @Path("/api/{id}/resource")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @POST
     public Response addResource(@PathParam("id") String id, Resource resource) {
         if (registry != null) {
@@ -182,7 +206,7 @@ public class RegistryRest {
     }
 
     @Path("/api/{id}/resource")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @DELETE
     public Response deleteResource(@PathParam("id") String id, Resource resource) {
         if (registry != null) {
@@ -201,7 +225,7 @@ public class RegistryRest {
 
     @Path("/api/{id}/resource")
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getResources(@PathParam("id") String id) {
 
         if (registry != null) {
@@ -223,7 +247,7 @@ public class RegistryRest {
     }
 
     @Path("/api/{id}/metadata")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @POST
     public Response addMetadatas(@PathParam("id") String id, Map<String, String> metadatas) {
         if (registry != null) {
@@ -241,7 +265,7 @@ public class RegistryRest {
     }
 
     @Path("/api/{id}/metadata")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @DELETE
     public Response deleteMetadata(@PathParam("id") String id, String key) {
         if (registry != null) {
@@ -260,8 +284,8 @@ public class RegistryRest {
 
     @Path("/api/{id}/metadata")
     @GET
-    @Consumes("application/json")
-    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getMetadatas(@PathParam("id") String id) {
 
         if (registry != null) {
@@ -283,7 +307,7 @@ public class RegistryRest {
     }
 
     @Path("/dataformat")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @POST
     public Response addDataFormat(DataFormat dataformat) {
         if (registry != null) {
@@ -300,7 +324,7 @@ public class RegistryRest {
     }
 
     @Path("/dataformat")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @PUT
     public Response updateDataFormat(DataFormat dataformat) {
         if (registry != null) {
@@ -313,7 +337,7 @@ public class RegistryRest {
     }
 
     @Path("/dataformat")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @DELETE
     public Response deleteDataFormat(DataFormat dataformat) {
         if (registry != null) {
@@ -349,7 +373,7 @@ public class RegistryRest {
 
     @Path("/dataformat/{id}")
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getDataFormat(@PathParam("id") String id) {
 
         if (registry != null) {
@@ -367,7 +391,7 @@ public class RegistryRest {
 
     @Path("/dataformat")
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listDataFormat() {
 
         if (registry != null) {

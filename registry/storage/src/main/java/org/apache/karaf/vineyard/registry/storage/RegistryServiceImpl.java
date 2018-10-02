@@ -1,5 +1,8 @@
 package org.apache.karaf.vineyard.registry.storage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +42,28 @@ public class RegistryServiceImpl implements RegistryService {
             entityManager.flush();
         });
         return api;
+    }
+
+    @Override
+    public void updateApiDefinition(API api, InputStream inputStream) {
+        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
+            ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+
+            if (apiEntity !=  null) {
+                byte[] buffer = new byte[1024];
+                try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                    int cpt = 0;
+                    while ((cpt = inputStream.read(buffer)) > -1) {
+                        output.write(buffer, 0, cpt);
+                    }
+                    apiEntity.setDefinition(output.toByteArray());
+                } catch (IOException e) {
+                    //do nothing
+                }
+                entityManager.merge(apiEntity);
+                entityManager.flush();
+            }
+        });
     }
 
     @Override

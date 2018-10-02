@@ -16,13 +16,14 @@
  */
 package org.apache.karaf.vineyard.registry.storage.entity;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +46,10 @@ public class ApiEntity implements Serializable {
     private String description;
 
     private String version;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] definition;
 
     @OneToMany(mappedBy="api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MetadataEntity> metadata = new ArrayList<>();
@@ -109,4 +114,11 @@ public class ApiEntity implements Serializable {
         this.resources = resources;
     }
 
+    public byte[] getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(byte[] definition) {
+        this.definition = definition;
+    }
 }

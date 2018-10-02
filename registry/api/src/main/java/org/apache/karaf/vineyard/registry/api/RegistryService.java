@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.registry.api;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -35,6 +36,14 @@ public interface RegistryService {
      * @return The API created.
      */
     API addApi(API api);
+
+    /**
+     * Upload the file definition of an API in the registry.
+     *
+     * @param api The API.
+     * @param inputStream The file uploaded.
+     */
+    void updateApiDefinition(API api, InputStream inputStream);
 
     /**
      * Delete an existing API from the registry.
