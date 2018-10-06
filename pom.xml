@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>20</version>
+        <version>21</version>
     </parent>
 
     <groupId>org.apache.karaf</groupId>
@@ -48,7 +48,7 @@
         <derby.version>10.14.2.0</derby.version>
         
         <cxf.version>3.2.6</cxf.version>
-        <jackson.version>2.9.5</jackson.version>
+        <jackson.version>2.9.6</jackson.version>
         <json-api.version>1.0</json-api.version>
     </properties>
 
