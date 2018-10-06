@@ -32,6 +32,22 @@
         <property name="registry" ref="registry"/>
     </bean>
 
+    <!-- CXF OpenApiFeature -->
+    <bean id="openApiFeature" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
+        <property name="resourcePackages">
+            <set>
+                <value>org.apache.karaf.vineyard.registry.rest</value>
+            </set>
+        </property>
+
+    </bean>
+
+    <!-- JAXRS providers -->
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+
+    <!-- CROSS providers -->
+    <bean id="crossProvider" class="org.apache.cxf.rs.security.cors.CrossOriginResourceSharingFilter"/>
+
     <cxf:bus>
         <cxf:features>
             <cxf:logging/>
@@ -43,8 +59,11 @@
             <ref component-id="serviceBean"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
-            <bean class="org.apache.cxf.rs.security.cors.CrossOriginResourceSharingFilter"/>
+            <ref component-id="crossProvider" />
+            <ref component-id="jsonProvider" />
         </jaxrs:providers>
+        <jaxrs:features>
+            <ref component-id="openApiFeature" />
+        </jaxrs:features>
     </jaxrs:server>
 </blueprint>
