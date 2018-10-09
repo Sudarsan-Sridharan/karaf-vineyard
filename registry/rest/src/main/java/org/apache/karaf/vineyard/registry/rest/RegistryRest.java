@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.registry.rest;
 
+import io.swagger.v3.oas.annotations.tags.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -32,6 +33,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.rs.security.cors.CrossOriginResourceSharing;
@@ -49,6 +51,7 @@ import org.slf4j.LoggerFactory;
         allowAllOrigins = true,
         allowCredentials = true
 )
+@Server(url = "/cxf/vineyard/registry")
 public class RegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(RegistryRest.class);
@@ -60,350 +63,258 @@ public class RegistryRest {
     }
     
     @Path("/api")
-    @Consumes(MediaType.APPLICATION_JSON)
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
     public Response addApi(API api) {
-        if (registry != null) {
-            API newApi = registry.addApi(api);
-            try {
-                return Response.created(new URI("/api/" + newApi.getId())).build();
-            } catch (URISyntaxException e) {
-                return Response.serverError().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
+
+        API newApi = registry.addApi(api);
+        try {
+            return Response.created(new URI("/api/" + newApi.getId())).build();
+        } catch (URISyntaxException e) {
             return Response.serverError().build();
         }
     }
     
     @Path("/api/{id}/upload-definition")
+    @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Multipart(value = "root", type = MediaType.APPLICATION_OCTET_STREAM)
-    @PUT
+    @Tag(name = "Api")
     public Response uploadDefinitionApi(@PathParam("id") String id, MultipartBody body) {
-        if (registry != null) {
-            API api = registry.getApi(id);
-            try (InputStream inputStream = body.getRootAttachment().getDataHandler().getInputStream()) {
-                registry.updateApiDefinition(api, inputStream);
-            } catch (Exception exception) {
-                return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
-                        exception.getMessage()).build();
-            }
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
+
+        API api = registry.getApi(id);
+        try (InputStream inputStream = body.getRootAttachment().getDataHandler().getInputStream()) {
+            registry.updateApiDefinition(api, inputStream);
+        } catch (Exception exception) {
+            return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
+                    exception.getMessage()).build();
         }
+        return Response.ok().build();
     }
 
     @Path("/api")
-    @Consumes(MediaType.APPLICATION_JSON)
     @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
     public Response updateApi(API api) {
-        if (registry != null) {
-            registry.updateApi(api);
-            return Response.ok().build();
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
+
+        registry.updateApi(api);
+        return Response.ok().build();
     }
 
-    @Path("/api")
-    @DELETE
-    public Response deleteApi(API api) {
-        if (registry != null) {
-            API out = registry.getApi(api.getId());
-            if (out != null) {
-                registry.deleteApi(out);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-         } else {
-             LOGGER.error("Registry service is null !");
-             return Response.serverError().build();
-         }
-    }
-    
     @Path("/api/{id}")
     @DELETE
+    @Tag(name = "Api")
     public Response deleteApi(@PathParam("id") String id) {
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                registry.deleteApi(api);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-         } else {
-             LOGGER.error("Registry service is null !");
-             return Response.serverError().build();
-         }
+
+        API api = registry.getApi(id);
+        if (api != null) {
+            registry.deleteApi(api);
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
     
     @Path("/api/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
     public Response getApi(@PathParam("id") String id) {
         
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                return Response.ok(api).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
+        API api = registry.getApi(id);
+        if (api != null) {
+            return Response.ok(api).build();
         } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
     @Path("/api")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
     public Response getApis() {
         
-        if (registry != null) {
-            Collection<API> apis = registry.getApis();
-            if (apis != null) {
-                return Response.ok(apis).build();
-            } else {
-                return Response.noContent().build();
-            }
+        Collection<API> apis = registry.getApis();
+        if (apis != null) {
+            return Response.ok(apis).build();
         } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
+            return Response.noContent().build();
         }
     }
 
     @Path("/api/{id}/resource")
-    @Consumes(MediaType.APPLICATION_JSON)
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "Resource")
     public Response addResource(@PathParam("id") String id, Resource resource) {
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                if (resource.getInFormat() != null) {
-                    DataFormat inDataFormat = registry.getDataFormat(resource.getInFormat().getId());
-                    resource.setInFormat(inDataFormat);
-                }
-                if (resource.getOutFormat() != null) {
-                    DataFormat outDataFormat = registry.getDataFormat(resource.getOutFormat().getId());
-                    resource.setOutFormat(outDataFormat);
-                }
-                registry.addResource(api, resource);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
+
+        API api = registry.getApi(id);
+        if (api != null) {
+            if (resource.getInFormat() != null) {
+                DataFormat inDataFormat = registry.getDataFormat(resource.getInFormat().getId());
+                resource.setInFormat(inDataFormat);
             }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/api/{id}/resource")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @DELETE
-    public Response deleteResource(@PathParam("id") String id, Resource resource) {
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                registry.deleteResource(api, resource);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
+            if (resource.getOutFormat() != null) {
+                DataFormat outDataFormat = registry.getDataFormat(resource.getOutFormat().getId());
+                resource.setOutFormat(outDataFormat);
             }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/api/{id}/resource")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getResources(@PathParam("id") String id) {
-
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                Collection<Resource> resources = registry.getResources(api);
-                if (resources != null) {
-                    return Response.ok(resources).build();
-                } else {
-                    return Response.noContent().build();
-                }
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/api/{id}/metadata")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @POST
-    public Response addMetadatas(@PathParam("id") String id, Map<String, String> metadatas) {
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                registry.addMetadatas(api, metadatas);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/api/{id}/metadata")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @DELETE
-    public Response deleteMetadata(@PathParam("id") String id, String key) {
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                registry.deleteMetadata(api, key);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/api/{id}/metadata")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMetadatas(@PathParam("id") String id) {
-
-        if (registry != null) {
-            API api = registry.getApi(id);
-            if (api != null) {
-                Map<String, String> metadatas = registry.getMetadatas(api);
-                if (metadatas != null) {
-                    return Response.ok(metadatas).build();
-                } else {
-                    return Response.noContent().build();
-                }
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @POST
-    public Response addDataFormat(DataFormat dataformat) {
-        if (registry != null) {
-            DataFormat newDataFormat = registry.addDataFormat(dataformat);
-            try {
-                return Response.created(new URI("/dataformat/" + newDataFormat.getId())).build();
-            } catch (URISyntaxException e) {
-                return Response.serverError().build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @PUT
-    public Response updateDataFormat(DataFormat dataformat) {
-        if (registry != null) {
-            registry.updateDataFormat(dataformat);
+            registry.addResource(api, resource);
             return Response.ok().build();
         } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
-    @Path("/dataformat")
+    @Path("/api/{id}/resource")
+    @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @DELETE
-    public Response deleteDataFormat(DataFormat dataformat) {
-        if (registry != null) {
-            DataFormat out = registry.getDataFormat(dataformat.getId());
-            if (out != null) {
-                registry.deleteDataFormat(out);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
+    @Tag(name = "Resource")
+    public Response deleteResource(@PathParam("id") String id, Resource resource) {
+
+        API api = registry.getApi(id);
+        if (api != null) {
+            registry.deleteResource(api, resource);
+            return Response.ok().build();
         } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
-    @Path("/dataformat/{id}")
-    @DELETE
-    public Response deleteDataFormat(@PathParam("id") String id) {
-        if (registry != null) {
-            DataFormat out = registry.getDataFormat(id);
-            if (out != null) {
-                registry.deleteDataFormat(out);
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat/{id}")
+    @Path("/api/{id}/resource")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDataFormat(@PathParam("id") String id) {
+    @Tag(name = "Resource")
+    public Response getResources(@PathParam("id") String id) {
 
-        if (registry != null) {
-            DataFormat dataformat = registry.getDataFormat(id);
-            if (dataformat != null) {
-                return Response.ok(dataformat).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-            LOGGER.error("Registry service is null !");
-            return Response.serverError().build();
-        }
-    }
-
-    @Path("/dataformat")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response listDataFormat() {
-
-        if (registry != null) {
-            Collection<DataFormat> dataformats = registry.getDataFormats();
-            if (dataformats != null) {
-                return Response.ok(dataformats).build();
+        API api = registry.getApi(id);
+        if (api != null) {
+            Collection<Resource> resources = registry.getResources(api);
+            if (resources != null) {
+                return Response.ok(resources).build();
             } else {
                 return Response.noContent().build();
             }
         } else {
-            LOGGER.error("Registry service is null !");
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/api/{id}/metadata")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "Metadata")
+    public Response addMetadatas(@PathParam("id") String id, Map<String, String> metadatas) {
+
+        API api = registry.getApi(id);
+        if (api != null) {
+            registry.addMetadatas(api, metadatas);
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/api/{id}/metadata")
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "Metadata")
+    public Response deleteMetadata(@PathParam("id") String id, String key) {
+
+        API api = registry.getApi(id);
+        if (api != null) {
+            registry.deleteMetadata(api, key);
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/api/{id}/metadata")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Metadata")
+    public Response getMetadatas(@PathParam("id") String id) {
+
+        API api = registry.getApi(id);
+        if (api != null) {
+            Map<String, String> metadatas = registry.getMetadatas(api);
+            if (metadatas != null) {
+                return Response.ok(metadatas).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/dataformat")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "DataFormat")
+    public Response addDataFormat(DataFormat dataformat) {
+
+        DataFormat newDataFormat = registry.addDataFormat(dataformat);
+        try {
+            return Response.created(new URI("/dataformat/" + newDataFormat.getId())).build();
+        } catch (URISyntaxException e) {
             return Response.serverError().build();
+        }
+    }
+
+    @Path("/dataformat")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "DataFormat")
+    public Response updateDataFormat(DataFormat dataformat) {
+
+        registry.updateDataFormat(dataformat);
+        return Response.ok().build();
+    }
+
+    @Path("/dataformat/{id}")
+    @DELETE
+    @Tag(name = "DataFormat")
+    public Response deleteDataFormat(@PathParam("id") String id) {
+
+        DataFormat out = registry.getDataFormat(id);
+        if (out != null) {
+            registry.deleteDataFormat(out);
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/dataformat/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "DataFormat")
+    public Response getDataFormat(@PathParam("id") String id) {
+
+        DataFormat dataformat = registry.getDataFormat(id);
+        if (dataformat != null) {
+            return Response.ok(dataformat).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/dataformat")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "DataFormat")
+    public Response listDataFormat() {
+
+        Collection<DataFormat> dataformats = registry.getDataFormats();
+        if (dataformats != null) {
+            return Response.ok(dataformats).build();
+        } else {
+            return Response.noContent().build();
         }
     }
 }

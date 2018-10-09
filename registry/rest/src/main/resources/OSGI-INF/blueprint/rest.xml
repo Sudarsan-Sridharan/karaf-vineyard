@@ -39,6 +39,14 @@
                 <value>org.apache.karaf.vineyard.registry.rest</value>
             </set>
         </property>
+        <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>
+        <property name="license" value="Apache 2.0 License"/>
+        <property name="contactUrl" value="https://karaf.apache.org"/>
+        <property name="contactEmail" value="user@karaf.apache.org"/>
+        <property name="contactName" value="Apache Karaf team"/>
+        <property name="description" value="The Apache Karaf Vineyard Registry OpenAPI definition"/>
+        <property name="title" value="Apache Karaf Vineyard Registry"/>
+        <property name="version" value="1.0.0-SNAPSHOT"/>
 
     </bean>
 
