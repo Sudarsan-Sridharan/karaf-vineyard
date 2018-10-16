@@ -56,7 +56,7 @@
         <module>common</module>
         <module>registry</module>
         <module>gateway</module>
-        <module>discovery</module>
+        <module>importers</module>
         <module>assembly</module>
         <module>itests</module>
     </modules>

@@ -32,7 +32,7 @@ Karaf Vineyard is composed by three main modules:
  the Vineyard Gateway to use the actual underlying services and API. Karaf Vineyard Gateway façade the services and proxy
  to the concrete backend services. Vineyard Gateway can interact with the Vineyard Registry to
  retrieve and expose API.
-* Karaf Vineyard Discovery is a set of plugins that you can execute to discover the existing services present in your
+* Karaf Vineyard Importers is a set of plugins that you can execute to import existing services present in your
 ecosystem, creating the corresponding entry in the registry and exposing them in the gateway.
 
 ## Getting Started
@@ -45,7 +45,7 @@ features:
 
 * karaf-vineyard-registry
 * karaf-vineyard-gateway
-* karaf-vineyard-discovery
+* karaf-vineyard-importer
 
 Simply register Karaf Vineyard features repository:
 

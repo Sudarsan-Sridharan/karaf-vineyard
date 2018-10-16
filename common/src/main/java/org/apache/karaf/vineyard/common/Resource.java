@@ -21,29 +21,23 @@ import java.util.Collection;
 /**
  * Describe a resource in a Rest API.
  */
-public class Resource {
+public abstract class Resource {
 
     private String id;
 
     private String description;
 
-    /** The resource path */
     private String path;
 
-    /** The resource operation method */
-    private String method;
+    private String accept;
 
-    private DataFormat inFormat;
-
-    private DataFormat outFormat;
+    private String mediaType;
 
     private Collection<Policy> policies;
 
-    private boolean useBridge;
-
     private String response;
 
-    private String bridge;
+    private String endpoint;
 
     public String getId() {
         return id;
@@ -69,28 +63,20 @@ public class Resource {
         this.path = path;
     }
 
-    public String getMethod() {
-        return method;
+    public String getAccept() {
+        return accept;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setAccept(String accept) {
+        this.accept = accept;
     }
 
-    public DataFormat getInFormat() {
-        return inFormat;
+    public String getMediaType() {
+        return mediaType;
     }
 
-    public void setInFormat(DataFormat inFormat) {
-        this.inFormat = inFormat;
-    }
-
-    public DataFormat getOutFormat() {
-        return outFormat;
-    }
-
-    public void setOutFormat(DataFormat outFormat) {
-        this.outFormat = outFormat;
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
     public Collection<Policy> getPolicies() {
@@ -101,14 +87,6 @@ public class Resource {
         this.policies = policies;
     }
 
-    public boolean isUseBridge() {
-        return useBridge;
-    }
-
-    public void setUseBridge(boolean useBridge) {
-        this.useBridge = useBridge;
-    }
-
     public String getResponse() {
         return response;
     }
@@ -117,11 +95,11 @@ public class Resource {
         this.response = response;
     }
 
-    public String getBridge() {
-        return bridge;
+    public String getEndpoint() {
+        return endpoint;
     }
 
-    public void setBridge(String bridge) {
-        this.bridge = bridge;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 }

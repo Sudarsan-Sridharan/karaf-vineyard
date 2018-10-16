@@ -16,8 +16,50 @@
  */
 package org.apache.karaf.vineyard.common;
 
+import java.util.Map;
+
 /**
- * Generic policy container. It's extended by specific policy type (like security, QoS, ...).
+ * Policy definition used in resource.
  */
-public abstract class Policy {
+public class Policy {
+
+  private String id;
+
+  private String description;
+
+  private Map<String, String> meta;
+
+  private String className;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public Map<String, String> getMeta() {
+    return meta;
+  }
+
+  public void setMeta(Map<String, String> meta) {
+    this.meta = meta;
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
+  }
 }

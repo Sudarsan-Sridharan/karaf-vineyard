@@ -32,20 +32,14 @@ public class API {
     /** Name of the API */
     private String name;
 
-    /** API type (REST or GraphQL */
-    private Type type;
-
     /** Base context of this API */
     private String context;
 
     /** Open text describing the API */
     private String description;
 
-    /** Explicit version of this API */
-    private String version;
-
     /** Additional data functional and technical related to the API */
-    private Map<String, String> metadata = new HashMap<>();
+    private Map<String, String> meta = new HashMap<>();
 
     /** Collection of resources linked to this API. */
     private Collection<Resource> resources = new ArrayList<>();
@@ -69,14 +63,6 @@ public class API {
         this.name = name;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public String getContext() {
         return context;
     }
@@ -93,20 +79,12 @@ public class API {
         this.description = description;
     }
 
-    public String getVersion() {
-        return version;
+    public Map<String, String> getMeta() {
+        return meta;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, String> metadata) {
-        this.metadata = metadata;
+    public void setMeta(Map<String, String> metadata) {
+        this.meta = metadata;
     }
 
     public Collection<Resource> getResources() {

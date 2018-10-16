@@ -14,22 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.discovery.api;
+package org.apache.karaf.vineyard.common;
 
-import org.apache.karaf.vineyard.common.API;
+public class RestResource extends Resource {
 
-import java.util.List;
+  private String method;
 
-/**
- * Describe a discovery service that each plugin has to implement.
- */
-public interface DiscoveryService {
+  public String getMethod() {
+    return method;
+  }
 
-    /**
-     * Scan for services.
-     *
-     * @return The discovered services.
-     */
-    List<API> scan();
+  public void setMethod(String method) {
+    this.method = method;
+  }
 
 }
