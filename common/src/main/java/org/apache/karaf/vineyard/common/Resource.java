@@ -17,6 +17,7 @@
 package org.apache.karaf.vineyard.common;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Describe a resource in a Rest API.
@@ -33,7 +34,7 @@ public abstract class Resource {
 
     private String mediaType;
 
-    private Collection<Policy> policies;
+    private Map<Integer, Policy> policies;
 
     private String response;
 
@@ -79,11 +80,11 @@ public abstract class Resource {
         this.mediaType = mediaType;
     }
 
-    public Collection<Policy> getPolicies() {
+    public Map<Integer, Policy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(Collection<Policy> policies) {
+    public void setPolicies(Map<Integer, Policy> policies) {
         this.policies = policies;
     }
 

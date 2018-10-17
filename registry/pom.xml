@@ -34,6 +34,10 @@
     <name>Apache Karaf :: Vineyard :: Registry</name>
 
     <modules>
+        <!-- different kind of registries -->
+        <!-- <module>api</module> -->
+        <!-- <module>policy</module> -->
+        <!-- <module>rest</module> -->
         <module>api</module>
         <module>storage</module>
         <module>rest</module>
