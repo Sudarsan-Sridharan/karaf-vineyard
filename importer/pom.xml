@@ -29,9 +29,9 @@
     </parent>
 
     <groupId>org.apache.karaf.vineyard</groupId>
-    <artifactId>importers</artifactId>
+    <artifactId>importer</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Karaf :: Vineyard :: Importers</name>
+    <name>Apache Karaf :: Vineyard :: Importer</name>
 
     <modules>
         <!--
