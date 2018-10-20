@@ -30,6 +30,8 @@ public abstract class Resource {
 
     private String path;
 
+    private String version;
+
     private String accept;
 
     private String mediaType;
@@ -62,6 +64,14 @@ public abstract class Resource {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getAccept() {

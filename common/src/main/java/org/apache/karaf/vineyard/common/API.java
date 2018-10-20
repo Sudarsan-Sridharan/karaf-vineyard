@@ -44,9 +44,6 @@ public class API {
     /** Collection of resources linked to this API. */
     private Collection<Resource> resources = new ArrayList<>();
 
-    /** Schema definition for GraphQL */
-    private String schema;
-
     public String getId() {
         return id;
     }
@@ -95,11 +92,4 @@ public class API {
         this.resources = resources;
     }
 
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
 }
