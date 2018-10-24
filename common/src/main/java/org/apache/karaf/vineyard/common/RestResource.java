@@ -16,16 +16,110 @@
  */
 package org.apache.karaf.vineyard.common;
 
-public class RestResource extends Resource {
+import java.util.Map;
 
-  private String method;
+/**
+ * Describe a resource in a Rest API.
+ */
+public class RestResource {
 
-  public String getMethod() {
-    return method;
-  }
+    private String id;
 
-  public void setMethod(String method) {
-    this.method = method;
-  }
+    private String description;
 
+    private String path;
+
+    private String method;
+
+    private String version;
+
+    private String accept;
+
+    private String mediaType;
+
+    private Map<Integer, Policy> policies;
+
+    private String response;
+
+    private String endpoint;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getAccept() {
+        return accept;
+    }
+
+    public void setAccept(String accept) {
+        this.accept = accept;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    public Map<Integer, Policy> getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(Map<Integer, Policy> policies) {
+        this.policies = policies;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
 }

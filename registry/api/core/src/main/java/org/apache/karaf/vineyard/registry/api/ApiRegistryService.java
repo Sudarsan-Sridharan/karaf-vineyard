@@ -17,11 +17,9 @@
 package org.apache.karaf.vineyard.registry.api;
 
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.Resource;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Description of the API Registry service.
@@ -86,7 +84,7 @@ public interface ApiRegistryService {
      * @param api The API for the resource to add.
      * @param resource The resource to add.
      */
-    // void addResource(API api, Resource resource);
+    // void addResource(API api, RestResource resource);
 
     /**
      * Delete an existing resource from an existing API.
@@ -94,7 +92,7 @@ public interface ApiRegistryService {
      * @param api The API for the resource to remove.
      * @param resource The resource to remove.
      */
-    // void deleteResource(API api, Resource resource);
+    // void deleteResource(API api, RestResource resource);
 
     /**
      * Update a resource.
@@ -102,7 +100,7 @@ public interface ApiRegistryService {
      * @param api The API for the resource to update.
      * @param resource The resource to update.
      */
-    // void updateResource(API api, Resource resource);
+    // void updateResource(API api, RestResource resource);
 
     /**
      * Retrieve all the resources in an existing API.
@@ -110,7 +108,7 @@ public interface ApiRegistryService {
      * @param api The API for the resource to retrieve.
      * @return The list of resources.
      */
-    // Collection<Resource> getResources(API api);
+    // Collection<RestResource> getResources(API api);
 
     /**
      * Add a new resource for an existing API.

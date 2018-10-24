@@ -16,101 +16,25 @@
  */
 package org.apache.karaf.vineyard.common;
 
-import java.util.Collection;
-import java.util.Map;
+public class Resource {
 
-/**
- * Describe a resource in a Rest API.
- */
-public abstract class Resource {
+  private String id;
 
-    private String id;
+  private String type;
 
-    private String description;
+  public String getId() {
+    return id;
+  }
 
-    private String path;
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    private String version;
+  public String getType() {
+    return type;
+  }
 
-    private String accept;
-
-    private String mediaType;
-
-    private Map<Integer, Policy> policies;
-
-    private String response;
-
-    private String endpoint;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getAccept() {
-        return accept;
-    }
-
-    public void setAccept(String accept) {
-        this.accept = accept;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
-    }
-
-    public Map<Integer, Policy> getPolicies() {
-        return policies;
-    }
-
-    public void setPolicies(Map<Integer, Policy> policies) {
-        this.policies = policies;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 }
