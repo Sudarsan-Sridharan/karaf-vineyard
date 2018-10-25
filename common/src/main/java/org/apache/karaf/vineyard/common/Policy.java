@@ -23,43 +23,47 @@ import java.util.Map;
  */
 public class Policy {
 
-  private String id;
+    /** Unique Policy ID */
+    private String id;
 
-  private String description;
+    /** Open text describing the Policy */
+    private String description;
 
-  private Map<String, String> meta;
+    /** Additional data functional and technical related to the Policy */
+    private Map<String, String> meta;
 
-  private String className;
+    /** The class name of the Policy */
+    private String className;
 
-  public String getId() {
+    public String getId() {
     return id;
-  }
+    }
 
-  public void setId(String id) {
+    public void setId(String id) {
     this.id = id;
-  }
+    }
 
-  public String getDescription() {
+    public String getDescription() {
     return description;
-  }
+    }
 
-  public void setDescription(String description) {
+    public void setDescription(String description) {
     this.description = description;
-  }
+    }
 
-  public Map<String, String> getMeta() {
+    public Map<String, String> getMeta() {
     return meta;
-  }
+    }
 
-  public void setMeta(Map<String, String> meta) {
+    public void setMeta(Map<String, String> meta) {
     this.meta = meta;
-  }
+    }
 
-  public String getClassName() {
+    public String getClassName() {
     return className;
-  }
+    }
 
-  public void setClassName(String className) {
+    public void setClassName(String className) {
     this.className = className;
-  }
+    }
 }

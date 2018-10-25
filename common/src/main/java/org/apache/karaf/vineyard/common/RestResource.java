@@ -23,24 +23,34 @@ import java.util.Map;
  */
 public class RestResource {
 
+    /** Unique RestResource ID */
     private String id;
 
+    /** Open text description */
     private String description;
 
+    /** The base path of the Resource */
     private String path;
 
+    /** The HTTP method of the Resource : GET, POST, PUT, DELETE, PATCH */
     private String method;
 
+    /** The version of the Resource */
     private String version;
 
+    /** The media type accepted by the Resource */
     private String accept;
 
+    /** The media type produced by the Resource */
     private String mediaType;
 
+    /** The policies to apply on the Resource by the Gateway ordered by the integer key of the map */
     private Map<Integer, Policy> policies;
 
+    /** The response of the Resource, it could be static */
     private String response;
 
+    /** The endpoint consumed by the Resource */
     private String endpoint;
 
     public String getId() {

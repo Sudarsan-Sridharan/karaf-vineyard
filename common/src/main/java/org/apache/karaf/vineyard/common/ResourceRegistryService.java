@@ -19,7 +19,7 @@ package org.apache.karaf.vineyard.common;
 import java.util.Collection;
 
 /**
- * Generic service managing resource registry.
+ * Generic service managing {@link Resource} registry.
  */
 public interface ResourceRegistryService<ResourceT> {
 

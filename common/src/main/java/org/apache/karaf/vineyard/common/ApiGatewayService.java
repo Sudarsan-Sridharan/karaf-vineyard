@@ -16,6 +16,9 @@
  */
 package org.apache.karaf.vineyard.common;
 
+/**
+ * Service managing {@link API} gateway.
+ */
 public interface ApiGatewayService {
 
   /**

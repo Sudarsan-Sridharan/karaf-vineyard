@@ -16,25 +16,30 @@
  */
 package org.apache.karaf.vineyard.common;
 
+/**
+ * Describe a generic resource API.
+ */
 public class Resource {
 
-  private String id;
+    /** Unique Resource ID */
+    private String id;
 
-  private String type;
+    /** The type of Resource */
+    private String type;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+      return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+      this.id = id;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+      return type;
+    }
 
-  public void setType(String type) {
-    this.type = type;
-  }
+    public void setType(String type) {
+      this.type = type;
+    }
 }
