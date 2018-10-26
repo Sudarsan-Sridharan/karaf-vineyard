@@ -25,6 +25,7 @@ import org.apache.aries.jpa.template.JpaTemplate;
 import org.apache.aries.jpa.template.TransactionType;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
+import org.apache.karaf.vineyard.common.Resource;
 import org.apache.karaf.vineyard.registry.api.entity.ApiEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -120,6 +121,43 @@ public class RegistryServiceImpl implements ApiRegistryService {
             results.add(mapTo(entity));
         }
         return results;
+    }
+
+    @Override
+    public void addResource(API api, Resource resource) {
+        // TODO
+    }
+
+    @Override
+    public void deleteResource(API api, Resource resource) {
+        // TODO
+    }
+
+    @Override
+    public Collection<Resource> listResources(API api) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public void addMeta(API api, Map<String, String> meta) {
+        // TODO
+    }
+
+    @Override
+    public void deleteMeta(API api, String key) {
+        // TODO
+    }
+
+    @Override
+    public void updateMeta(API api, Map<String, String> meta) {
+        // TODO
+    }
+
+    @Override
+    public Map<String, String> getMeta(API api) {
+        // TODO
+        return null;
     }
 
     private API mapTo(ApiEntity apiEntity) {

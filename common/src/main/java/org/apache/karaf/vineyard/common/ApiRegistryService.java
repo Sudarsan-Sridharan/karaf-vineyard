@@ -18,6 +18,7 @@ package org.apache.karaf.vineyard.common;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Service managing {@link API} registry.
@@ -77,65 +78,59 @@ public interface ApiRegistryService {
     Collection<API> list();
 
     /**
-     * Add a new resource for an API in the registry.
+     * Add a new resource reference for an API in the registry.
      *
      * @param api The API for the resource to add.
      * @param resource The resource to add.
      */
-    // void addResource(API api, RestResource resource);
+    void addResource(API api, Resource resource);
 
     /**
-     * Delete an existing resource from an existing API.
+     * Delete an existing resource reference from an existing API.
      *
      * @param api The API for the resource to remove.
      * @param resource The resource to remove.
      */
-    // void deleteResource(API api, RestResource resource);
+    void deleteResource(API api, Resource resource);
 
     /**
-     * Update a resource.
-     *
-     * @param api The API for the resource to update.
-     * @param resource The resource to update.
-     */
-    // void updateResource(API api, RestResource resource);
-
-    /**
-     * Retrieve all the resources in an existing API.
+     * Retrieve all the resources reference in an existing API.
      *
      * @param api The API for the resource to retrieve.
      * @return The list of resources.
      */
-    // Collection<RestResource> getResources(API api);
+    Collection<Resource> listResources(API api);
 
     /**
-     * Add a new resource for an existing API.
+     * Add a new meta for an existing API.
      *
      * @param api The API for the metadata to add.
+     * @param meta The list of meta to add.
      */
-    // void addMetadata(API api, Map<String, String> metadata);
+    void addMeta(API api, Map<String, String> meta);
 
     /**
-     * Delete an existing API from the registry.
+     * Delete a meta from a given API.
      *
      * @param api The API for the metadata to remove.
-     * @param metadataKey The key of the metadata to remove.
+     * @param key The key of the metadata to remove.
      */
-    // void deleteMetadata(API api, String metadataKey);
+    void deleteMeta(API api, String key);
 
     /**
-     * Update an existing API.
+     * Update meta in an existing API.
      *
      * @param api The API for the metadata to update.
+     * @param meta The updated meta.
      */
-    // void updateMetadata(API api, Map<String, String> metadata);
+    void updateMeta(API api, Map<String, String> meta);
 
     /**
-     * Retrieve all the APIs in the registry.
+     * Retrieve all meta for a given API.
      *
      * @param api The API for the resource to retrieve.
-     * @return The map of metadata represented by "key,value".
+     * @return The meta represented by "key,value".
      */
-    // Map<String, String> getMetadata(API api);
+    Map<String, String> getMeta(API api);
 
 }
