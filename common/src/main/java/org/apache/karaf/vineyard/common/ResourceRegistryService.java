@@ -32,13 +32,6 @@ public interface ResourceRegistryService<ResourceT> {
   ResourceT add(ResourceT resource) throws Exception;
 
   /**
-   * Delete an existing resource from the registry.
-   *
-   * @param resource The resource to remove.
-   */
-  void delete(ResourceT resource);
-
-  /**
    * Delete an existing resource from the registry, identified by ID.
    *
    * @param id The resource ID.

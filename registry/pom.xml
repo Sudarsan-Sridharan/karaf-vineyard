@@ -35,6 +35,7 @@
 
     <modules>
         <module>api</module>
+        <module>policy</module>
         <!-- <module>policy</module> -->
         <!-- <module>resource</module> -->
     </modules>

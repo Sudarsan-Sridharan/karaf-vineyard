@@ -42,13 +42,6 @@ public interface ApiRegistryService {
     void definition(API api, InputStream inputStream) throws Exception;
 
     /**
-     * Delete an existing API from the registry.
-     *
-     * @param api The API to remove.
-     */
-    void delete(API api);
-
-    /**
      * Delete an existing API from the registry, identified by ID.
      *
      * @param id The API ID.

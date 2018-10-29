@@ -49,13 +49,6 @@ public interface PolicyRegistryService {
     void delete(String id);
 
     /**
-     * Get a policy in the registry.
-     * @param policy
-     * @return the policy
-     */
-    Policy get(Policy policy);
-
-    /**
      * Get a policy by id.
      * @param id
      * @return the policy

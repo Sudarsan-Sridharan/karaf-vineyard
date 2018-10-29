@@ -72,13 +72,6 @@ public class RegistryServiceImpl implements ApiRegistryService {
     }
 
     @Override
-    public void delete(API api) {
-        if (api != null) {
-            delete(api.getId());
-        }
-    }
-
-    @Override
     public void delete(String id) {
         jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
             ApiEntity apiEntity = entityManager.find(ApiEntity.class, id);
