@@ -107,7 +107,7 @@ public class ApiRegistryRest {
 
         API api = registry.get(id);
         if (api != null) {
-            registry.delete(api);
+            registry.delete(api.getId());
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

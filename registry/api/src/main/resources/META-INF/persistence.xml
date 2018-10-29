@@ -30,7 +30,7 @@
         <!-- Only used when transaction-type=RESOURCE_LOCAL -->
         <non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard-registry-api)</non-jta-data-source>
 
-        <class>org.apache.karaf.vineyard.registry.api.storage.entity.ApiEntity</class>
+        <class>org.apache.karaf.vineyard.registry.api.entity.ApiEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
