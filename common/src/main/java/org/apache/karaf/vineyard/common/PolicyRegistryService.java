@@ -23,16 +23,43 @@ import java.util.Collection;
  */
 public interface PolicyRegistryService {
 
-  Policy add(Policy policy);
+    /**
+     * Add a new policy in the registry.
+     * @param policy
+     * @return The policy created
+     */
+    Policy add(Policy policy);
 
-  Collection<Policy> list();
+    /**
+     * Search all the policy in the registry.
+     * @return the list of the policy
+     */
+    Collection<Policy> list();
 
-  void update(Policy policy);
+    /**
+     * Update a policy.
+     * @param policy
+     */
+    void update(Policy policy);
 
-  void delete(String id);
+    /**
+     * Delete a policy.
+     * @param id
+     */
+    void delete(String id);
 
-  Policy get(Policy policy);
+    /**
+     * Get a policy in the registry.
+     * @param policy
+     * @return the policy
+     */
+    Policy get(Policy policy);
 
-  Policy get(String id);
+    /**
+     * Get a policy by id.
+     * @param id
+     * @return the policy
+     */
+    Policy get(String id);
 
 }
