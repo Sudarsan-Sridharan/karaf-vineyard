@@ -17,6 +17,7 @@
 package org.apache.karaf.vineyard.common;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Service managing the {@link Policy} registry.
@@ -54,5 +55,37 @@ public interface PolicyRegistryService {
      * @return the policy
      */
     Policy get(String id);
+
+    /**
+     * Add a new meta for an existing Policy.
+     *
+     * @param policy The Policy for the metadata to add.
+     * @param meta The list of meta to add.
+     */
+    void addMeta(Policy policy, Map<String, String> meta);
+
+    /**
+     * Delete a meta from a given Policy.
+     *
+     * @param policy The Policy for the metadata to remove.
+     * @param key The key of the metadata to remove.
+     */
+    void deleteMeta(Policy policy, String key);
+
+    /**
+     * Update meta in an existing Policy.
+     *
+     * @param policy The Policy for the metadata to update.
+     * @param meta The updated meta.
+     */
+    void updateMeta(Policy policy, Map<String, String> meta);
+
+    /**
+     * Retrieve all meta for a given Policy.
+     *
+     * @param policy The Policy for the resource to retrieve.
+     * @return The meta represented by "key,value".
+     */
+    Map<String, String> getMeta(Policy policy);
 
 }

@@ -26,9 +26,9 @@
              http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
              ">
 
-    <reference id="registry" interface="org.apache.karaf.vineyard.common.ApiRegistryService"/>
+    <reference id="registry" interface="org.apache.karaf.vineyard.common.PolicyRegistryService"/>
 
-    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.rest.RegistryRest">
+    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.policy.rest.PolicyRegistryRest">
         <property name="registry" ref="registry"/>
     </bean>
 
@@ -62,7 +62,7 @@
         </cxf:features>
     </cxf:bus>
 
-    <jaxrs:server id="registryRest" address="/vineyard/registry/api">
+    <jaxrs:server id="registryRest" address="/vineyard/registry/policy">
         <jaxrs:serviceBeans>
             <ref component-id="serviceBean"/>
         </jaxrs:serviceBeans>

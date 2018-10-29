@@ -28,7 +28,7 @@
 
     <reference id="registry" interface="org.apache.karaf.vineyard.common.ApiRegistryService"/>
 
-    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.rest.RegistryRest">
+    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.api.rest.ApiRegistryRest">
         <property name="registry" ref="registry"/>
     </bean>
 
