@@ -47,8 +47,8 @@
 
         <derby.version>10.14.2.0</derby.version>
         
-        <cxf.version>3.2.6</cxf.version>
-        <jackson.version>2.9.6</jackson.version>
+        <cxf.version>3.2.7</cxf.version>
+        <jackson.version>2.9.7</jackson.version>
         <json-api.version>1.0</json-api.version>
     </properties>
 
