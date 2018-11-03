@@ -31,6 +31,7 @@
         <non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard)</non-jta-data-source>
 
         <class>org.apache.karaf.vineyard.registry.policy.entity.PolicyEntity</class>
+        <class>org.apache.karaf.vineyard.registry.policy.entity.PolicyMetaEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
