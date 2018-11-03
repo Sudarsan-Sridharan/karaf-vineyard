@@ -21,14 +21,14 @@
         limitations under the License.
     -->
 
-    <persistence-unit name="vineyard-api-registry" transaction-type="JTA">
+    <persistence-unit name="vineyard-registry-policy" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <!-- Only used when transaction-type=JTA -->
-        <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard)</jta-data-source>
+        <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard-policy)</jta-data-source>
 
         <!-- Only used when transaction-type=RESOURCE_LOCAL -->
-        <non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard)</non-jta-data-source>
+        <non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard-policy)</non-jta-data-source>
 
         <class>org.apache.karaf.vineyard.registry.policy.entity.PolicyEntity</class>
         <class>org.apache.karaf.vineyard.registry.policy.entity.PolicyMetaEntity</class>

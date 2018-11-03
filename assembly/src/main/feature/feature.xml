@@ -75,9 +75,40 @@
         <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
         <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.api/${project.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.storage/${project.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.commands/${project.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.rest/${project.version}</bundle>
+    </feature>
+
+    <feature name="vineyard-registry-policy-datasource" version="${project.version}">
+        <config name="org.ops4j.datasource-vineyard-policy">
+            osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
+            dataSourceName=jdbc/vineyard-policy
+            url=jdbc:derby:data/vineyard-policy/derby;create=true
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/vineyard-policy
+        </capability>
+    </feature>
+
+    <feature name="vineyard-registry-resource-rest" version="${project.version}" description="Karaf Vineyard Registry Policy">
+        <feature version="${project.version}">vineyard-registry</feature>
+        <feature version="${project.version}">vineyard-registry-policy-datasource</feature>
+        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.policy/${project.version}</bundle>
+    </feature>
+
+    <feature name="vineyard-registry-resource-rest-datasource" version="${project.version}">
+        <config name="org.ops4j.datasource-vineyard-resource-rest">
+            osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
+            dataSourceName=jdbc/vineyard-resource-rest
+            url=jdbc:derby:data/vineyard-resource-rest/derby;create=true
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/vineyard-resource-rest
+        </capability>
+    </feature>
+
+    <feature name="vineyard-registry-resource-rest" version="${project.version}" description="Karaf Vineyard Registry Resource REST">
+        <feature version="${project.version}">vineyard-registry</feature>
+        <feature version="${project.version}">vineyard-registry-resource-rest-datasource</feature>
+        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.resource.rest/${project.version}</bundle>
     </feature>
 
 </features>

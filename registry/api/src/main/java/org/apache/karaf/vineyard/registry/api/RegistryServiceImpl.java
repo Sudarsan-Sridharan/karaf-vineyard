@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ApiRegistryService.class, immediate = true)
 public class RegistryServiceImpl implements ApiRegistryService {
 
-    @Reference(target = "(osgi.unit.name=vineyard)")
+    @Reference(target = "(osgi.unit.name=vineyard-registry-api)")
     private JpaTemplate jpaTemplate;
 
     @Override

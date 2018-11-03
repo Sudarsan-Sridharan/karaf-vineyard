@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.apache.aries.jpa.template.JpaTemplate;
 import org.apache.aries.jpa.template.TransactionType;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
 import org.apache.karaf.vineyard.common.Policy;
 import org.apache.karaf.vineyard.common.PolicyRegistryService;
 import org.apache.karaf.vineyard.registry.policy.entity.PolicyEntity;
@@ -35,10 +34,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * Implementation of the Policy service using the JPA entity manager service (provided by Karaf).
  */
-@Component(service = ApiRegistryService.class, immediate = true)
+@Component(service = PolicyRegistryService.class, immediate = true)
 public class PolicyServiceImpl implements PolicyRegistryService {
 
-    @Reference(target = "(osgi.unit.name=vineyard)")
+    @Reference(target = "(osgi.unit.name=vineyard-registry-policy)")
     private JpaTemplate jpaTemplate;
 
     @Override
