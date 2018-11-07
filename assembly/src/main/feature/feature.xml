@@ -43,7 +43,8 @@
         <bundle>mvn:org.apache.karaf.vineyard.gateway/org.apache.karaf.vineyard.gateway.bridge/${project.version}</bundle>
     </feature>
 
-    <feature name="vineyard-registry-datasource" version="${project.version}">
+    <feature name="vineyard-registry-datasource" version="${project.version}"
+             description="Karaf Vineyard Datasource for Registry API">
         <config name="org.ops4j.datasource-vineyard">
             osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
             dataSourceName=jdbc/vineyard
@@ -54,15 +55,16 @@
         </capability>
     </feature>
 
-    <feature name="vineyard-registry" version="${project.version}" description="Karaf Vineyard Registry">
+    <feature name="vineyard-registry" version="${project.version}"
+             description="Karaf Vineyard Registry API">
         <feature version="${project.version}">vineyard-common</feature>
         <feature version="${project.version}">vineyard-registry-datasource</feature>
         <feature>transaction</feature>
         <feature>jndi</feature>
+        <feature>jdbc</feature>
         <feature>pax-jdbc-config</feature>
         <feature>pax-jdbc-derby</feature>
         <feature>pax-jdbc-pool-dbcp2</feature>
-        <feature>jdbc</feature>
         <feature dependency="true">aries-blueprint</feature>
         <feature version="[2,3)">jpa</feature>
         <feature version="[2,3)">eclipselink</feature>
@@ -74,10 +76,11 @@
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.api/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.registry/api/${project.version}</bundle>
     </feature>
 
-    <feature name="vineyard-registry-policy-datasource" version="${project.version}">
+    <feature name="vineyard-registry-policy-datasource" version="${project.version}"
+             description="Karaf Vineyard Datasource for Registry Policy">
         <config name="org.ops4j.datasource-vineyard-policy">
             osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
             dataSourceName=jdbc/vineyard-policy
@@ -88,13 +91,15 @@
         </capability>
     </feature>
 
-    <feature name="vineyard-registry-resource-rest" version="${project.version}" description="Karaf Vineyard Registry Policy">
+    <feature name="vineyard-registry-policy" version="${project.version}"
+             description="Karaf Vineyard Registry Policy">
         <feature version="${project.version}">vineyard-registry</feature>
         <feature version="${project.version}">vineyard-registry-policy-datasource</feature>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.policy/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.registry/policy/${project.version}</bundle>
     </feature>
 
-    <feature name="vineyard-registry-resource-rest-datasource" version="${project.version}">
+    <feature name="vineyard-registry-resource-rest-datasource" version="${project.version}"
+             description="Karaf Vineyard Datasource for Registry Resource REST">
         <config name="org.ops4j.datasource-vineyard-resource-rest">
             osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
             dataSourceName=jdbc/vineyard-resource-rest
@@ -105,10 +110,11 @@
         </capability>
     </feature>
 
-    <feature name="vineyard-registry-resource-rest" version="${project.version}" description="Karaf Vineyard Registry Resource REST">
+    <feature name="vineyard-registry-resource-rest" version="${project.version}"
+             description="Karaf Vineyard Registry Resource REST">
         <feature version="${project.version}">vineyard-registry</feature>
         <feature version="${project.version}">vineyard-registry-resource-rest-datasource</feature>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/org.apache.karaf.vineyard.registry.resource.rest/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.registry/rest/${project.version}</bundle>
     </feature>
 
 </features>
