@@ -114,7 +114,7 @@
              description="Karaf Vineyard Registry Resource REST">
         <feature version="${project.version}">vineyard-registry</feature>
         <feature version="${project.version}">vineyard-registry-resource-rest-datasource</feature>
-        <bundle>mvn:org.apache.karaf.vineyard.registry/rest/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.registry.resource/rest/${project.version}</bundle>
     </feature>
 
 </features>

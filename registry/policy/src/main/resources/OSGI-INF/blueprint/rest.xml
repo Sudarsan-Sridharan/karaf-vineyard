@@ -26,14 +26,14 @@
              http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
              ">
 
-    <reference id="registry" interface="org.apache.karaf.vineyard.common.PolicyRegistryService"/>
+    <reference id="registryPolicy" interface="org.apache.karaf.vineyard.common.PolicyRegistryService"/>
 
-    <bean id="serviceBean" class="org.apache.karaf.vineyard.registry.policy.rest.PolicyRegistryRest">
-        <property name="registry" ref="registry"/>
+    <bean id="servicePolicyBean" class="org.apache.karaf.vineyard.registry.policy.rest.PolicyRegistryRest">
+        <property name="registry" ref="registryPolicy"/>
     </bean>
 
     <!-- CXF OpenApiFeature -->
-    <bean id="openApiFeature" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
+    <bean id="openApiPolicyFeature" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
         <property name="resourcePackages">
             <set>
                 <value>org.apache.karaf.vineyard.registry.rest</value>
@@ -44,7 +44,7 @@
         <property name="contactUrl" value="https://karaf.apache.org"/>
         <property name="contactEmail" value="user@karaf.apache.org"/>
         <property name="contactName" value="Apache Karaf team"/>
-        <property name="description" value="The Apache Karaf Vineyard Registry OpenAPI definition"/>
+        <property name="description" value="The Apache Karaf Vineyard Registry Policy OpenAPI definition"/>
         <property name="title" value="Apache Karaf Vineyard Registry"/>
         <property name="version" value="1.0.0-SNAPSHOT"/>
 
@@ -62,16 +62,16 @@
         </cxf:features>
     </cxf:bus>
 
-    <jaxrs:server id="registryRest" address="/vineyard/registry/policy">
+    <jaxrs:server id="registryRestPolicy" address="/vineyard/registry/policy">
         <jaxrs:serviceBeans>
-            <ref component-id="serviceBean"/>
+            <ref component-id="servicePolicyBean"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref component-id="crossProvider" />
             <ref component-id="jsonProvider" />
         </jaxrs:providers>
         <jaxrs:features>
-            <ref component-id="openApiFeature" />
+            <ref component-id="openApiPolicyFeature" />
         </jaxrs:features>
     </jaxrs:server>
 </blueprint>
