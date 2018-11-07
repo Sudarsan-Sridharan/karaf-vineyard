@@ -36,7 +36,7 @@
     <bean id="openApiFeature" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
         <property name="resourcePackages">
             <set>
-                <value>org.apache.karaf.vineyard.registry.rest</value>
+                <value>org.apache.karaf.vineyard.registry.api.rest</value>
             </set>
         </property>
         <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>
