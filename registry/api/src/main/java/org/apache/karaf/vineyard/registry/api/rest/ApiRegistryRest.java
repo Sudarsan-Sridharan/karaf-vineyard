@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
         allowAllOrigins = true,
         allowCredentials = true
 )
-@Server(url = "/cxf/vineyard/registry")
+@Server(url = "/cxf/vineyard/registry/api")
 public class ApiRegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ApiRegistryRest.class);
@@ -59,7 +59,7 @@ public class ApiRegistryRest {
         this.registry = registry;
     }
     
-    @Path("/api")
+    @Path("/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -73,7 +73,7 @@ public class ApiRegistryRest {
         }
     }
     
-    @Path("/api/{id}/upload-definition")
+    @Path("/{id}/upload-definition")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Multipart(value = "root", type = MediaType.APPLICATION_OCTET_STREAM)
@@ -90,7 +90,7 @@ public class ApiRegistryRest {
         return Response.ok().build();
     }
 
-    @Path("/api")
+    @Path("/")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -100,7 +100,7 @@ public class ApiRegistryRest {
         return Response.ok().build();
     }
 
-    @Path("/api/{id}")
+    @Path("/{id}")
     @DELETE
     @Tag(name = "Api")
     public Response deleteApi(@PathParam("id") String id) {
@@ -114,7 +114,7 @@ public class ApiRegistryRest {
         }
     }
     
-    @Path("/api/{id}")
+    @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -128,7 +128,7 @@ public class ApiRegistryRest {
         }
     }
 
-    @Path("/api")
+    @Path("/")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")

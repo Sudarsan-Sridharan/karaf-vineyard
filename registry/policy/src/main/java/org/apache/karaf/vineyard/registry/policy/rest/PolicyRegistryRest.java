@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
         allowAllOrigins = true,
         allowCredentials = true
 )
-@Server(url = "/cxf/vineyard/registry")
+@Server(url = "/cxf/vineyard/registry/policy")
 public class PolicyRegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PolicyRegistryRest.class);
@@ -57,7 +57,7 @@ public class PolicyRegistryRest {
         this.registry = registry;
     }
     
-    @Path("/policy")
+    @Path("/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
@@ -71,7 +71,7 @@ public class PolicyRegistryRest {
         }
     }
 
-    @Path("/policy")
+    @Path("/")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
@@ -81,7 +81,7 @@ public class PolicyRegistryRest {
         return Response.ok().build();
     }
 
-    @Path("/policy/{id}")
+    @Path("/{id}")
     @DELETE
     @Tag(name = "Policy")
     public Response deletePolicy(@PathParam("id") String id) {
@@ -95,7 +95,7 @@ public class PolicyRegistryRest {
         }
     }
     
-    @Path("/policy/{id}")
+    @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
@@ -109,7 +109,7 @@ public class PolicyRegistryRest {
         }
     }
 
-    @Path("/policy")
+    @Path("/")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
@@ -123,7 +123,7 @@ public class PolicyRegistryRest {
         }
     }
 
-    @Path("/policy/{id}/meta")
+    @Path("/{id}/meta")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
@@ -138,7 +138,7 @@ public class PolicyRegistryRest {
         }
     }
 
-    @Path("/policy/{id}/meta")
+    @Path("/{id}/meta")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
@@ -153,7 +153,7 @@ public class PolicyRegistryRest {
         }
     }
 
-    @Path("/policy/{id}/meta/{key}")
+    @Path("/{id}/meta/{key}")
     @DELETE
     @Tag(name = "Policy")
     public Response deleteMeta(@PathParam("id") String id, @PathParam("key") String key) {
@@ -167,7 +167,7 @@ public class PolicyRegistryRest {
         }
     }
 
-    @Path("/policy/{id}/meta")
+    @Path("/{id}/meta")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
