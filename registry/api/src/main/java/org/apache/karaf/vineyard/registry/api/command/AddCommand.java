@@ -26,7 +26,7 @@ import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
 
 @Service
-@Command(scope = "vineyard", name = "api-add", description = "")
+@Command(scope = "vineyard", name = "api-add", description = "Add a new API in the registry")
 public class AddCommand implements Action {
 
     @Reference
