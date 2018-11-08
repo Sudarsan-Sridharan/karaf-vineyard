@@ -14,33 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.registry.policy.entity;
+package org.apache.karaf.vineyard.registry.api.entity;
 
 import java.io.Serializable;
 
-/** A regular JPA entity representing Meta Policy PK. */
-public class PolicyMetaPkEntity implements Serializable {
+/** A regular JPA entity representing Api Meta PK. */
+public class ApiMetaPkEntity implements Serializable {
 
     private String key;
-
-    private String policy;
+    private String api;
 
     public String getKey() {
         return key;
     }
 
-    public String getPolicy() {
-        return policy;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public void setPolicy(String policy) {
-        this.policy = policy;
+    public String getApi() {
+        return api;
+    }
+
+    public void setApi(String api) {
+        this.api = api;
     }
 
     public boolean equals(Object obj) {
         if (obj == this) return true;
-        if (!(obj instanceof PolicyMetaPkEntity)) return false;
-        PolicyMetaPkEntity pk = (PolicyMetaPkEntity) obj;
-        return pk.key.equals(this.key) && pk.policy.equals(this.policy);
+        if (!(obj instanceof ApiMetaPkEntity)) return false;
+        ApiMetaPkEntity pk = (ApiMetaPkEntity) obj;
+        return pk.key.equals(this.key) && pk.api.equals(this.api);
     }
 }

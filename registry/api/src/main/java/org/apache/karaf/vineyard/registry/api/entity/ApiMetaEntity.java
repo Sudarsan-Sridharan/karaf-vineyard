@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.registry.policy.entity;
+package org.apache.karaf.vineyard.registry.api.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -26,11 +26,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-/** A regular JPA entity representing Meta Policy. */
-@IdClass(PolicyMetaPkEntity.class)
+/** A regular JPA entity representing Api Meta. */
+@IdClass(ApiMetaPkEntity.class)
 @Entity
-@Table(name = "POLICY_META", schema = "VINEYARD")
-public class PolicyMetaEntity implements Serializable {
+@Table(name = "API_META", schema = "VINEYARD")
+public class ApiMetaEntity implements Serializable {
 
     @Id
     @Column(name = "META_KEY")
@@ -38,8 +38,8 @@ public class PolicyMetaEntity implements Serializable {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "POLICY_ID")
-    private PolicyEntity policy;
+    @PrimaryKeyJoinColumn(name = "API_ID")
+    private ApiEntity api;
 
     @Column(name = "META_VALUE")
     private String value;
@@ -52,12 +52,12 @@ public class PolicyMetaEntity implements Serializable {
         this.key = key;
     }
 
-    public PolicyEntity getPolicy() {
-        return policy;
+    public ApiEntity getApi() {
+        return api;
     }
 
-    public void setPolicy(PolicyEntity policy) {
-        this.policy = policy;
+    public void setApi(ApiEntity api) {
+        this.api = api;
     }
 
     public String getValue() {

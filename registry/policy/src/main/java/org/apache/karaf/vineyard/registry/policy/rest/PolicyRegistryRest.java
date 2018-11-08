@@ -62,7 +62,7 @@ public class PolicyRegistryRest {
 
         Policy newPolicy = registry.add(policy);
         try {
-            return Response.created(new URI("/policy/" + newPolicy.getId())).build();
+            return Response.created(new URI("/" + newPolicy.getId())).build();
         } catch (URISyntaxException e) {
             return Response.serverError().build();
         }

@@ -14,35 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.registry.resource.rest.entity;
+package org.apache.karaf.vineyard.registry.api.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-/** A regular JPA entity representing Resource Rest. */
+/** A regular JPA entity representing Api Resource. */
 @Entity
-@Table(name = "REST_RESOURCE", schema = "VINEYARD")
-public class RestResourceEntity implements Serializable {
+@Table(name = "API_RESOURCE", schema = "VINEYARD")
+public class ApiResourceEntity implements Serializable {
 
     @Id private String id;
-
-    private String description;
-    private String path;
-    private String method;
-    private String version;
-    private String accept;
-    private String mediaType;
-    private String response;
-    private String endpoint;
-
-    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Collection<RestPolicyEntity> policies;
 
     public String getId() {
         return id;
@@ -50,13 +34,5 @@ public class RestResourceEntity implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Collection<RestPolicyEntity> getPolicies() {
-        return policies;
-    }
-
-    public void setPolicies(Collection<RestPolicyEntity> policies) {
-        this.policies = policies;
     }
 }

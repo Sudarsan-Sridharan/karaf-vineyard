@@ -28,7 +28,7 @@
 
     <reference id="registryResourceRest" interface="org.apache.karaf.vineyard.common.ResourceRegistryService"/>
 
-    <bean id="serviceResourceRestBean" class="org.apache.karaf.vineyard.registry.resource.rest.rest.ResourceRegistryRest">
+    <bean id="serviceResourceRestBean" class="org.apache.karaf.vineyard.registry.resource.rest.rest.ResourceRestRegistryRest">
         <property name="registry" ref="registryResourceRest"/>
     </bean>
 
@@ -62,7 +62,7 @@
         </cxf:features>
     </cxf:bus>
 
-    <jaxrs:server id="registryRestResourceRest" address="/vineyard/registry/resource/rest">
+    <jaxrs:server id="registryRestResourceRest" address="/vineyard-registry-resource-rest">
         <jaxrs:serviceBeans>
             <ref component-id="serviceResourceRestBean"/>
         </jaxrs:serviceBeans>

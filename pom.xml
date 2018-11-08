@@ -427,6 +427,7 @@
                             <excludeSubProjects>false</excludeSubProjects>
                             <excludes>
                                 <exclude>**/*.iml</exclude>
+                                <exclude>**/target/**/*</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

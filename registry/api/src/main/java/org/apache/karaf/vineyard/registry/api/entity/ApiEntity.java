@@ -17,11 +17,14 @@
 package org.apache.karaf.vineyard.registry.api.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /** A regular JPA entity representing API. */
@@ -37,11 +40,15 @@ public class ApiEntity implements Serializable {
 
     private String description;
 
-    private String version;
-
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] definition;
+
+    @OneToMany(mappedBy = "api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Collection<ApiMetaEntity> meta;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Collection<ApiResourceEntity> resources;
 
     public String getId() {
         return id;
@@ -75,19 +82,27 @@ public class ApiEntity implements Serializable {
         this.description = description;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
     public byte[] getDefinition() {
         return definition;
     }
 
     public void setDefinition(byte[] definition) {
         this.definition = definition;
+    }
+
+    public Collection<ApiMetaEntity> getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Collection<ApiMetaEntity> meta) {
+        this.meta = meta;
+    }
+
+    public Collection<ApiResourceEntity> getResources() {
+        return resources;
+    }
+
+    public void setResources(Collection<ApiResourceEntity> resources) {
+        this.resources = resources;
     }
 }
