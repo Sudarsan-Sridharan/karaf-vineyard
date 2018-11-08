@@ -24,27 +24,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-/**
- * A regular JPA entity representing Rest Policy.
- */
+/** A regular JPA entity representing Rest Policy. */
 @Entity
 @Table(name = "REST_POLICY", schema = "VINEYARD")
 public class RestPolicyEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     @Id
-    @ManyToOne(fetch= FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name="RESOURCE_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "RESOURCE_ID")
     private RestResourceEntity resource;
 
     public String getId() {
-    return id;
+        return id;
     }
 
     public void setId(String id) {
-    this.id = id;
+        this.id = id;
     }
-
 }

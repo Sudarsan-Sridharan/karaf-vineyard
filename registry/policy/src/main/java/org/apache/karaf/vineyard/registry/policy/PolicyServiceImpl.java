@@ -43,112 +43,147 @@ public class PolicyServiceImpl implements PolicyRegistryService {
     @Override
     public Policy add(Policy policy) {
         policy.setId(UUID.randomUUID().toString());
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            entityManager.persist(mapTo(policy));
-            entityManager.flush();
-        });
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    entityManager.persist(mapTo(policy));
+                    entityManager.flush();
+                });
         return policy;
     }
 
     @Override
     public void delete(String id) {
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, id);
-            if (policyEntity !=  null) {
-                entityManager.remove(policyEntity);
-                entityManager.flush();
-            }
-        });
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, id);
+                    if (policyEntity != null) {
+                        entityManager.remove(policyEntity);
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public void update(Policy policy) {
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policy.getId());
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    PolicyEntity policyEntity =
+                            entityManager.find(PolicyEntity.class, policy.getId());
 
-            if (policyEntity !=  null) {
-                // we don't update the PK or the Metadatas
-                policyEntity.setClassName(policy.getClassName());
-                policyEntity.setDescription(policy.getDescription());
-                entityManager.merge(policyEntity);
-                entityManager.flush();
-            }
-        });
+                    if (policyEntity != null) {
+                        // we don't update the PK or the Metadatas
+                        policyEntity.setClassName(policy.getClassName());
+                        policyEntity.setDescription(policy.getDescription());
+                        entityManager.merge(policyEntity);
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public Policy get(String id) {
-        PolicyEntity policyEntity = jpaTemplate.txExpr(TransactionType.Supports,
-                entityManager -> entityManager.find(PolicyEntity.class, id));
+        PolicyEntity policyEntity =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager -> entityManager.find(PolicyEntity.class, id));
         return mapTo(policyEntity);
     }
 
     @Override
     public void addMeta(Policy policy, Map<String, String> meta) {
-        PolicyEntity policyEntity = jpaTemplate.txExpr(TransactionType.Supports,
-                entityManager -> entityManager.find(PolicyEntity.class, policy.getId()));
+        PolicyEntity policyEntity =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager -> entityManager.find(PolicyEntity.class, policy.getId()));
 
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            Collection<PolicyMetaEntity> metas = mapTo(policyEntity, meta);
-            if (metas != null) {
-                for (PolicyMetaEntity metaEntity : metas) {
-                    entityManager.persist(metaEntity);
-                }
-                entityManager.flush();
-            }
-        });
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    Collection<PolicyMetaEntity> metas = mapTo(policyEntity, meta);
+                    if (metas != null) {
+                        for (PolicyMetaEntity metaEntity : metas) {
+                            entityManager.persist(metaEntity);
+                        }
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public void deleteMeta(Policy policy, String key) {
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            Collection<PolicyMetaEntity> metaEntities = entityManager
-                    .createQuery("SELECT p FROM PolicyMetaEntity p where p.key = :key, p.policy.id = :policyId", PolicyMetaEntity.class)
-                    .setParameter("key", key)
-                    .setParameter("policyId", policy.getId())
-                    .getResultList();
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    Collection<PolicyMetaEntity> metaEntities =
+                            entityManager
+                                    .createQuery(
+                                            "SELECT p FROM PolicyMetaEntity p where p.key = :key, p.policy.id = :policyId",
+                                            PolicyMetaEntity.class)
+                                    .setParameter("key", key)
+                                    .setParameter("policyId", policy.getId())
+                                    .getResultList();
 
-            if (metaEntities !=  null && metaEntities.size() == 1) {
-                entityManager.remove(metaEntities.iterator().next());
-                entityManager.flush();
-            }
-        });
+                    if (metaEntities != null && metaEntities.size() == 1) {
+                        entityManager.remove(metaEntities.iterator().next());
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public void updateMeta(Policy policy, Map<String, String> meta) {
         for (String key : meta.keySet()) {
-            jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-                Collection<PolicyMetaEntity> metaEntities = entityManager
-                        .createQuery("SELECT p FROM PolicyMetaEntity p where p.key = :key, p.policy.id = :policyId", PolicyMetaEntity.class)
-                        .setParameter("key", key)
-                        .setParameter("policyId", policy.getId())
-                        .getResultList();
+            jpaTemplate.tx(
+                    TransactionType.RequiresNew,
+                    entityManager -> {
+                        Collection<PolicyMetaEntity> metaEntities =
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM PolicyMetaEntity p where p.key = :key, p.policy.id = :policyId",
+                                                PolicyMetaEntity.class)
+                                        .setParameter("key", key)
+                                        .setParameter("policyId", policy.getId())
+                                        .getResultList();
 
-                if (metaEntities != null && metaEntities.size() == 1) {
-                    PolicyMetaEntity metaEntity = metaEntities.iterator().next();
-                    metaEntity.setValue(meta.get(key));
-                    entityManager.merge(metaEntity);
-                    entityManager.flush();
-                }
-            });
+                        if (metaEntities != null && metaEntities.size() == 1) {
+                            PolicyMetaEntity metaEntity = metaEntities.iterator().next();
+                            metaEntity.setValue(meta.get(key));
+                            entityManager.merge(metaEntity);
+                            entityManager.flush();
+                        }
+                    });
         }
     }
 
     @Override
     public Map<String, String> getMeta(Policy policy) {
-        Collection<PolicyMetaEntity> metaEntities = jpaTemplate.txExpr(TransactionType.Supports,
-                entityManager -> entityManager.createQuery("SELECT p FROM PolicyMetaEntity p where p.policy.id = :policyId", PolicyMetaEntity.class)
-                        .setParameter("policyId", policy.getId())
-                        .getResultList());
+        Collection<PolicyMetaEntity> metaEntities =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM PolicyMetaEntity p where p.policy.id = :policyId",
+                                                PolicyMetaEntity.class)
+                                        .setParameter("policyId", policy.getId())
+                                        .getResultList());
 
         return mapTo(metaEntities);
     }
 
     @Override
     public Collection<Policy> list() {
-        List<PolicyEntity> list = jpaTemplate.txExpr(TransactionType.Supports,
-                entityManager -> entityManager.createQuery("SELECT p FROM PolicyEntity p", PolicyEntity.class).getResultList());
+        List<PolicyEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM PolicyEntity p", PolicyEntity.class)
+                                        .getResultList());
         Collection<Policy> results = new ArrayList<>();
         for (PolicyEntity entity : list) {
             results.add(mapTo(entity));
@@ -180,7 +215,8 @@ public class PolicyServiceImpl implements PolicyRegistryService {
         }
     }
 
-    private Collection<PolicyMetaEntity> mapTo(PolicyEntity policyEntity, Map<String, String> meta) {
+    private Collection<PolicyMetaEntity> mapTo(
+            PolicyEntity policyEntity, Map<String, String> meta) {
         if (meta != null && !meta.isEmpty()) {
             Collection<PolicyMetaEntity> metas = new ArrayList<>();
             for (String key : meta.keySet()) {
@@ -207,5 +243,4 @@ public class PolicyServiceImpl implements PolicyRegistryService {
             return null;
         }
     }
-
 }

@@ -16,19 +16,12 @@
  */
 package org.apache.karaf.vineyard.common;
 
-/**
- * Service managing {@link API} gateway.
- */
+/** Service managing {@link API} gateway. */
 public interface ApiGatewayService {
 
-  /**
-   * Publish an API in the gateway.
-   */
-  void publish(API api) throws Exception;
+    /** Publish an API in the gateway. */
+    void publish(API api) throws Exception;
 
-  /**
-   * Delete an API from the gateway.
-   */
-  void delete(String apiId) throws Exception;
-
+    /** Delete an API from the gateway. */
+    void delete(String apiId) throws Exception;
 }

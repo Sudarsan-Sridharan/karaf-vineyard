@@ -26,13 +26,19 @@ import org.apache.karaf.vineyard.common.PolicyRegistryService;
 import org.apache.karaf.vineyard.registry.policy.command.completer.PolicyIdCompleter;
 
 @Service
-@Command(scope = "vineyard", name = "policy-delete", description = "Delete an Policy from the registry")
+@Command(
+        scope = "vineyard",
+        name = "policy-delete",
+        description = "Delete an Policy from the registry")
 public class DeleteCommand implements Action {
 
-    @Reference
-    private PolicyRegistryService policyRegistryService;
+    @Reference private PolicyRegistryService policyRegistryService;
 
-    @Argument(name = "id", description = "ID of the Policy to delete", required = true, multiValued = false)
+    @Argument(
+            name = "id",
+            description = "ID of the Policy to delete",
+            required = true,
+            multiValued = false)
     @Completion(PolicyIdCompleter.class)
     String id;
 
@@ -41,5 +47,4 @@ public class DeleteCommand implements Action {
         policyRegistryService.delete(id);
         return null;
     }
-
 }

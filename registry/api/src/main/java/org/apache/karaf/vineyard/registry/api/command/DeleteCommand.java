@@ -29,10 +29,13 @@ import org.apache.karaf.vineyard.registry.api.command.completer.ApiIdCompleter;
 @Command(scope = "vineyard", name = "api-delete", description = "Delete an API from the registry")
 public class DeleteCommand implements Action {
 
-    @Reference
-    private ApiRegistryService apiRegistryService;
+    @Reference private ApiRegistryService apiRegistryService;
 
-    @Argument(name = "id", description = "ID of the API to delete", required = true, multiValued = false)
+    @Argument(
+            name = "id",
+            description = "ID of the API to delete",
+            required = true,
+            multiValued = false)
     @Completion(ApiIdCompleter.class)
     String id;
 
@@ -41,5 +44,4 @@ public class DeleteCommand implements Action {
         apiRegistryService.delete(id);
         return null;
     }
-
 }

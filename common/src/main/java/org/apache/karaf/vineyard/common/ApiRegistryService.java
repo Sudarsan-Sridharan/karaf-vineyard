@@ -20,9 +20,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Service managing {@link API} registry.
- */
+/** Service managing {@link API} registry. */
 public interface ApiRegistryService {
 
     /**
@@ -125,5 +123,4 @@ public interface ApiRegistryService {
      * @return The meta represented by "key,value".
      */
     Map<String, String> getMeta(API api);
-
 }

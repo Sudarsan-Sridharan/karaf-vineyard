@@ -18,9 +18,7 @@ package org.apache.karaf.vineyard.common;
 
 import java.util.Map;
 
-/**
- * Describe a resource in a Rest API.
- */
+/** Describe a resource in a Rest API. */
 public class RestResource {
 
     /** Unique RestResource ID */
@@ -44,7 +42,9 @@ public class RestResource {
     /** The media type produced by the Resource */
     private String mediaType;
 
-    /** The policies to apply on the Resource by the Gateway ordered by the integer key of the map */
+    /**
+     * The policies to apply on the Resource by the Gateway ordered by the integer key of the map
+     */
     private Map<Integer, Policy> policies;
 
     /** The response of the Resource, it could be static */

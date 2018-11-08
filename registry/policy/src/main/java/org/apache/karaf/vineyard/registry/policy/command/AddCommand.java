@@ -29,13 +29,21 @@ import org.apache.karaf.vineyard.common.PolicyRegistryService;
 @Command(scope = "vineyard", name = "policy-add", description = "")
 public class AddCommand implements Action {
 
-    @Reference
-    private PolicyRegistryService policyRegistryService;
+    @Reference private PolicyRegistryService policyRegistryService;
 
-    @Argument(index = 0, name = "classname", description = "Policy classname", required = true, multiValued = false)
+    @Argument(
+            index = 0,
+            name = "classname",
+            description = "Policy classname",
+            required = true,
+            multiValued = false)
     String classname;
 
-    @Option(name = "--description", description = "Policy description", required = false, multiValued = false)
+    @Option(
+            name = "--description",
+            description = "Policy description",
+            required = false,
+            multiValued = false)
     String description;
 
     @Override
@@ -47,5 +55,4 @@ public class AddCommand implements Action {
         System.out.println("Policy " + classname + " has been added (" + policy.getId() + ")");
         return policy;
     }
-
 }

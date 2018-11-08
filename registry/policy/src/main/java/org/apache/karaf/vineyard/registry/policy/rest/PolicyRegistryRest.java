@@ -42,21 +42,18 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
-@CrossOriginResourceSharing(
-        allowAllOrigins = true,
-        allowCredentials = true
-)
+@CrossOriginResourceSharing(allowAllOrigins = true, allowCredentials = true)
 @Server(url = "/cxf/vineyard/registry/policy")
 public class PolicyRegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PolicyRegistryRest.class);
 
     private PolicyRegistryService registry;
-    
+
     public void setRegistry(PolicyRegistryService registry) {
         this.registry = registry;
     }
-    
+
     @Path("/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -94,13 +91,13 @@ public class PolicyRegistryRest {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-    
+
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
     public Response getPolicy(@PathParam("id") String id) {
-        
+
         Policy policy = registry.get(id);
         if (policy != null) {
             return Response.ok(policy).build();
@@ -114,7 +111,7 @@ public class PolicyRegistryRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
     public Response getPolicies() {
-        
+
         Collection<Policy> policies = registry.list();
         if (policies != null) {
             return Response.ok(policies).build();
@@ -127,7 +124,8 @@ public class PolicyRegistryRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
-    public Response addMeta(@PathParam("id") String id, Map<String, String> metas) throws Exception {
+    public Response addMeta(@PathParam("id") String id, Map<String, String> metas)
+            throws Exception {
 
         Policy policy = registry.get(id);
         if (policy != null) {
@@ -185,5 +183,4 @@ public class PolicyRegistryRest {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
 }

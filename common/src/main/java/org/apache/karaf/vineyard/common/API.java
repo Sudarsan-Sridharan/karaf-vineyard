@@ -21,9 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * This is a API view, containing attributes common to any concrete API in Vineyard.
- */
+/** This is a API view, containing attributes common to any concrete API in Vineyard. */
 public class API {
 
     /** Unique API ID */
@@ -91,5 +89,4 @@ public class API {
     public void setResources(Collection<Resource> resources) {
         this.resources = resources;
     }
-
 }

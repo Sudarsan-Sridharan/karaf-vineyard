@@ -26,48 +26,45 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-/**
- * A regular JPA entity, using JPA annotations.
- */
+/** A regular JPA entity, using JPA annotations. */
 @IdClass(PolicyMetaPkEntity.class)
 @Entity
 @Table(name = "POLICY_META", schema = "VINEYARD")
 public class PolicyMetaEntity implements Serializable {
 
-	@Id
-	@Column(name = "META_KEY")
-	private String key;
+    @Id
+    @Column(name = "META_KEY")
+    private String key;
 
-	@Id
-	@ManyToOne(fetch= FetchType.LAZY)
-	@PrimaryKeyJoinColumn(name="BOX_ID")
-	private PolicyEntity policy;
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "BOX_ID")
+    private PolicyEntity policy;
 
-	@Column(name = "META_VALUE")
-	private String value;
+    @Column(name = "META_VALUE")
+    private String value;
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setKey(String key) {
-	    this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public PolicyEntity getPolicy() {
-		return policy;
-	}
+    public PolicyEntity getPolicy() {
+        return policy;
+    }
 
-	public void setPolicy(PolicyEntity policy) {
-		this.policy = policy;
-	}
+    public void setPolicy(PolicyEntity policy) {
+        this.policy = policy;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

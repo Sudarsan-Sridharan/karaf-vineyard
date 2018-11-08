@@ -16,28 +16,20 @@
  */
 package org.apache.karaf.vineyard.registry.api.entity;
 
+import java.io.Serializable;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
-/**
- * A regular JPA entity representing API.
- */
+/** A regular JPA entity representing API. */
 @Entity
 @Table(name = "API", schema = "VINEYARD")
 public class ApiEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     private String name;
 

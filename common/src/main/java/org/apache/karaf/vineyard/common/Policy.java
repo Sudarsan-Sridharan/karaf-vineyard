@@ -18,9 +18,7 @@ package org.apache.karaf.vineyard.common;
 
 import java.util.Map;
 
-/**
- * Policy definition used in resource.
- */
+/** Policy definition used in resource. */
 public class Policy {
 
     /** Unique Policy ID */
@@ -36,34 +34,34 @@ public class Policy {
     private String className;
 
     public String getId() {
-    return id;
+        return id;
     }
 
     public void setId(String id) {
-    this.id = id;
+        this.id = id;
     }
 
     public String getDescription() {
-    return description;
+        return description;
     }
 
     public void setDescription(String description) {
-    this.description = description;
+        this.description = description;
     }
 
     public Map<String, String> getMeta() {
-    return meta;
+        return meta;
     }
 
     public void setMeta(Map<String, String> meta) {
-    this.meta = meta;
+        this.meta = meta;
     }
 
     public String getClassName() {
-    return className;
+        return className;
     }
 
     public void setClassName(String className) {
-    this.className = className;
+        this.className = className;
     }
 }

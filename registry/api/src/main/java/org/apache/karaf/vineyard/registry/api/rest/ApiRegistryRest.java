@@ -16,7 +16,12 @@
  */
 package org.apache.karaf.vineyard.registry.api.rest;
 
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.*;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,12 +32,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-
-import io.swagger.v3.oas.annotations.servers.Server;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.rs.security.cors.CrossOriginResourceSharing;
@@ -44,21 +43,18 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
-@CrossOriginResourceSharing(
-        allowAllOrigins = true,
-        allowCredentials = true
-)
+@CrossOriginResourceSharing(allowAllOrigins = true, allowCredentials = true)
 @Server(url = "/cxf/vineyard/registry/api")
 public class ApiRegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ApiRegistryRest.class);
 
     private ApiRegistryService registry;
-    
+
     public void setRegistry(ApiRegistryService registry) {
         this.registry = registry;
     }
-    
+
     @Path("/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -72,7 +68,7 @@ public class ApiRegistryRest {
             return Response.serverError().build();
         }
     }
-    
+
     @Path("/{id}/upload-definition")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -84,8 +80,10 @@ public class ApiRegistryRest {
         try (InputStream inputStream = body.getRootAttachment().getDataHandler().getInputStream()) {
             registry.definition(api, inputStream);
         } catch (Exception exception) {
-            return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
-                    exception.getMessage()).build();
+            return Response.status(
+                            Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
+                            exception.getMessage())
+                    .build();
         }
         return Response.ok().build();
     }
@@ -113,13 +111,13 @@ public class ApiRegistryRest {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-    
+
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
     public Response getApi(@PathParam("id") String id) {
-        
+
         API api = registry.get(id);
         if (api != null) {
             return Response.ok(api).build();
@@ -133,7 +131,7 @@ public class ApiRegistryRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
     public Response getApis() {
-        
+
         Collection<API> apis = registry.list();
         if (apis != null) {
             return Response.ok(apis).build();
@@ -141,5 +139,4 @@ public class ApiRegistryRest {
             return Response.noContent().build();
         }
     }
-
 }

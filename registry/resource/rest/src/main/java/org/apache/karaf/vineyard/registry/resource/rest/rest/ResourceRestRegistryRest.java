@@ -40,21 +40,18 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
-@CrossOriginResourceSharing(
-        allowAllOrigins = true,
-        allowCredentials = true
-)
+@CrossOriginResourceSharing(allowAllOrigins = true, allowCredentials = true)
 @Server(url = "/cxf/vineyard/registry/resource/rest")
 public class ResourceRestRegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ResourceRestRegistryRest.class);
 
     private ResourceRegistryService registry;
-    
+
     public void setRegistry(ResourceRegistryService registry) {
         this.registry = registry;
     }
-    
+
     @Path("/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -69,7 +66,7 @@ public class ResourceRestRegistryRest {
             return Response.serverError().build();
         }
     }
-    
+
     @Path("/")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -93,7 +90,7 @@ public class ResourceRestRegistryRest {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-    
+
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -113,7 +110,7 @@ public class ResourceRestRegistryRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Resource - Rest")
     public Response getResources() {
-        
+
         Collection<RestResource> resources = registry.list();
         if (resources != null) {
             return Response.ok(resources).build();
@@ -121,5 +118,4 @@ public class ResourceRestRegistryRest {
             return Response.noContent().build();
         }
     }
-
 }

@@ -25,36 +25,33 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-/**
- * A regular JPA entity representing Policy.
- */
+/** A regular JPA entity representing Policy. */
 @Entity
 @Table(name = "POLICY", schema = "VINEYARD")
 public class PolicyEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
     private String description;
 
-    @OneToMany(mappedBy="policy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "policy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<PolicyMetaEntity> meta;
 
     private String className;
 
     public String getId() {
-    return id;
+        return id;
     }
 
     public void setId(String id) {
-    this.id = id;
+        this.id = id;
     }
 
     public String getDescription() {
-    return description;
+        return description;
     }
 
     public void setDescription(String description) {
-    this.description = description;
+        this.description = description;
     }
 
     public Collection<PolicyMetaEntity> getMeta() {
@@ -66,10 +63,10 @@ public class PolicyEntity implements Serializable {
     }
 
     public String getClassName() {
-    return className;
+        return className;
     }
 
     public void setClassName(String className) {
-    this.className = className;
+        this.className = className;
     }
 }

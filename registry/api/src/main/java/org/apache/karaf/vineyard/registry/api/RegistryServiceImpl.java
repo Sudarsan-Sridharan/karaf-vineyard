@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-
 import org.apache.aries.jpa.template.JpaTemplate;
 import org.apache.aries.jpa.template.TransactionType;
 import org.apache.karaf.vineyard.common.API;
@@ -42,73 +41,88 @@ public class RegistryServiceImpl implements ApiRegistryService {
     @Override
     public API add(API api) {
         api.setId(UUID.randomUUID().toString());
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            entityManager.persist(mapTo(api));
-            entityManager.flush();
-        });
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    entityManager.persist(mapTo(api));
+                    entityManager.flush();
+                });
         return api;
     }
 
     @Override
     public void definition(API api, InputStream inputStream) {
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
 
-            if (apiEntity !=  null) {
-                byte[] buffer = new byte[1024];
-                try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                    int cpt = 0;
-                    while ((cpt = inputStream.read(buffer)) > -1) {
-                        output.write(buffer, 0, cpt);
+                    if (apiEntity != null) {
+                        byte[] buffer = new byte[1024];
+                        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                            int cpt = 0;
+                            while ((cpt = inputStream.read(buffer)) > -1) {
+                                output.write(buffer, 0, cpt);
+                            }
+                            apiEntity.setDefinition(output.toByteArray());
+                        } catch (IOException e) {
+                            // do nothing
+                        }
+                        entityManager.merge(apiEntity);
+                        entityManager.flush();
                     }
-                    apiEntity.setDefinition(output.toByteArray());
-                } catch (IOException e) {
-                    //do nothing
-                }
-                entityManager.merge(apiEntity);
-                entityManager.flush();
-            }
-        });
+                });
     }
 
     @Override
     public void delete(String id) {
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            ApiEntity apiEntity = entityManager.find(ApiEntity.class, id);
-            if (apiEntity !=  null) {
-                entityManager.remove(apiEntity);
-                entityManager.flush();
-            }
-        });
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, id);
+                    if (apiEntity != null) {
+                        entityManager.remove(apiEntity);
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public void update(API api) {
-        jpaTemplate.tx(TransactionType.RequiresNew, entityManager -> {
-            ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
 
-            if (apiEntity !=  null) {
-                // we don't update the PK or the Resources and Metadatas
-                apiEntity.setName(api.getName());
-                apiEntity.setContext(api.getContext());
-                apiEntity.setDescription(api.getDescription());
-                entityManager.merge(apiEntity);
-                entityManager.flush();
-            }
-        });
+                    if (apiEntity != null) {
+                        // we don't update the PK or the Resources and Metadatas
+                        apiEntity.setName(api.getName());
+                        apiEntity.setContext(api.getContext());
+                        apiEntity.setDescription(api.getDescription());
+                        entityManager.merge(apiEntity);
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public API get(String id) {
-        ApiEntity apiEntity = jpaTemplate.txExpr(TransactionType.Supports,
-                entityManager -> entityManager.find(ApiEntity.class, id));
+        ApiEntity apiEntity =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager -> entityManager.find(ApiEntity.class, id));
         return mapTo(apiEntity);
     }
 
     @Override
     public Collection<API> list() {
-        List<ApiEntity> list = jpaTemplate.txExpr(TransactionType.Supports,
-                entityManager -> entityManager.createQuery("SELECT a FROM ApiEntity a", ApiEntity.class).getResultList());
+        List<ApiEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery("SELECT a FROM ApiEntity a", ApiEntity.class)
+                                        .getResultList());
         Collection<API> results = new ArrayList<>();
         for (ApiEntity entity : list) {
             results.add(mapTo(entity));
@@ -178,5 +192,4 @@ public class RegistryServiceImpl implements ApiRegistryService {
             return null;
         }
     }
-
 }

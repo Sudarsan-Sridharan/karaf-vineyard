@@ -13,10 +13,14 @@
  */
 package org.apache.karaf.vineyard.itests;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.ws.rs.HttpMethod;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -24,7 +28,10 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.ws.rs.HttpMethod;
 import org.apache.karaf.itests.KarafTestSupport;
 import org.apache.karaf.jaas.boot.principal.RolePrincipal;
 import org.junit.After;
@@ -40,53 +47,77 @@ import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
-
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class VineyardRegistryRestTest extends KarafTestSupport {
 
     private static final RolePrincipal[] ADMIN_ROLES = {
-            new RolePrincipal("admin"),
-            new RolePrincipal("manager")
+        new RolePrincipal("admin"), new RolePrincipal("manager")
     };
 
     @Override
     @Configuration
     public Option[] config() {
-        MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf").versionAsInProject().type("tar.gz");
+        MavenArtifactUrlReference karafUrl =
+                maven().groupId("org.apache.karaf")
+                        .artifactId("apache-karaf")
+                        .versionAsInProject()
+                        .type("tar.gz");
 
-        String httpPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_HTTP_PORT), Integer.parseInt(MAX_HTTP_PORT)));
-        String rmiRegistryPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_RMI_REG_PORT), Integer.parseInt(MAX_RMI_REG_PORT)));
-        String rmiServerPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_RMI_SERVER_PORT), Integer.parseInt(MAX_RMI_SERVER_PORT)));
-        String sshPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_SSH_PORT), Integer.parseInt(MAX_SSH_PORT)));
+        String httpPort =
+                Integer.toString(
+                        getAvailablePort(
+                                Integer.parseInt(MIN_HTTP_PORT), Integer.parseInt(MAX_HTTP_PORT)));
+        String rmiRegistryPort =
+                Integer.toString(
+                        getAvailablePort(
+                                Integer.parseInt(MIN_RMI_REG_PORT),
+                                Integer.parseInt(MAX_RMI_REG_PORT)));
+        String rmiServerPort =
+                Integer.toString(
+                        getAvailablePort(
+                                Integer.parseInt(MIN_RMI_SERVER_PORT),
+                                Integer.parseInt(MAX_RMI_SERVER_PORT)));
+        String sshPort =
+                Integer.toString(
+                        getAvailablePort(
+                                Integer.parseInt(MIN_SSH_PORT), Integer.parseInt(MAX_SSH_PORT)));
         String localRepository = System.getProperty("org.ops4j.pax.url.mvn.localRepository");
         if (localRepository == null) {
             localRepository = "";
         }
 
-        return new Option[]{
-                //KarafDistributionOption.debugConfiguration("8889", true),
-                karafDistributionConfiguration().frameworkUrl(karafUrl).name("Apache Karaf").unpackDirectory(new File("target/exam")),
-                // enable JMX RBAC security, thanks to the KarafMBeanServerBuilder
-                configureSecurity().disableKarafMBeanServerBuilder(),
-                // configureConsole().ignoreLocalConsole(),
-                keepRuntimeFolder(),
-                logLevel(LogLevelOption.LogLevel.INFO),
-                mavenBundle().groupId("org.awaitility").artifactId("awaitility").versionAsInProject(),
-                mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.hamcrest").versionAsInProject(),
-                mavenBundle().groupId("org.apache.karaf.itests").artifactId("common").versionAsInProject(),
-                editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
-                editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", rmiRegistryPort),
-                editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", rmiServerPort),
-                editConfigurationFilePut("etc/org.apache.karaf.shell.cfg", "sshPort", sshPort),
-                editConfigurationFilePut("etc/org.ops4j.pax.url.mvn.cfg", "org.ops4j.pax.url.mvn.localRepository", localRepository)
+        return new Option[] {
+            // KarafDistributionOption.debugConfiguration("8889", true),
+            karafDistributionConfiguration()
+                    .frameworkUrl(karafUrl)
+                    .name("Apache Karaf")
+                    .unpackDirectory(new File("target/exam")),
+            // enable JMX RBAC security, thanks to the KarafMBeanServerBuilder
+            configureSecurity().disableKarafMBeanServerBuilder(),
+            // configureConsole().ignoreLocalConsole(),
+            keepRuntimeFolder(),
+            logLevel(LogLevelOption.LogLevel.INFO),
+            mavenBundle().groupId("org.awaitility").artifactId("awaitility").versionAsInProject(),
+            mavenBundle()
+                    .groupId("org.apache.servicemix.bundles")
+                    .artifactId("org.apache.servicemix.bundles.hamcrest")
+                    .versionAsInProject(),
+            mavenBundle()
+                    .groupId("org.apache.karaf.itests")
+                    .artifactId("common")
+                    .versionAsInProject(),
+            editConfigurationFilePut(
+                    "etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
+            editConfigurationFilePut(
+                    "etc/org.apache.karaf.management.cfg", "rmiRegistryPort", rmiRegistryPort),
+            editConfigurationFilePut(
+                    "etc/org.apache.karaf.management.cfg", "rmiServerPort", rmiServerPort),
+            editConfigurationFilePut("etc/org.apache.karaf.shell.cfg", "sshPort", sshPort),
+            editConfigurationFilePut(
+                    "etc/org.ops4j.pax.url.mvn.cfg",
+                    "org.ops4j.pax.url.mvn.localRepository",
+                    localRepository)
         };
     }
 
@@ -94,13 +125,14 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
     @Ignore
     public void testVineyardRegistryFeatureInstall() throws Exception {
         // adding vineyard features repository
-        addFeaturesRepository("mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/1.0.0-SNAPSHOT/xml/features");
+        addFeaturesRepository(
+                "mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/1.0.0-SNAPSHOT/xml/features");
 
         String featureList = executeCommand("feature:list -o | grep vineyard");
         System.out.println(featureList);
 
         executeCommand("feature:install vineyard-registry", ADMIN_ROLES);
-        //installAndAssertFeature("vineyard-registry");
+        // installAndAssertFeature("vineyard-registry");
 
         String bundleList = executeCommand("bundle:list");
         System.out.println(bundleList);
@@ -125,11 +157,12 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             java.net.URL urlDataformat = new URL(URL);
 
             // Call add dataformat service
-            String jsonAddDataformat = "{\n" +
-                    "  \"name\": \"json\",\n" +
-                    "  \"schema\": \"json\",\n" +
-                    "  \"sample\": \"json-sample\"\n" +
-                    "}";
+            String jsonAddDataformat =
+                    "{\n"
+                            + "  \"name\": \"json\",\n"
+                            + "  \"schema\": \"json\",\n"
+                            + "  \"sample\": \"json-sample\"\n"
+                            + "}";
             System.out.println("Call POST " + URL);
             HttpURLConnection connection = (HttpURLConnection) urlDataformat.openConnection();
             connection.setRequestMethod(HttpMethod.POST);
@@ -152,7 +185,8 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
 
                 StringBuffer sb = new StringBuffer();
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    BufferedReader buffer =
+                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
 
                     while ((line = buffer.readLine()) != null) {
@@ -166,7 +200,9 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                         Assert.assertTrue(true);
                     }
                 } else {
-                    System.out.println("Error when sending GET method : HTTP_CODE = " + connection.getResponseCode());
+                    System.out.println(
+                            "Error when sending GET method : HTTP_CODE = "
+                                    + connection.getResponseCode());
                     Assert.assertTrue(false);
                 }
                 connection.disconnect();
@@ -178,7 +214,9 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                     System.out.println("Dataformat id = " + dataformatId);
                 }
             } else {
-                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+                System.out.println(
+                        "Error when sending POST method : HTTP_CODE = "
+                                + connection.getResponseCode());
                 Assert.assertTrue(false);
             }
 
@@ -192,15 +230,16 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
         // API
         try {
             String URL = "http://localhost:8181/cxf/vineyard/registry/api";
-            URL urlApi= new URL(URL);
+            URL urlApi = new URL(URL);
 
             // Call add rest-api
-            String jsonAddRestApi = "{\n" +
-                    "  \"name\": \"authenticate service\",\n" +
-                    "  \"context\": \"api/authenticate\",\n" +
-                    "  \"description\": \"use to authenticate user with token\",\n" +
-                    "  \"version\": \"1.0.0\"" +
-                    "}";
+            String jsonAddRestApi =
+                    "{\n"
+                            + "  \"name\": \"authenticate service\",\n"
+                            + "  \"context\": \"api/authenticate\",\n"
+                            + "  \"description\": \"use to authenticate user with token\",\n"
+                            + "  \"version\": \"1.0.0\""
+                            + "}";
             System.out.println("Call POST " + URL);
             HttpURLConnection connection = (HttpURLConnection) urlApi.openConnection();
             connection.setRequestMethod(HttpMethod.POST);
@@ -216,7 +255,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                 String location = connection.getHeaderField("Location");
                 System.out.println("Location created: " + location);
 
-                urlApi= new URL(location);
+                urlApi = new URL(location);
                 connection = (HttpURLConnection) urlApi.openConnection();
                 connection.setRequestMethod(HttpMethod.GET);
                 connection.connect();
@@ -224,7 +263,8 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                 StringBuffer sb = new StringBuffer();
 
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    BufferedReader buffer =
+                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
 
                     while ((line = buffer.readLine()) != null) {
@@ -238,7 +278,9 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                         Assert.assertTrue(true);
                     }
                 } else {
-                    System.out.println("Error when sending GET method : HTTP_CODE = " + connection.getResponseCode());
+                    System.out.println(
+                            "Error when sending GET method : HTTP_CODE = "
+                                    + connection.getResponseCode());
                     Assert.assertTrue(false);
                 }
                 connection.disconnect();
@@ -251,7 +293,9 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                 }
 
             } else {
-                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+                System.out.println(
+                        "Error when sending POST method : HTTP_CODE = "
+                                + connection.getResponseCode());
                 Assert.assertTrue(false);
             }
 
@@ -265,18 +309,23 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
         // RESOURCES
         try {
             String URL = "http://localhost:8181/cxf/vineyard/registry/api/" + apiId + "/resource";
-            URL urlResource= new URL(URL);
+            URL urlResource = new URL(URL);
 
             // Call add rest-api
-            String jsonAddRestResource = "{\n" +
-                    "  \"path\": \"/token\",\n" +
-                    "  \"method\": \"GET\",\n" +
-                    "  \"inFormat\": {\"id\": \"" + dataformatId + "\"},\n" +
-                    "  \"outFormat\": {\"id\": \"" + dataformatId + "\"},\n" +
-                    "  \"useBridge\": \"false\",\n" +
-                    "  \"response\": \"response\",\n" +
-                    "  \"bridge\": \"bridge\"" +
-                    "}";
+            String jsonAddRestResource =
+                    "{\n"
+                            + "  \"path\": \"/token\",\n"
+                            + "  \"method\": \"GET\",\n"
+                            + "  \"inFormat\": {\"id\": \""
+                            + dataformatId
+                            + "\"},\n"
+                            + "  \"outFormat\": {\"id\": \""
+                            + dataformatId
+                            + "\"},\n"
+                            + "  \"useBridge\": \"false\",\n"
+                            + "  \"response\": \"response\",\n"
+                            + "  \"bridge\": \"bridge\""
+                            + "}";
             System.out.println("Call POST " + URL);
             HttpURLConnection connection = (HttpURLConnection) urlResource.openConnection();
             connection.setRequestMethod(HttpMethod.POST);
@@ -290,7 +339,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 Assert.assertTrue(true);
 
-                urlResource= new URL(URL);
+                urlResource = new URL(URL);
                 connection = (HttpURLConnection) urlResource.openConnection();
                 connection.setRequestMethod(HttpMethod.GET);
                 connection.connect();
@@ -298,7 +347,8 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                 StringBuffer sb = new StringBuffer();
 
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    BufferedReader buffer =
+                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
 
                     while ((line = buffer.readLine()) != null) {
@@ -312,13 +362,17 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                         Assert.assertTrue(true);
                     }
                 } else {
-                    System.out.println("Error when sending GET method : HTTP_CODE = " + connection.getResponseCode());
+                    System.out.println(
+                            "Error when sending GET method : HTTP_CODE = "
+                                    + connection.getResponseCode());
                     Assert.assertTrue(false);
                 }
                 connection.disconnect();
 
             } else {
-                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+                System.out.println(
+                        "Error when sending POST method : HTTP_CODE = "
+                                + connection.getResponseCode());
                 Assert.assertTrue(false);
             }
 
@@ -329,17 +383,14 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             Assert.assertTrue(false);
         }
 
-
         // METADATA
         try {
             String URL = "http://localhost:8181/cxf/vineyard/registry/api/" + apiId + "/metadata";
-            URL urlResource= new URL(URL);
+            URL urlResource = new URL(URL);
 
             // Call add rest-api
-            String jsonAddRestMetadata = "{\n" +
-                    "  \"documentation\": \"Swagger\",\n" +
-                    "  \"manual\": \"pdf\"" +
-                    "}";
+            String jsonAddRestMetadata =
+                    "{\n" + "  \"documentation\": \"Swagger\",\n" + "  \"manual\": \"pdf\"" + "}";
             System.out.println("Call POST " + URL);
             HttpURLConnection connection = (HttpURLConnection) urlResource.openConnection();
             connection.setRequestMethod(HttpMethod.POST);
@@ -353,7 +404,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 Assert.assertTrue(true);
 
-                urlResource= new URL(URL);
+                urlResource = new URL(URL);
                 connection = (HttpURLConnection) urlResource.openConnection();
                 connection.setRequestMethod(HttpMethod.GET);
                 connection.connect();
@@ -361,7 +412,8 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                 StringBuffer sb = new StringBuffer();
 
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    BufferedReader buffer =
+                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;
 
                     while ((line = buffer.readLine()) != null) {
@@ -375,13 +427,17 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                         Assert.assertTrue(true);
                     }
                 } else {
-                    System.out.println("Error when sending GET method : HTTP_CODE = " + connection.getResponseCode());
+                    System.out.println(
+                            "Error when sending GET method : HTTP_CODE = "
+                                    + connection.getResponseCode());
                     Assert.assertTrue(false);
                 }
                 connection.disconnect();
 
             } else {
-                System.out.println("Error when sending POST method : HTTP_CODE = " + connection.getResponseCode());
+                System.out.println(
+                        "Error when sending POST method : HTTP_CODE = "
+                                + connection.getResponseCode());
                 Assert.assertTrue(false);
             }
 

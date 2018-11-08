@@ -18,46 +18,43 @@ package org.apache.karaf.vineyard.common;
 
 import java.util.Collection;
 
-/**
- * Generic service managing {@link Resource} registry.
- */
+/** Generic service managing {@link Resource} registry. */
 public interface ResourceRegistryService<ResourceT> {
 
-  /**
-   * Add a new resource in the registry.
-   *
-   * @param resource The resource to add in the registry.
-   * @return The API created.
-   */
-  ResourceT add(ResourceT resource) throws Exception;
+    /**
+     * Add a new resource in the registry.
+     *
+     * @param resource The resource to add in the registry.
+     * @return The API created.
+     */
+    ResourceT add(ResourceT resource) throws Exception;
 
-  /**
-   * Delete an existing resource from the registry, identified by ID.
-   *
-   * @param id The resource ID.
-   */
-  void delete(String id);
+    /**
+     * Delete an existing resource from the registry, identified by ID.
+     *
+     * @param id The resource ID.
+     */
+    void delete(String id);
 
-  /**
-   * Update an existing resource.
-   *
-   * @param resource The resource details.
-   */
-  void update(ResourceT resource);
+    /**
+     * Update an existing resource.
+     *
+     * @param resource The resource details.
+     */
+    void update(ResourceT resource);
 
-  /**
-   * Retrieve resource details.
-   *
-   * @param id The resource ID.
-   * @return The resource description.
-   */
-  ResourceT get(String id);
+    /**
+     * Retrieve resource details.
+     *
+     * @param id The resource ID.
+     * @return The resource description.
+     */
+    ResourceT get(String id);
 
-  /**
-   * Retrieve all the resources in the registry.
-   *
-   * @return The list of resources.
-   */
-  Collection<ResourceT> list();
-
+    /**
+     * Retrieve all the resources in the registry.
+     *
+     * @return The list of resources.
+     */
+    Collection<ResourceT> list();
 }

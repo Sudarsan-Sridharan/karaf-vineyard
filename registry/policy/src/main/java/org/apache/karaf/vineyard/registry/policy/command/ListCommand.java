@@ -25,11 +25,10 @@ import org.apache.karaf.vineyard.common.Policy;
 import org.apache.karaf.vineyard.common.PolicyRegistryService;
 
 @Service
-@Command(scope = "vineyard", name= "policy-list", description = "List of Policies in the registry")
+@Command(scope = "vineyard", name = "policy-list", description = "List of Policies in the registry")
 public class ListCommand implements Action {
 
-    @Reference
-    private PolicyRegistryService policyRegistryService;
+    @Reference private PolicyRegistryService policyRegistryService;
 
     @Override
     public Object execute() throws Exception {
@@ -38,10 +37,11 @@ public class ListCommand implements Action {
         shellTable.column("ClassName");
         shellTable.column("Description");
         for (Policy policy : policyRegistryService.list()) {
-            shellTable.addRow().addContent(policy.getId(), policy.getClassName(), policy.getDescription());
+            shellTable
+                    .addRow()
+                    .addContent(policy.getId(), policy.getClassName(), policy.getDescription());
         }
         shellTable.print(System.out);
         return null;
     }
-
 }

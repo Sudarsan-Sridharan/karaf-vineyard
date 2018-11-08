@@ -19,13 +19,12 @@ package org.apache.karaf.vineyard.common;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Service managing the {@link Policy} registry.
- */
+/** Service managing the {@link Policy} registry. */
 public interface PolicyRegistryService {
 
     /**
      * Add a new policy in the registry.
+     *
      * @param policy
      * @return The policy created
      */
@@ -33,24 +32,28 @@ public interface PolicyRegistryService {
 
     /**
      * Search all the policy in the registry.
+     *
      * @return the list of the policy
      */
     Collection<Policy> list();
 
     /**
      * Update a policy.
+     *
      * @param policy
      */
     void update(Policy policy);
 
     /**
      * Delete a policy.
+     *
      * @param id
      */
     void delete(String id);
 
     /**
      * Get a policy by id.
+     *
      * @param id
      * @return the policy
      */
@@ -87,5 +90,4 @@ public interface PolicyRegistryService {
      * @return The meta represented by "key,value".
      */
     Map<String, String> getMeta(Policy policy);
-
 }

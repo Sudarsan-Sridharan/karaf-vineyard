@@ -25,11 +25,10 @@ import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
 
 @Service
-@Command(scope = "vineyard", name= "api-list", description = "List of APIs in the registry")
+@Command(scope = "vineyard", name = "api-list", description = "List of APIs in the registry")
 public class ListCommand implements Action {
 
-    @Reference
-    private ApiRegistryService apiRegistryService;
+    @Reference private ApiRegistryService apiRegistryService;
 
     @Override
     public Object execute() throws Exception {
@@ -43,5 +42,4 @@ public class ListCommand implements Action {
         shellTable.print(System.out);
         return null;
     }
-
 }

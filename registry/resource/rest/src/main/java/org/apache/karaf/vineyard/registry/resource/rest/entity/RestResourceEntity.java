@@ -25,25 +25,22 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-/**
- * A regular JPA entity representing Policy.
- */
+/** A regular JPA entity representing Policy. */
 @Entity
 @Table(name = "REST_RESOURCE", schema = "VINEYARD")
 public class RestResourceEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
 
-    @OneToMany(mappedBy="policy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "policy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<RestPolicyEntity> policies;
 
     public String getId() {
-    return id;
+        return id;
     }
 
     public void setId(String id) {
-    this.id = id;
+        this.id = id;
     }
 
     public Collection<RestPolicyEntity> getPolicies() {
@@ -53,5 +50,4 @@ public class RestResourceEntity implements Serializable {
     public void setPolicies(Collection<RestPolicyEntity> policies) {
         this.policies = policies;
     }
-
 }

@@ -29,16 +29,28 @@ import org.apache.karaf.vineyard.common.ApiRegistryService;
 @Command(scope = "vineyard", name = "api-add", description = "Add a new API in the registry")
 public class AddCommand implements Action {
 
-    @Reference
-    private ApiRegistryService apiRegistryService;
+    @Reference private ApiRegistryService apiRegistryService;
 
-    @Argument(index = 0, name = "name", description = "API name", required = true, multiValued = false)
+    @Argument(
+            index = 0,
+            name = "name",
+            description = "API name",
+            required = true,
+            multiValued = false)
     String name;
 
-    @Option(name = "--context", description = "API base context URL", required = false, multiValued = false)
+    @Option(
+            name = "--context",
+            description = "API base context URL",
+            required = false,
+            multiValued = false)
     String context;
 
-    @Option(name = "--description", description = "API description", required = false, multiValued = false)
+    @Option(
+            name = "--description",
+            description = "API description",
+            required = false,
+            multiValued = false)
     String description;
 
     @Override
@@ -51,5 +63,4 @@ public class AddCommand implements Action {
         System.out.println("API " + name + " has been added (" + api.getId() + ")");
         return api;
     }
-
 }

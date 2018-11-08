@@ -28,14 +28,15 @@ import org.apache.karaf.vineyard.common.PolicyRegistryService;
 @Service
 public class PolicyIdCompleter implements Completer {
 
-    @Reference
-    private PolicyRegistryService policyRegistryService;
+    @Reference private PolicyRegistryService policyRegistryService;
 
     @Override
     public int complete(Session session, CommandLine commandLine, List<String> list) {
         StringsCompleter delegate = new StringsCompleter();
-        policyRegistryService.list().stream().map(policy -> delegate.getStrings().add(policy.getId()));
+        policyRegistryService
+                .list()
+                .stream()
+                .map(policy -> delegate.getStrings().add(policy.getId()));
         return delegate.complete(session, commandLine, list);
     }
-
 }

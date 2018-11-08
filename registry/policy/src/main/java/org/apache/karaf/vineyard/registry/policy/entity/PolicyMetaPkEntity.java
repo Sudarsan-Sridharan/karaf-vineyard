@@ -18,35 +18,32 @@ package org.apache.karaf.vineyard.registry.policy.entity;
 
 import java.io.Serializable;
 
-/**
- * Represent a pk meta box.
- */
+/** Represent a pk meta box. */
 public class PolicyMetaPkEntity implements Serializable {
 
-	private String key;
-	private String box;
+    private String key;
+    private String box;
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public String getBox() {
-		return box;
-	}
+    public String getBox() {
+        return box;
+    }
 
-	public void setBox(String box) {
-		this.box = box;
-	}
+    public void setBox(String box) {
+        this.box = box;
+    }
 
-	public boolean equals(Object obj) {
-		if (obj == this) return true;
-		if (!(obj instanceof PolicyMetaPkEntity)) return false;
-		PolicyMetaPkEntity pk = (PolicyMetaPkEntity) obj;
-		return pk.key.equals(this.key) && pk.box.equals(this.box);
-	}
-
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof PolicyMetaPkEntity)) return false;
+        PolicyMetaPkEntity pk = (PolicyMetaPkEntity) obj;
+        return pk.key.equals(this.key) && pk.box.equals(this.box);
+    }
 }
