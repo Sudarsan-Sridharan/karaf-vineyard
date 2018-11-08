@@ -16,28 +16,16 @@
  */
 package org.apache.karaf.vineyard.common;
 
-/** Describe a generic resource API. */
-public class Resource {
+public enum ResourceType {
+    REST ("vineyard-registry-rest");
 
-    /** Unique Resource ID */
-    private String id;
+    private String path;
 
-    /** The type of Resource */
-    private ResourceType type;
-
-    public String getId() {
-        return id;
+    ResourceType(String path) {
+        this.path = path;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public ResourceType getType() {
-        return type;
-    }
-
-    public void setType(ResourceType type) {
-        this.type = type;
+    public String path() {
+        return this.path;
     }
 }

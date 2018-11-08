@@ -73,8 +73,9 @@ public interface ApiRegistryService {
      *
      * @param api The API for the resource to add.
      * @param resource The resource to add.
+     * @return The Resource created for the API.
      */
-    void addResource(API api, Resource resource);
+    Resource addResource(API api, Resource resource);
 
     /**
      * Delete an existing resource reference from an existing API.

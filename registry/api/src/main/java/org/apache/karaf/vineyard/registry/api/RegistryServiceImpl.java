@@ -25,7 +25,10 @@ import org.apache.aries.jpa.template.TransactionType;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
 import org.apache.karaf.vineyard.common.Resource;
+import org.apache.karaf.vineyard.common.ResourceType;
 import org.apache.karaf.vineyard.registry.api.entity.ApiEntity;
+import org.apache.karaf.vineyard.registry.api.entity.ApiMetaEntity;
+import org.apache.karaf.vineyard.registry.api.entity.ApiResourceEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -131,49 +134,148 @@ public class RegistryServiceImpl implements ApiRegistryService {
     }
 
     @Override
-    public void addResource(API api, Resource resource) {
-        // TODO
+    public Resource addResource(API api, Resource resource) {
+        resource.setId(UUID.randomUUID().toString());
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+
+                    if (apiEntity != null) {
+                        entityManager.persist(mapTo(resource, apiEntity));
+                        entityManager.flush();
+                    }
+                });
+        return resource;
     }
 
     @Override
     public void deleteResource(API api, Resource resource) {
-        // TODO
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+                    ApiResourceEntity apiResourceEntity = entityManager.find(ApiResourceEntity.class, resource.getId());
+                    if (apiEntity != null && apiResourceEntity != null && apiResourceEntity.getApi().getId().equals(apiEntity.getId())) {
+                        entityManager.remove(apiResourceEntity);
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public Collection<Resource> listResources(API api) {
-        // TODO
-        return null;
+        List<ApiResourceEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery("SELECT r FROM ApiResourceEntity r where r.api.id = :apiId", ApiResourceEntity.class)
+                                        .setParameter("apiId", api.getId())
+                                        .getResultList());
+        Collection<Resource> results = new ArrayList<>();
+        for (ApiResourceEntity entity : list) {
+            results.add(mapTo(entity));
+        }
+        return results;
     }
 
     @Override
     public void addMeta(API api, Map<String, String> meta) {
-        // TODO
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+
+                    if (apiEntity != null) {
+                        for (String key : meta.keySet()) {
+                            ApiMetaEntity entity = new ApiMetaEntity();
+                            entity.setApi(apiEntity);
+                            entity.setKey(key);
+                            entity.setValue(meta.get(key));
+                            entityManager.persist(entity);
+                        }
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public void deleteMeta(API api, String key) {
-        // TODO
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+                    ApiMetaEntity entity = entityManager
+                            .createQuery("SELECT m FROM ApiMetaEntity m where m.api.id = :apiId and m.key = :key", ApiMetaEntity.class)
+                            .setParameter("apiId", api.getId())
+                            .setParameter("key", api.getId())
+                            .getSingleResult();
+
+                    if (apiEntity != null && entity != null && entity.getApi().getId().equals(apiEntity.getId())) {
+                        entityManager.remove(entity);
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public void updateMeta(API api, Map<String, String> meta) {
-        // TODO
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
+
+                    List<ApiMetaEntity> list = entityManager
+                            .createQuery("SELECT m FROM ApiMetaEntity m where m.api.id = :apiId and m.key = :key", ApiMetaEntity.class)
+                            .setParameter("apiId", api.getId())
+                            .setParameter("key", api.getId())
+                            .getResultList();
+
+                    if (apiEntity != null && !list.isEmpty()) {
+
+                        // we clean existing metas
+                        for (ApiMetaEntity entity : list) {
+                            entityManager.remove(entity);
+                        }
+
+                        // we replace by new metas
+                        for (String key : meta.keySet()) {
+                            ApiMetaEntity newEntity = new ApiMetaEntity();
+                            newEntity.setApi(apiEntity);
+                            newEntity.setKey(key);
+                            newEntity.setValue(meta.get(key));
+                            entityManager.persist(newEntity);
+                        }
+                        entityManager.flush();
+                    }
+                });
     }
 
     @Override
     public Map<String, String> getMeta(API api) {
-        // TODO
-        return null;
+        List<ApiMetaEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery("SELECT m FROM ApiMetaEntity m where m.api.id = :apiId", ApiMetaEntity.class)
+                                        .setParameter("apiId", api.getId())
+                                        .getResultList());
+        Map<String, String> results = new HashMap<>();
+        for (ApiMetaEntity entity : list) {
+            results.put(entity.getKey(), entity.getValue());
+        }
+        return results;
     }
 
-    private API mapTo(ApiEntity apiEntity) {
-        if (apiEntity != null) {
+    private API mapTo(ApiEntity entity) {
+        if (entity != null) {
             API api = new API();
-            api.setId(apiEntity.getId());
-            api.setContext(apiEntity.getContext());
-            api.setDescription(apiEntity.getDescription());
-            api.setName(apiEntity.getName());
+            api.setId(entity.getId());
+            api.setContext(entity.getContext());
+            api.setDescription(entity.getDescription());
+            api.setName(entity.getName());
             return api;
         } else {
             return null;
@@ -182,12 +284,35 @@ public class RegistryServiceImpl implements ApiRegistryService {
 
     private ApiEntity mapTo(API api) {
         if (api != null) {
-            ApiEntity apiEntity = new ApiEntity();
-            apiEntity.setId(api.getId());
-            apiEntity.setContext(api.getContext());
-            apiEntity.setDescription(api.getDescription());
-            apiEntity.setName(api.getName());
-            return apiEntity;
+            ApiEntity entity = new ApiEntity();
+            entity.setId(api.getId());
+            entity.setContext(api.getContext());
+            entity.setDescription(api.getDescription());
+            entity.setName(api.getName());
+            return entity;
+        } else {
+            return null;
+        }
+    }
+
+    private ApiResourceEntity mapTo(Resource resource, ApiEntity apiEntity) {
+        if (resource != null) {
+            ApiResourceEntity entity = new ApiResourceEntity();
+            entity.setId(resource.getId());
+            entity.setType(resource.getType().name());
+            entity.setApi(apiEntity);
+            return entity;
+        } else {
+            return null;
+        }
+    }
+
+    private Resource mapTo(ApiResourceEntity entity) {
+        if (entity != null) {
+            Resource resource = new Resource();
+            resource.setId(entity.getId());
+            resource.setType(ResourceType.valueOf(entity.getType()));
+            return resource;
         } else {
             return null;
         }

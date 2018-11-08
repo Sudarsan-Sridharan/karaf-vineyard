@@ -47,7 +47,7 @@ public class ApiEntity implements Serializable {
     @OneToMany(mappedBy = "api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<ApiMetaEntity> meta;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<ApiResourceEntity> resources;
 
     public String getId() {
