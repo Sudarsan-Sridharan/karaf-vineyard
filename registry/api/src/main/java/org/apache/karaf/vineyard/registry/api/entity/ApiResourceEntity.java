@@ -28,8 +28,7 @@ import javax.persistence.Table;
 @Table(name = "API_RESOURCE", schema = "VINEYARD")
 public class ApiResourceEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)

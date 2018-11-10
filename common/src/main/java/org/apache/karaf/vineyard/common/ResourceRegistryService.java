@@ -57,4 +57,21 @@ public interface ResourceRegistryService<ResourceT> {
      * @return The list of resources.
      */
     Collection<ResourceT> list();
+
+    /**
+     * Add a Policy to a Resource.
+     *
+     * @param idResource The resource ID.
+     * @param idPolicy The policy ID.
+     * @param policyOrder the order of the policy to be applied by the gateway.
+     */
+    void addPolicy(String idResource, String idPolicy, Integer policyOrder);
+
+    /**
+     * Remove a Policy from a Resource.
+     *
+     * @param idResource The resource ID.
+     * @param idPolicy The policy ID.
+     */
+    void removePolicy(String idResource, String idPolicy);
 }

@@ -14,35 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.registry.api.command;
+package org.apache.karaf.vineyard.registry.resource.rest.command;
 
 import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.shell.support.table.ShellTable;
-import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
+import org.apache.karaf.vineyard.common.ResourceRegistryService;
+import org.apache.karaf.vineyard.registry.resource.rest.command.completer.RestResourceIdCompleter;
 
 @Service
-@Command(scope = "vineyard", name = "api-list", description = "List of APIs in the registry")
-public class ListCommand implements Action {
+@Command(
+        scope = "vineyard",
+        name = "resource-rest-delete",
+        description = "Delete a Rest Resource from the registry")
+public class DeleteCommand implements Action {
 
-    @Reference private ApiRegistryService apiRegistryService;
+    @Reference private ResourceRegistryService resourceRegistryService;
+
+    @Argument(
+            name = "id",
+            description = "ID of the Rest Resource to delete",
+            required = true,
+            multiValued = false)
+    @Completion(RestResourceIdCompleter.class)
+    String id;
 
     @Override
     public Object execute() throws Exception {
-        final ShellTable shellTable = new ShellTable();
-        shellTable.column("ID");
-        shellTable.column("Name");
-        shellTable.column("Context");
-        shellTable.column("Description");
-        for (API api : apiRegistryService.list()) {
-            shellTable
-                    .addRow()
-                    .addContent(api.getId(), api.getName(), api.getContext(), api.getDescription());
-        }
-        shellTable.print(System.out);
+        resourceRegistryService.delete(id);
         return null;
     }
 }

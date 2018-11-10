@@ -30,7 +30,7 @@ import javax.persistence.Table;
 public class RestPolicyEntity implements Serializable {
 
     @Id private String id;
-    private Integer order;
+    private Integer ordering;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,12 +45,12 @@ public class RestPolicyEntity implements Serializable {
         this.id = id;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getOrdering() {
+        return ordering;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setOrdering(Integer ordering) {
+        this.ordering = ordering;
     }
 
     public RestResourceEntity getResource() {

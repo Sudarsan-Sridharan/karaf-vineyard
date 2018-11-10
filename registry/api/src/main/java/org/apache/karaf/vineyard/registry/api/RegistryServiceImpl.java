@@ -155,8 +155,11 @@ public class RegistryServiceImpl implements ApiRegistryService {
                 TransactionType.RequiresNew,
                 entityManager -> {
                     ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
-                    ApiResourceEntity apiResourceEntity = entityManager.find(ApiResourceEntity.class, resource.getId());
-                    if (apiEntity != null && apiResourceEntity != null && apiResourceEntity.getApi().getId().equals(apiEntity.getId())) {
+                    ApiResourceEntity apiResourceEntity =
+                            entityManager.find(ApiResourceEntity.class, resource.getId());
+                    if (apiEntity != null
+                            && apiResourceEntity != null
+                            && apiResourceEntity.getApi().getId().equals(apiEntity.getId())) {
                         entityManager.remove(apiResourceEntity);
                         entityManager.flush();
                     }
@@ -170,7 +173,9 @@ public class RegistryServiceImpl implements ApiRegistryService {
                         TransactionType.Supports,
                         entityManager ->
                                 entityManager
-                                        .createQuery("SELECT r FROM ApiResourceEntity r where r.api.id = :apiId", ApiResourceEntity.class)
+                                        .createQuery(
+                                                "SELECT r FROM ApiResourceEntity r where r.api.id = :apiId",
+                                                ApiResourceEntity.class)
                                         .setParameter("apiId", api.getId())
                                         .getResultList());
         Collection<Resource> results = new ArrayList<>();
@@ -206,13 +211,18 @@ public class RegistryServiceImpl implements ApiRegistryService {
                 TransactionType.RequiresNew,
                 entityManager -> {
                     ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
-                    ApiMetaEntity entity = entityManager
-                            .createQuery("SELECT m FROM ApiMetaEntity m where m.api.id = :apiId and m.key = :key", ApiMetaEntity.class)
-                            .setParameter("apiId", api.getId())
-                            .setParameter("key", api.getId())
-                            .getSingleResult();
+                    ApiMetaEntity entity =
+                            entityManager
+                                    .createQuery(
+                                            "SELECT m FROM ApiMetaEntity m where m.api.id = :apiId and m.key = :key",
+                                            ApiMetaEntity.class)
+                                    .setParameter("apiId", api.getId())
+                                    .setParameter("key", api.getId())
+                                    .getSingleResult();
 
-                    if (apiEntity != null && entity != null && entity.getApi().getId().equals(apiEntity.getId())) {
+                    if (apiEntity != null
+                            && entity != null
+                            && entity.getApi().getId().equals(apiEntity.getId())) {
                         entityManager.remove(entity);
                         entityManager.flush();
                     }
@@ -226,11 +236,14 @@ public class RegistryServiceImpl implements ApiRegistryService {
                 entityManager -> {
                     ApiEntity apiEntity = entityManager.find(ApiEntity.class, api.getId());
 
-                    List<ApiMetaEntity> list = entityManager
-                            .createQuery("SELECT m FROM ApiMetaEntity m where m.api.id = :apiId and m.key = :key", ApiMetaEntity.class)
-                            .setParameter("apiId", api.getId())
-                            .setParameter("key", api.getId())
-                            .getResultList();
+                    List<ApiMetaEntity> list =
+                            entityManager
+                                    .createQuery(
+                                            "SELECT m FROM ApiMetaEntity m where m.api.id = :apiId and m.key = :key",
+                                            ApiMetaEntity.class)
+                                    .setParameter("apiId", api.getId())
+                                    .setParameter("key", api.getId())
+                                    .getResultList();
 
                     if (apiEntity != null && !list.isEmpty()) {
 
@@ -259,7 +272,9 @@ public class RegistryServiceImpl implements ApiRegistryService {
                         TransactionType.Supports,
                         entityManager ->
                                 entityManager
-                                        .createQuery("SELECT m FROM ApiMetaEntity m where m.api.id = :apiId", ApiMetaEntity.class)
+                                        .createQuery(
+                                                "SELECT m FROM ApiMetaEntity m where m.api.id = :apiId",
+                                                ApiMetaEntity.class)
                                         .setParameter("apiId", api.getId())
                                         .getResultList());
         Map<String, String> results = new HashMap<>();

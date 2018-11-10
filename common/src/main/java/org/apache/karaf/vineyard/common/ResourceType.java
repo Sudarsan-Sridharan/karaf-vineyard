@@ -17,7 +17,7 @@
 package org.apache.karaf.vineyard.common;
 
 public enum ResourceType {
-    REST ("vineyard-registry-rest");
+    REST("vineyard-registry-rest");
 
     private String path;
 

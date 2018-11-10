@@ -51,8 +51,8 @@
             FINEST 	This level enables logging of more debugging information than the FINER setting, such as a very detailed information about certain features (for example, sequencing). You may want to use this log level during debugging and testing, but not at production.
             ALL 	This level currently logs at the same level as FINEST.
             -->
-            <property name="eclipselink.logging.level" value="FINEST" />
-            <property name="eclipselink.logging.level.sql" value="FINEST" />
+            <property name="eclipselink.logging.level" value="SEVERE" />
+            <property name="eclipselink.logging.level.sql" value="SEVERE" />
             <property name="eclipselink.logging.parameters" value="true" />
             <property name="eclipselink.logging.timestamp" value="true" />
             <property name="eclipselink.logging.session" value="true" />

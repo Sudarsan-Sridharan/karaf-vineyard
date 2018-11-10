@@ -24,6 +24,7 @@ import org.apache.aries.jpa.template.JpaTemplate;
 import org.apache.aries.jpa.template.TransactionType;
 import org.apache.karaf.vineyard.common.ResourceRegistryService;
 import org.apache.karaf.vineyard.common.RestResource;
+import org.apache.karaf.vineyard.registry.resource.rest.entity.RestPolicyEntity;
 import org.apache.karaf.vineyard.registry.resource.rest.entity.RestResourceEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -75,6 +76,14 @@ public class ResourceRestServiceImpl implements ResourceRegistryService {
 
                     if (entity != null) {
                         // we don't update the PK or the Metadatas
+                        entity.setAccept(res.getAccept());
+                        entity.setDescription(res.getDescription());
+                        entity.setEndpoint(res.getEndpoint());
+                        entity.setMediaType(res.getMediaType());
+                        entity.setMethod(res.getMethod());
+                        entity.setPath(res.getPath());
+                        entity.setResponse(res.getResponse());
+                        entity.setVersion(res.getVersion());
                         entityManager.merge(entity);
                         entityManager.flush();
                     }
@@ -108,10 +117,55 @@ public class ResourceRestServiceImpl implements ResourceRegistryService {
         return results;
     }
 
+    @Override
+    public void addPolicy(String idResource, String idPolicy, Integer policyOrder) {
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    RestResourceEntity entity =
+                            entityManager.find(RestResourceEntity.class, idResource);
+                    RestPolicyEntity policyEntity = new RestPolicyEntity();
+                    policyEntity.setId(idPolicy);
+                    policyEntity.setOrdering(policyOrder);
+                    policyEntity.setResource(entity);
+                    entityManager.persist(policyEntity);
+                    entityManager.flush();
+                });
+    }
+
+    @Override
+    public void removePolicy(String idResource, String idPolicy) {
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    RestPolicyEntity policyEntity =
+                            entityManager
+                                    .createQuery(
+                                            "SELECT p FROM RestPolicyEntity p WHERE p.id = :idPolicy AND p.resource.id = :idResource",
+                                            RestPolicyEntity.class)
+                                    .setParameter("idPolicy", idPolicy)
+                                    .setParameter("idResource", idResource)
+                                    .getSingleResult();
+
+                    if (policyEntity != null) {
+                        entityManager.remove(policyEntity);
+                        entityManager.flush();
+                    }
+                });
+    }
+
     private RestResource mapTo(RestResourceEntity entity) {
         if (entity != null) {
             RestResource resource = new RestResource();
             resource.setId(entity.getId());
+            resource.setAccept(entity.getAccept());
+            resource.setDescription(entity.getDescription());
+            resource.setEndpoint(entity.getEndpoint());
+            resource.setMediaType(entity.getMediaType());
+            resource.setMethod(entity.getMethod());
+            resource.setPath(entity.getPath());
+            resource.setResponse(entity.getResponse());
+            resource.setVersion(entity.getVersion());
             return resource;
         } else {
             return null;
@@ -122,6 +176,14 @@ public class ResourceRestServiceImpl implements ResourceRegistryService {
         if (resource != null) {
             RestResourceEntity entity = new RestResourceEntity();
             entity.setId(resource.getId());
+            entity.setAccept(resource.getAccept());
+            entity.setDescription(resource.getDescription());
+            entity.setEndpoint(resource.getEndpoint());
+            entity.setMediaType(resource.getMediaType());
+            entity.setMethod(resource.getMethod());
+            entity.setPath(resource.getPath());
+            entity.setResponse(resource.getResponse());
+            entity.setVersion(resource.getVersion());
             return entity;
         } else {
             return null;
