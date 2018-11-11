@@ -124,12 +124,14 @@ public class ResourceRestServiceImpl implements ResourceRegistryService {
                 entityManager -> {
                     RestResourceEntity entity =
                             entityManager.find(RestResourceEntity.class, idResource);
-                    RestPolicyEntity policyEntity = new RestPolicyEntity();
-                    policyEntity.setId(idPolicy);
-                    policyEntity.setOrdering(policyOrder);
-                    policyEntity.setResource(entity);
-                    entityManager.persist(policyEntity);
-                    entityManager.flush();
+                    if (entity != null) {
+                        RestPolicyEntity policyEntity = new RestPolicyEntity();
+                        policyEntity.setId(idPolicy);
+                        policyEntity.setOrdering(policyOrder);
+                        policyEntity.setResource(entity);
+                        entityManager.persist(policyEntity);
+                        entityManager.flush();
+                    }
                 });
     }
 
@@ -152,6 +154,25 @@ public class ResourceRestServiceImpl implements ResourceRegistryService {
                         entityManager.flush();
                     }
                 });
+    }
+
+    @Override
+    public Collection<String> listPolicies(String idResource) {
+        List<RestPolicyEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM RestPolicyEntity p WHERE p.resource.id = :idResource",
+                                                RestPolicyEntity.class)
+                                        .setParameter("idResource", idResource)
+                                        .getResultList());
+        Collection<String> results = new ArrayList<>();
+        for (RestPolicyEntity entity : list) {
+            results.add(entity.getId());
+        }
+        return results;
     }
 
     private RestResource mapTo(RestResourceEntity entity) {

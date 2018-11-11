@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.registry.policy.command;
+package org.apache.karaf.vineyard.registry.api.command;
 
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
@@ -22,37 +22,40 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.vineyard.common.Policy;
-import org.apache.karaf.vineyard.common.PolicyRegistryService;
+import org.apache.karaf.vineyard.common.API;
+import org.apache.karaf.vineyard.common.ApiRegistryService;
+import org.apache.karaf.vineyard.common.Resource;
 
 @Service
-@Command(scope = "vineyard", name = "policy-add", description = "Add a Policy in the registry")
-public class AddCommand implements Action {
+@Command(
+        scope = "vineyard",
+        name = "api-resource-delete",
+        description = "Delete a Resource from an Api in the registry")
+public class RemoveResourceCommand implements Action {
 
-    @Reference private PolicyRegistryService policyRegistryService;
+    @Reference private ApiRegistryService apiRegistryService;
 
-    @Argument(
-            index = 0,
-            name = "classname",
-            description = "Policy classname",
-            required = true,
-            multiValued = false)
-    String classname;
+    @Argument(index = 0, name = "api", description = "Api id", required = true, multiValued = false)
+    String idApi;
 
-    @Option(
-            name = "--description",
-            description = "Policy description",
-            required = false,
-            multiValued = false)
-    String description;
+    @Option(name = "--resource", description = "Resource id", required = true, multiValued = false)
+    String idResource;
 
     @Override
     public Object execute() throws Exception {
-        Policy policy = new Policy();
-        policy.setClassName(classname);
-        policy.setDescription(description);
-        policy = policyRegistryService.add(policy);
-        System.out.println("Policy " + classname + " has been added (" + policy.getId() + ")");
-        return policy;
+
+        API api = apiRegistryService.get(idApi);
+        if (api == null) {
+            System.out.println("The api " + idApi + " doesn't exist in the registry!");
+            return null;
+        }
+
+        Resource resource = new Resource();
+        resource.setId(idResource);
+
+        apiRegistryService.deleteResource(api, resource);
+        System.out.println(
+                "The Resource " + idResource + " has been removed from the api " + idApi);
+        return null;
     }
 }

@@ -74,4 +74,12 @@ public interface ResourceRegistryService<ResourceT> {
      * @param idPolicy The policy ID.
      */
     void removePolicy(String idResource, String idPolicy);
+
+    /**
+     * Retrieve all the policies of the resource in the registry.
+     *
+     * @param idResource The resource ID.
+     * @return The list of the policies.
+     */
+    Collection<String> listPolicies(String idResource);
 }

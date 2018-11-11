@@ -14,45 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.karaf.vineyard.registry.policy.command;
+package org.apache.karaf.vineyard.registry.resource.rest.command;
 
+import java.util.Collection;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.vineyard.common.Policy;
-import org.apache.karaf.vineyard.common.PolicyRegistryService;
+import org.apache.karaf.shell.support.table.ShellTable;
+import org.apache.karaf.vineyard.common.ResourceRegistryService;
+import org.apache.karaf.vineyard.registry.resource.rest.command.completer.RestResourceIdCompleter;
 
 @Service
-@Command(scope = "vineyard", name = "policy-add", description = "Add a Policy in the registry")
-public class AddCommand implements Action {
+@Command(
+        scope = "vineyard",
+        name = "resource-rest-policy-list",
+        description = "List the Policies of a Rest Resource in the registry")
+public class ListPoliciesCommand implements Action {
 
-    @Reference private PolicyRegistryService policyRegistryService;
+    @Reference private ResourceRegistryService resourceRegistryService;
 
     @Argument(
-            index = 0,
-            name = "classname",
-            description = "Policy classname",
+            name = "id",
+            description = "ID of the Rest Resource",
             required = true,
             multiValued = false)
-    String classname;
-
-    @Option(
-            name = "--description",
-            description = "Policy description",
-            required = false,
-            multiValued = false)
-    String description;
+    @Completion(RestResourceIdCompleter.class)
+    String id;
 
     @Override
     public Object execute() throws Exception {
-        Policy policy = new Policy();
-        policy.setClassName(classname);
-        policy.setDescription(description);
-        policy = policyRegistryService.add(policy);
-        System.out.println("Policy " + classname + " has been added (" + policy.getId() + ")");
-        return policy;
+        final ShellTable shellTable = new ShellTable();
+        shellTable.column("ID");
+
+        Collection<String> policies = resourceRegistryService.listPolicies(id);
+
+        for (String policyId : policies) {
+            shellTable.addRow().addContent(policyId);
+        }
+        shellTable.print(System.out);
+        return null;
     }
 }
