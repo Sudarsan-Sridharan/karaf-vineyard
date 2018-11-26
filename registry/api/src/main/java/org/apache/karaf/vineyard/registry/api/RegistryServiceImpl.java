@@ -25,7 +25,6 @@ import org.apache.aries.jpa.template.TransactionType;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
 import org.apache.karaf.vineyard.common.Resource;
-import org.apache.karaf.vineyard.common.ResourceType;
 import org.apache.karaf.vineyard.registry.api.entity.ApiEntity;
 import org.apache.karaf.vineyard.registry.api.entity.ApiMetaEntity;
 import org.apache.karaf.vineyard.registry.api.entity.ApiResourceEntity;
@@ -314,7 +313,7 @@ public class RegistryServiceImpl implements ApiRegistryService {
         if (resource != null) {
             ApiResourceEntity entity = new ApiResourceEntity();
             entity.setId(resource.getId());
-            entity.setType(resource.getType().name());
+            entity.setType(resource.getType());
             entity.setApi(apiEntity);
             return entity;
         } else {
@@ -326,7 +325,7 @@ public class RegistryServiceImpl implements ApiRegistryService {
         if (entity != null) {
             Resource resource = new Resource();
             resource.setId(entity.getId());
-            resource.setType(ResourceType.valueOf(entity.getType()));
+            resource.setType(entity.getType());
             return resource;
         } else {
             return null;

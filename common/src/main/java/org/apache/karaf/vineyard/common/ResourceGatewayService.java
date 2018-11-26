@@ -16,16 +16,13 @@
  */
 package org.apache.karaf.vineyard.common;
 
-public enum ResourceType {
-    REST("vineyard-registry-rest");
+public interface ResourceGatewayService {
 
-    private String path;
+    void publish(Resource resource);
 
-    ResourceType(String path) {
-        this.path = path;
-    }
+    void remove(Resource resource);
 
-    public String path() {
-        return this.path;
-    }
+    void resume(Resource resource);
+
+    void suspend(Resource resource);
 }

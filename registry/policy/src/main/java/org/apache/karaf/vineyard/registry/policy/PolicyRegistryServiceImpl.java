@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  * Implementation of the Policy service using the JPA entity manager service (provided by Karaf).
  */
 @Component(service = PolicyRegistryService.class, immediate = true)
-public class PolicyServiceImpl implements PolicyRegistryService {
+public class PolicyRegistryServiceImpl implements PolicyRegistryService {
 
     @Reference(target = "(osgi.unit.name=vineyard-registry-policy)")
     private JpaTemplate jpaTemplate;

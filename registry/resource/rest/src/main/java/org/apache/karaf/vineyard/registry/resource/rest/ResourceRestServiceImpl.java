@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * Implementation of the Rest Resource service using the JPA entity manager service (provided by
  * Karaf).
  */
-@Component(service = ResourceRegistryService.class, immediate = true)
+@Component(service = ResourceRegistryService.class, property = "type=rest", immediate = true)
 public class ResourceRestServiceImpl implements ResourceRegistryService {
 
     @Reference(target = "(osgi.unit.name=vineyard-registry-resource-rest)")

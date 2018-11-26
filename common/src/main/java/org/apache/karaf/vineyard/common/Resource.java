@@ -23,7 +23,7 @@ public class Resource {
     private String id;
 
     /** The type of Resource */
-    private ResourceType type;
+    private String type;
 
     public String getId() {
         return id;
@@ -33,11 +33,11 @@ public class Resource {
         this.id = id;
     }
 
-    public ResourceType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(ResourceType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

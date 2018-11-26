@@ -25,7 +25,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
 import org.apache.karaf.vineyard.common.Resource;
-import org.apache.karaf.vineyard.common.ResourceType;
 
 @Service
 @Command(
@@ -47,7 +46,7 @@ public class AddResourceCommand implements Action {
             description = "Resource type [REST]",
             required = true,
             multiValued = false)
-    String typeResource;
+    String type;
 
     @Override
     public Object execute() throws Exception {
@@ -59,7 +58,7 @@ public class AddResourceCommand implements Action {
         }
         Resource resource = new Resource();
         resource.setId(idResource);
-        resource.setType(ResourceType.valueOf(typeResource));
+        resource.setType(type);
         apiRegistryService.addResource(api, resource);
         System.out.println("Resource " + idResource + " has been added to the api " + idApi);
         return null;
