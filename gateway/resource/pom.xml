@@ -22,20 +22,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.karaf</groupId>
-        <artifactId>vineyard</artifactId>
+        <groupId>org.apache.karaf.vineyard</groupId>
+        <artifactId>gateway</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.apache.karaf.vineyard</groupId>
-    <artifactId>gateway</artifactId>
+    <groupId>org.apache.karaf.vineyard.gateway</groupId>
+    <artifactId>org.apache.karaf.vineyard.gateway.resource</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Karaf :: Vineyard :: Gateway</name>
+    <name>Apache Karaf :: Vineyard :: Gateway :: Resource</name>
 
     <modules>
-        <module>api</module>
-        <module>resource</module>
+        <module>rest</module>
     </modules>
 
 </project>

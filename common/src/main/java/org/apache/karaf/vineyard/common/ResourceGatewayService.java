@@ -18,11 +18,11 @@ package org.apache.karaf.vineyard.common;
 
 public interface ResourceGatewayService {
 
-    void publish(Resource resource);
+    void publish(API api, Resource resource) throws Exception;
 
-    void remove(Resource resource);
+    void remove(API api, Resource resource) throws Exception;
 
-    void resume(Resource resource);
+    void resume(API api, Resource resource) throws Exception;
 
-    void suspend(Resource resource);
+    void suspend(API api, Resource resource) throws Exception;
 }
