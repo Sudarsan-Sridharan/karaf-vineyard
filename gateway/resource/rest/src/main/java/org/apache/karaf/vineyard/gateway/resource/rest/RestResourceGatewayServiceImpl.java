@@ -16,9 +16,12 @@
  */
 package org.apache.karaf.vineyard.gateway.resource.rest;
 
+import java.util.TreeMap;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.model.RouteDefinition;
 import org.apache.karaf.vineyard.common.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -49,26 +52,34 @@ public class RestResourceGatewayServiceImpl implements ResourceGatewayService {
             throw new IllegalArgumentException("API resource already published");
         }
         RestResource restResource = restResourceResourceRegistryService.get(resource.getId());
+
+        final RouteDefinition definition = new RouteDefinition();
+        definition.from(
+                "jetty:http://0.0.0.0:9090/vineyard" + api.getContext() + restResource.getPath());
+        definition.log("Processing " + api.getContext() + restResource.getPath());
+        definition.routeId(routeId);
+
+        TreeMap<Integer, Policy> sortedPolicies = new TreeMap<>(restResource.getPolicies());
+        for (Policy policy : sortedPolicies.values()) {
+            Processor processor =
+                    (Processor) Class.forName(policy.getClassName()).getConstructor().newInstance();
+            definition.log("Adding policy " + policy.getClassName());
+            definition.process(processor);
+        }
+
+        if (restResource.getResponse() != null) {
+            definition.log("mocking response");
+            definition.transform().constant(restResource.getResponse());
+        } else {
+            definition.log("proxying to endpoint " + restResource.getEndpoint());
+            definition.to(restResource.getEndpoint());
+        }
+
         RouteBuilder builder =
                 new RouteBuilder() {
                     @Override
                     public void configure() throws Exception {
-                        String from =
-                                "jetty:http://0.0.0.0:9090/vineyard"
-                                        + api.getContext()
-                                        + restResource.getPath();
-                        if (restResource.getResponse() != null) {
-                            from(from)
-                                    .id(routeId)
-                                    // TODO add policy
-                                    .transform()
-                                    .constant(restResource.getResponse());
-                        } else {
-                            from(from)
-                                    .id(routeId)
-                                    // TODO add policy
-                                    .to(restResource.getEndpoint());
-                        }
+                        configureRoute(definition);
                     }
                 };
         camelContext.addRoutes(builder);

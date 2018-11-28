@@ -43,7 +43,11 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
             Collection<ServiceReference<ResourceGatewayService>> references =
                     bundleContext.getServiceReferences(
                             ResourceGatewayService.class, "(type=" + resource.getType() + ")");
-            // TODO retrieve the concrete resource services and publish resources
+            for (ServiceReference<ResourceGatewayService> reference : references) {
+                ResourceGatewayService service = bundleContext.getService(reference);
+                service.publish(api, resource);
+                bundleContext.ungetService(reference);
+            }
         }
     }
 
