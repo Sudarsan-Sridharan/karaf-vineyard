@@ -23,5 +23,5 @@ public interface ApiGatewayService {
     void publish(API api) throws Exception;
 
     /** Delete an API from the gateway. */
-    void delete(String apiId) throws Exception;
+    void delete(API api) throws Exception;
 }

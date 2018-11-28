@@ -52,5 +52,17 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
     }
 
     @Override
-    public void delete(String apiId) throws Exception {}
+    public void delete(API api) throws Exception {
+        for (Resource resource : api.getResources()) {
+            // looking for the gateway service corresponding to the resource type
+            Collection<ServiceReference<ResourceGatewayService>> references =
+                    bundleContext.getServiceReferences(
+                            ResourceGatewayService.class, "(type=" + resource.getType() + ")");
+            for (ServiceReference<ResourceGatewayService> reference : references) {
+                ResourceGatewayService service = bundleContext.getService(reference);
+                service.remove(api, resource);
+                bundleContext.ungetService(reference);
+            }
+        }
+    }
 }
