@@ -26,6 +26,8 @@
     
     <feature name="vineyard" version="${project.version}" description="Meta feature installing common Vineyard features">
         <feature version="${project.version}">vineyard-common</feature>
+        <feature version="${project.version}">vineyard-registry</feature>
+        <feature version="${project.version}">vineyard-gateway</feature>
     </feature>
 
     <feature name="vineyard-common" version="${project.version}" description="Karaf Vineyard Common">
@@ -40,7 +42,13 @@
         <feature prerequisite="true">scr</feature>
         <feature>camel-core</feature>
         <bundle>mvn:org.apache.karaf.vineyard.gateway/org.apache.karaf.vineyard.gateway.api/${project.version}</bundle>
-        <bundle>mvn:org.apache.karaf.vineyard.gateway/org.apache.karaf.vineyard.gateway.bridge/${project.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.gateway.resource/org.apache.karaf.vineyard.gateway.resource.rest/${project.version}</bundle>
+    </feature>
+
+    <feature name="vineyard-registry" version="${project.version}">
+        <feature version="${project.version}">vineyard-registry-api</feature>
+        <feature version="${project.version}">vineyard-registry-policy</feature>
+        <feature version="${project.version}">vineyard-registry-resource-rest</feature>
     </feature>
 
     <feature name="vineyard-registry-datasource" version="${project.version}"
@@ -55,7 +63,7 @@
         </capability>
     </feature>
 
-    <feature name="vineyard-registry" version="${project.version}"
+    <feature name="vineyard-registry-api" version="${project.version}"
              description="Karaf Vineyard Registry API">
         <feature version="${project.version}">vineyard-common</feature>
         <feature version="${project.version}">vineyard-registry-datasource</feature>
