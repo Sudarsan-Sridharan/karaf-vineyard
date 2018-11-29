@@ -16,22 +16,19 @@
  */
 package org.apache.karaf.vineyard.importer.json;
 
+import java.io.InputStream;
 import org.apache.karaf.vineyard.common.ApiRegistryService;
 import org.apache.karaf.vineyard.common.Importer;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.io.InputStream;
-
 @Component(service = Importer.class, immediate = true)
 public class JsonImporter implements Importer {
 
-    @Reference
-    private ApiRegistryService apiRegistryService;
+    @Reference private ApiRegistryService apiRegistryService;
 
     @Override
     public void load(InputStream inputStream) throws Exception {
-
+        // TODO load json from input stream
     }
-
 }

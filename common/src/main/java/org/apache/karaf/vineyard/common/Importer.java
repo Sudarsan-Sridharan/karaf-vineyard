@@ -18,11 +18,8 @@ package org.apache.karaf.vineyard.common;
 
 import java.io.InputStream;
 
-/**
- * Importer service able to load a API in the registry using some description format.
- */
+/** Importer service able to load a API in the registry using some description format. */
 public interface Importer {
 
     void load(InputStream inputStream) throws Exception;
-
 }
