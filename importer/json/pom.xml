@@ -22,35 +22,31 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.karaf</groupId>
-        <artifactId>vineyard</artifactId>
+        <groupId>org.apache.karaf.vineyard</groupId>
+        <artifactId>importer</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.apache.karaf.vineyard</groupId>
-    <artifactId>importer</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Karaf :: Vineyard :: Importer</name>
+    <groupId>org.apache.karaf.vineyard.importer</groupId>
+    <artifactId>org.apache.karaf.vineyard.importer.json</artifactId>
+    <packaging>bundle</packaging>
+    <name>Apache Karaf :: Vineyard :: Importer :: JSON</name>
 
-    <modules>
-        <module>json</module>
-        <!--
-        <module>openapi</module>
-        <module>swagger</module>
-        <module>grahql</module>
-        <module>karaf</module>
-        <module>jms</module>
-        <module>camel</module>
-        <module>amqp</module>
-        <module>mqtt</module>
-        <module>kafka</module>
-        <module>websphere</module>
-        <module>weblogic</module>
-        <module>jboss</module>
-        <module>jclouds</module>
-        <module>kubernetes</module>
-        -->
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.karaf.vineyard</groupId>
+            <artifactId>org.apache.karaf.vineyard.common</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
