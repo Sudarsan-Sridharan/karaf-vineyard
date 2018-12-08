@@ -26,13 +26,11 @@ import org.apache.karaf.vineyard.common.ApiRegistryService;
 @Command(scope = "vineyard", name = "gateway-api", description = "Interact with the API gateway")
 public class PublishCommand implements Action {
 
-    @Reference
-    private ApiRegistryService apiRegistryService;
+    @Reference private ApiRegistryService apiRegistryService;
 
     @Override
     public Object execute() throws Exception {
         // TODO
         return null;
     }
-
 }
