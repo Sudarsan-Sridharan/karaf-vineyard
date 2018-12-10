@@ -1,0 +1,93 @@
+{
+  "apis": [
+    {
+      "id": "1",
+      "name": "booking",
+      "context": "/booking",
+      "description": "Booking fly api",
+      "meta": {
+        "meta1": "value1",
+        "meta2": "value2",
+        "meta3": "value3"
+      },
+      "resources": [
+        {
+          "id": "1",
+          "type": "rest"
+        },
+        {
+          "id": "2",
+          "type": "rest"
+        },
+        {
+          "id": "3",
+          "type": "rest"
+        }
+      ]
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "1",
+      "description": "Find all",
+      "path": "/",
+      "method": "GET",
+      "version": "1.0.0",
+      "accept": "application/json",
+      "mediaType": "application/json",
+      "policies": {
+        "1": {
+          "id": "1"
+        }
+      },
+      "response": "application/json",
+      "endpoint": "http://localhost:8181/backend/booking"
+    },
+    {
+      "id": "2",
+      "description": "Get",
+      "path": "/{id}",
+      "method": "GET",
+      "version": "1.0.0",
+      "accept": "application/json",
+      "mediaType": "application/json",
+      "policies": {
+        "1": {
+          "id": "1"
+        }
+      },
+      "response": "application/json",
+      "endpoint": "http://localhost:8181/backend/booking"
+    },
+    {
+      "id": "3",
+      "description": "Add new",
+      "path": "/",
+      "method": "POST",
+      "version": "1.0.0",
+      "accept": "application/json",
+      "mediaType": "application/json",
+      "policies": {
+        "1": {
+          "id": "1"
+        }
+      },
+      "response": "application/json",
+      "endpoint": "http://localhost:8181/backend/booking"
+    }
+  ],
+
+  "policies": [
+    {
+      "id": "1",
+      "description": "OAuth",
+      "meta": {
+        "version": "1",
+        "token": "SHA512",
+        "validate": "true"
+      },
+      "className": "org.apache.karaf.vineyard.registry.policy.oauth"
+    }
+  ]
+}

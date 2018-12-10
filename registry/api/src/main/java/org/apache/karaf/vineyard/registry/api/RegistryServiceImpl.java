@@ -134,7 +134,6 @@ public class RegistryServiceImpl implements ApiRegistryService {
 
     @Override
     public Resource addResource(API api, Resource resource) {
-        resource.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(
                 TransactionType.RequiresNew,
                 entityManager -> {

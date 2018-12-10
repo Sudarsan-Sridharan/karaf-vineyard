@@ -45,6 +45,17 @@
         <bundle>mvn:org.apache.karaf.vineyard.gateway.resource/org.apache.karaf.vineyard.gateway.resource.rest/${project.version}</bundle>
     </feature>
 
+    <feature name="vineyard-importer" version="${project.version}" description="Karaf Vineyard Importer">
+        <feature version="${project.version}">vineyard-importer-json</feature>
+    </feature>
+
+    <feature name="vineyard-importer-json" version="${project.version}" description="Karaf Vineyard Importer Json">
+        <bundle>mvn:org.apache.geronimo.specs/geronimo-json_1.1_spec/1.1</bundle>
+        <bundle>mvn:org.apache.johnzon/johnzon-core/${johnzon.version}</bundle>
+        <bundle>mvn:org.apache.johnzon/johnzon-mapper/${johnzon.version}</bundle>
+        <bundle>mvn:org.apache.karaf.vineyard.importer/org.apache.karaf.vineyard.importer.json/${project.version}</bundle>
+    </feature>
+
     <feature name="vineyard-registry" version="${project.version}">
         <feature version="${project.version}">vineyard-registry-api</feature>
         <feature version="${project.version}">vineyard-registry-policy</feature>
