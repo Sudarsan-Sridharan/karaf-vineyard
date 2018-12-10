@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @CrossOriginResourceSharing(allowAllOrigins = true, allowCredentials = true)
-@Server(url = "/cxf/vineyard/registry/resource/rest")
+@Server(url = "/cxf/vineyard-registry-resource-rest")
 public class ResourceRestRegistryRest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ResourceRestRegistryRest.class);
