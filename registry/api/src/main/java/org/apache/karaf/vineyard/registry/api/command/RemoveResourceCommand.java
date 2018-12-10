@@ -29,8 +29,8 @@ import org.apache.karaf.vineyard.common.Resource;
 @Service
 @Command(
         scope = "vineyard",
-        name = "api-resource-delete",
-        description = "Delete a Resource from an Api in the registry")
+        name = "api-resource-remove",
+        description = "Remove a Resource from an Api in the registry")
 public class RemoveResourceCommand implements Action {
 
     @Reference private ApiRegistryService apiRegistryService;

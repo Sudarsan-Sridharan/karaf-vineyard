@@ -30,7 +30,7 @@ import org.apache.karaf.vineyard.common.Resource;
 @Service
 @Command(
         scope = "vineyard",
-        name = "api-list-resource",
+        name = "api-resource-list",
         description = "List the Resources of an Api in the registry")
 public class ListResourcesCommand implements Action {
 

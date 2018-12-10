@@ -29,7 +29,7 @@ import org.apache.karaf.vineyard.common.Resource;
 @Service
 @Command(
         scope = "vineyard",
-        name = "api-add-resource",
+        name = "api-resource-add",
         description = "Add a Resource to an Api in the registry")
 public class AddResourceCommand implements Action {
 
