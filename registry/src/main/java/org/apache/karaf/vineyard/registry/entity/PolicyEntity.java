@@ -16,16 +16,15 @@
  */
 package org.apache.karaf.vineyard.registry.entity;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.*;
 
 @IdClass(PolicyPkEntity.class)
 @Entity
 @Table(name = "POLICY", schema = "VINEYARD")
 public class PolicyEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     private String description;
 
@@ -77,5 +76,4 @@ public class PolicyEntity implements Serializable {
     public void setRestResourceEntity(RestResourceEntity restResourceEntity) {
         this.restResourceEntity = restResourceEntity;
     }
-
 }

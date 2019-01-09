@@ -24,8 +24,7 @@ import javax.persistence.*;
 @Table(name = "REST_RESOURCE", schema = "VINEYARD")
 public class RestResourceEntity implements Serializable {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     private String description;
 

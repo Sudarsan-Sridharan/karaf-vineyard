@@ -93,19 +93,13 @@ public interface RegistryService {
      */
     Collection<RestResource> listRestResources(API api);
 
-    /**
-     * Add a policy for a given {@link RestResource}.
-     */
+    /** Add a policy for a given {@link RestResource}. */
     Policy addPolicy(RestResource restResource, Policy policy);
 
-    /**
-     * Delete a policy from a given {@link RestResource}.
-     */
+    /** Delete a policy from a given {@link RestResource}. */
     void deletePolicy(RestResource restResource, Policy policy);
 
-    /**
-     * List the policies for a given {@link RestResource}.
-     */
+    /** List the policies for a given {@link RestResource}. */
     Collection<Policy> listPolicies(RestResource restResource);
 
     /**
@@ -139,5 +133,4 @@ public interface RegistryService {
      * @return The meta represented by "key,value".
      */
     Map<String, String> getMeta(API api);
-
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.karaf.vineyard.gateway;
 
+import java.util.TreeMap;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -28,8 +29,6 @@ import org.apache.karaf.vineyard.common.RestResource;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-
-import java.util.TreeMap;
 
 @Component(service = GatewayService.class, immediate = true)
 public class GatewayServiceImpl implements GatewayService {

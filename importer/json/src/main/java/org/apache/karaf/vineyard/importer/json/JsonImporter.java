@@ -21,12 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.johnzon.mapper.MapperBuilder;
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.RegistryService;
 import org.apache.karaf.vineyard.common.Importer;
 import org.apache.karaf.vineyard.common.Policy;
-import org.apache.karaf.vineyard.common.PolicyRegistryService;
-import org.apache.karaf.vineyard.common.Resource;
-import org.apache.karaf.vineyard.common.ResourceRegistryService;
+import org.apache.karaf.vineyard.common.RegistryService;
 import org.apache.karaf.vineyard.common.RestResource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,11 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = Importer.class, immediate = true, property = "type=json")
 public class JsonImporter implements Importer {
 
-    @Reference private RegistryService apiRegistryService;
-
-    @Reference private PolicyRegistryService policyRegistryService;
-
-    @Reference private ResourceRegistryService resourceRegistryService;
+    @Reference private RegistryService registryService;
 
     @Override
     public void load(InputStream inputStream) throws Exception {
@@ -50,9 +43,10 @@ public class JsonImporter implements Importer {
         Map<String, RestResource> resources = new HashMap<>();
         Map<String, API> apis = new HashMap<>();
 
+        /*
         for (Policy policy : registry.getPolicies()) {
             String oldId = policy.getId();
-            policies.put(oldId, policyRegistryService.add(policy));
+            policies.put(oldId, registryService.add(policy));
         }
 
         for (RestResource resource : registry.getResources()) {
@@ -62,7 +56,7 @@ public class JsonImporter implements Importer {
             resource.getPolicies().clear();
 
             String oldId = resource.getId();
-            resources.put(oldId, (RestResource) resourceRegistryService.add(resource));
+            resources.put(oldId, (RestResource) registryService.add(resource));
             for (Integer key : resourcePolicy.keySet()) {
                 resourceRegistryService.addPolicy(
                         resources.get(oldId).getId(),
@@ -88,5 +82,6 @@ public class JsonImporter implements Importer {
                 apiRegistryService.addResource(apis.get(oldId), res);
             }
         }
+        */
     }
 }

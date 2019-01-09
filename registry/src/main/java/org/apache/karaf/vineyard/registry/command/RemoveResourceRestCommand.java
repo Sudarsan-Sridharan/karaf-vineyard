@@ -23,17 +23,17 @@ import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
-import org.apache.karaf.vineyard.common.Resource;
+import org.apache.karaf.vineyard.common.RegistryService;
+import org.apache.karaf.vineyard.common.RestResource;
 
 @Service
 @Command(
         scope = "vineyard",
         name = "api-resource-remove",
         description = "Remove a Resource from an Api in the registry")
-public class RemoveResourceCommand implements Action {
+public class RemoveResourceRestCommand implements Action {
 
-    @Reference private ApiRegistryService apiRegistryService;
+    @Reference private RegistryService registryService;
 
     @Argument(index = 0, name = "api", description = "Api id", required = true, multiValued = false)
     String idApi;
@@ -44,16 +44,16 @@ public class RemoveResourceCommand implements Action {
     @Override
     public Object execute() throws Exception {
 
-        API api = apiRegistryService.get(idApi);
+        API api = registryService.get(idApi);
         if (api == null) {
             System.out.println("The api " + idApi + " doesn't exist in the registry!");
             return null;
         }
 
-        Resource resource = new Resource();
+        RestResource resource = new RestResource();
         resource.setId(idResource);
 
-        apiRegistryService.deleteResource(api, resource);
+        registryService.deleteRestResource(api, resource);
         System.out.println(
                 "The Resource " + idResource + " has been removed from the api " + idApi);
         return null;

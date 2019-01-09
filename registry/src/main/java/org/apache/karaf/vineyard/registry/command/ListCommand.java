@@ -22,13 +22,13 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
+import org.apache.karaf.vineyard.common.RegistryService;
 
 @Service
 @Command(scope = "vineyard", name = "api-list", description = "List of APIs in the registry")
 public class ListCommand implements Action {
 
-    @Reference private ApiRegistryService apiRegistryService;
+    @Reference private RegistryService registryService;
 
     @Override
     public Object execute() throws Exception {
@@ -37,7 +37,7 @@ public class ListCommand implements Action {
         shellTable.column("Name");
         shellTable.column("Context");
         shellTable.column("Description");
-        for (API api : apiRegistryService.list()) {
+        for (API api : registryService.list()) {
             shellTable
                     .addRow()
                     .addContent(api.getId(), api.getName(), api.getContext(), api.getDescription());

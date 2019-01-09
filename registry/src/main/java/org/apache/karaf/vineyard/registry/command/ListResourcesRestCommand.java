@@ -24,26 +24,26 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
-import org.apache.karaf.vineyard.common.Resource;
+import org.apache.karaf.vineyard.common.RegistryService;
+import org.apache.karaf.vineyard.common.RestResource;
 
 @Service
 @Command(
         scope = "vineyard",
         name = "api-resource-list",
         description = "List the Resources of an Api in the registry")
-public class ListResourcesCommand implements Action {
+public class ListResourcesRestCommand implements Action {
 
-    @Reference private ApiRegistryService apiRegistryService;
+    @Reference private RegistryService registryService;
 
     @Argument(name = "id", description = "ID of the Api", required = true, multiValued = false)
-    @Completion(ApiRegistryService.class)
+    @Completion(RegistryService.class)
     String id;
 
     @Override
     public Object execute() throws Exception {
 
-        API api = apiRegistryService.get(id);
+        API api = registryService.get(id);
         if (api == null) {
             System.out.println("The api " + id + " doesn't exist in the registry!");
             return null;
@@ -51,10 +51,10 @@ public class ListResourcesCommand implements Action {
 
         final ShellTable shellTable = new ShellTable();
         shellTable.column("ID");
-        shellTable.column("Type");
+        shellTable.column("Path");
 
-        for (Resource resource : apiRegistryService.listResources(api)) {
-            shellTable.addRow().addContent(resource.getId(), resource.getType());
+        for (RestResource resource : registryService.listRestResources(api)) {
+            shellTable.addRow().addContent(resource.getId(), resource.getPath());
         }
         shellTable.print(System.out);
         return null;

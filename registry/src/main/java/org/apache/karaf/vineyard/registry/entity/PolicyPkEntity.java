@@ -45,5 +45,4 @@ public class PolicyPkEntity implements Serializable {
         PolicyPkEntity pk = (PolicyPkEntity) obj;
         return pk.key.equals(this.key) && pk.restResource.equals(this.restResource);
     }
-
 }

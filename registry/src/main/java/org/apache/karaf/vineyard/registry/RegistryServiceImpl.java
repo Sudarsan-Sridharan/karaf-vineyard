@@ -190,7 +190,8 @@ public class RegistryServiceImpl implements RegistryService {
         jpaTemplate.tx(
                 TransactionType.RequiresNew,
                 entityManager -> {
-                    RestResourceEntity restResourceEntity = entityManager.find(RestResourceEntity.class, restResource.getId());
+                    RestResourceEntity restResourceEntity =
+                            entityManager.find(RestResourceEntity.class, restResource.getId());
                     if (restResourceEntity != null) {
                         entityManager.persist(mapTo(policy, restResourceEntity));
                         entityManager.flush();
@@ -204,11 +205,16 @@ public class RegistryServiceImpl implements RegistryService {
         jpaTemplate.tx(
                 TransactionType.RequiresNew,
                 entityManager -> {
-                    RestResourceEntity restResourceEntity = entityManager.find(RestResourceEntity.class, restResource.getId());
-                    PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policy.getId());
+                    RestResourceEntity restResourceEntity =
+                            entityManager.find(RestResourceEntity.class, restResource.getId());
+                    PolicyEntity policyEntity =
+                            entityManager.find(PolicyEntity.class, policy.getId());
                     if (restResourceEntity != null
-                        && policyEntity != null
-                        && policyEntity.getRestResourceEntity().getId().equals(restResourceEntity.getId())) {
+                            && policyEntity != null
+                            && policyEntity
+                                    .getRestResourceEntity()
+                                    .getId()
+                                    .equals(restResourceEntity.getId())) {
                         entityManager.remove(policyEntity);
                         entityManager.flush();
                     }
@@ -220,10 +226,13 @@ public class RegistryServiceImpl implements RegistryService {
         List<PolicyEntity> list =
                 jpaTemplate.txExpr(
                         TransactionType.Supports,
-                        entityManager -> entityManager.createQuery(
-                                "SELECT p FROM PolicyEntity p WHERE p.resource.id = :resourceId", PolicyEntity.class)
-                        .setParameter("resourceId", restResource.getId())
-                        .getResultList());
+                        entityManager ->
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM PolicyEntity p WHERE p.resource.id = :resourceId",
+                                                PolicyEntity.class)
+                                        .setParameter("resourceId", restResource.getId())
+                                        .getResultList());
         Collection<Policy> results = new ArrayList<>();
         for (PolicyEntity entity : list) {
             results.add(mapTo(entity));

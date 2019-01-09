@@ -89,5 +89,4 @@ public class API {
     public void setRestResources(Collection<RestResource> restResources) {
         this.restResources = restResources;
     }
-
 }

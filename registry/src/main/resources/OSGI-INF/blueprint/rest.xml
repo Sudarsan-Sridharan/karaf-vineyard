@@ -62,7 +62,7 @@
         </cxf:features>
     </cxf:bus>
 
-    <jaxrs:server id="registryServiceRest" address="/vineyard-registry-api">
+    <jaxrs:server id="registryServiceRest" address="/vineyard-registry">
         <jaxrs:serviceBeans>
             <ref component-id="serviceBean"/>
         </jaxrs:serviceBeans>

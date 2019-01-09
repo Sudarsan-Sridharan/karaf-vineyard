@@ -19,16 +19,15 @@ package org.apache.karaf.vineyard.importer.json.command;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
-import org.apache.karaf.vineyard.common.RegistryService;
 import org.apache.karaf.vineyard.common.Importer;
-import org.apache.karaf.vineyard.common.PolicyRegistryService;
-import org.apache.karaf.vineyard.common.ResourceRegistryService;
+import org.apache.karaf.vineyard.common.RegistryService;
 
 @Service
 @Command(
@@ -39,11 +38,7 @@ public class ImportCommand implements Action {
 
     @Reference private Importer jsonImporter;
 
-    @Reference private RegistryService apiRegistryService;
-
-    @Reference private PolicyRegistryService policyRegistryService;
-
-    @Reference private ResourceRegistryService resourceRegistryService;
+    @Reference private RegistryService registryService;
 
     @Argument(
             index = 0,
@@ -59,16 +54,19 @@ public class ImportCommand implements Action {
         URLConnection connection = url.openConnection();
         InputStream inputStream = connection.getInputStream();
         jsonImporter.load(inputStream);
+
         final ShellTable shellTable = new ShellTable();
         shellTable.column("APIs");
-        shellTable.column("Resources");
-        shellTable.column("Policies");
-        shellTable
-                .addRow()
-                .addContent(
-                        apiRegistryService.list().size(),
-                        resourceRegistryService.list().size(),
-                        policyRegistryService.list().size());
+        shellTable.column("RestResources");
+
+        AtomicInteger restResourceCount = new AtomicInteger();
+        registryService
+                .list()
+                .forEach(
+                        api ->
+                                restResourceCount.addAndGet(
+                                        registryService.listRestResources(api).size()));
+        shellTable.addRow().addContent(registryService.list().size(), restResourceCount.get());
         shellTable.print(System.out);
         return null;
     }

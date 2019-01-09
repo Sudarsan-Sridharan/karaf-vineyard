@@ -45,5 +45,4 @@ public class RestResourcePkEntity implements Serializable {
         RestResourcePkEntity pk = (RestResourcePkEntity) obj;
         return pk.key.equals(this.key) && pk.api.equals(this.api);
     }
-
 }
