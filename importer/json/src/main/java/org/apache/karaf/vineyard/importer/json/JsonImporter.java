@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.johnzon.mapper.MapperBuilder;
 import org.apache.karaf.vineyard.common.API;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
+import org.apache.karaf.vineyard.common.RegistryService;
 import org.apache.karaf.vineyard.common.Importer;
 import org.apache.karaf.vineyard.common.Policy;
 import org.apache.karaf.vineyard.common.PolicyRegistryService;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = Importer.class, immediate = true, property = "type=json")
 public class JsonImporter implements Importer {
 
-    @Reference private ApiRegistryService apiRegistryService;
+    @Reference private RegistryService apiRegistryService;
 
     @Reference private PolicyRegistryService policyRegistryService;
 

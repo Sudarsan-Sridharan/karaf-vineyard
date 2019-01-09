@@ -40,7 +40,7 @@ public class API {
     private Map<String, String> meta = new HashMap<>();
 
     /** Collection of resources linked to this API. */
-    private Collection<Resource> resources = new ArrayList<>();
+    private Collection<RestResource> restResources = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -82,11 +82,12 @@ public class API {
         this.meta = metadata;
     }
 
-    public Collection<Resource> getResources() {
-        return resources;
+    public Collection<RestResource> getRestResources() {
+        return restResources;
     }
 
-    public void setResources(Collection<Resource> resources) {
-        this.resources = resources;
+    public void setRestResources(Collection<RestResource> restResources) {
+        this.restResources = restResources;
     }
+
 }

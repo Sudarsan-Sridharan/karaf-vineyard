@@ -25,7 +25,7 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
-import org.apache.karaf.vineyard.common.ApiRegistryService;
+import org.apache.karaf.vineyard.common.RegistryService;
 import org.apache.karaf.vineyard.common.Importer;
 import org.apache.karaf.vineyard.common.PolicyRegistryService;
 import org.apache.karaf.vineyard.common.ResourceRegistryService;
@@ -39,7 +39,7 @@ public class ImportCommand implements Action {
 
     @Reference private Importer jsonImporter;
 
-    @Reference private ApiRegistryService apiRegistryService;
+    @Reference private RegistryService apiRegistryService;
 
     @Reference private PolicyRegistryService policyRegistryService;
 
