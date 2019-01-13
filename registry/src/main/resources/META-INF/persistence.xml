@@ -21,7 +21,7 @@
         limitations under the License.
     -->
 
-    <persistence-unit name="vineyard-registry-api" transaction-type="JTA">
+    <persistence-unit name="vineyard-registry" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <!-- Only used when transaction-type=JTA -->

@@ -36,16 +36,12 @@ public class TestJsonImporter {
                 new MapperBuilder().build().readObject(inputStream, JsonRegistry.class);
         Assert.assertFalse("List api is empty", registry.getApis().isEmpty());
         Assert.assertFalse("List policy is empty", registry.getPolicies().isEmpty());
-        Assert.assertFalse("List resource is empty", registry.getResources().isEmpty());
 
         System.out.println(
                 "Apis: "
                         + registry.getApis().size()
                         + " | "
                         + "Policies: "
-                        + registry.getPolicies().size()
-                        + " | "
-                        + "Resources: "
-                        + registry.getResources().size());
+                        + registry.getPolicies().size());
     }
 }

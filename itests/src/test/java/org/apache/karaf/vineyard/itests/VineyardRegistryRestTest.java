@@ -129,24 +129,23 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                 "mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/1.0.0-SNAPSHOT/xml/features");
 
         String featureList = executeCommand("feature:list -o | grep vineyard");
-        System.out.println(featureList);
+        Assert.assertTrue(featureList.contains("vineyard"));
 
-        executeCommand("feature:install vineyard-registry", ADMIN_ROLES);
-        // installAndAssertFeature("vineyard-registry");
+        // executeCommand("feature:install vineyard", ADMIN_ROLES);
+        installAndAssertFeature("vineyard");
+
+        Thread.sleep(5000);
 
         String bundleList = executeCommand("bundle:list");
         System.out.println(bundleList);
         Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Common"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: API"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Commands"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: REST"));
-        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry :: Storage"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Registry"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Gateway"));
+        Assert.assertTrue(bundleList.contains("Apache Karaf :: Vineyard :: Importer :: JSON"));
 
         String jdbcList = executeCommand("jdbc:ds-list");
         System.out.println(jdbcList);
         Assert.assertTrue(jdbcList.contains("jdbc:derby:data/vineyard/derby │ OK"));
-
-        Thread.sleep(5000);
 
         String dataformatId = "";
         String apiId = "";
@@ -451,6 +450,6 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
 
     @After
     public void tearDown() {
-        executeCommand("feature:uninstall vineyard-registry", ADMIN_ROLES);
+        executeCommand("feature:uninstall vineyard", ADMIN_ROLES);
     }
 }

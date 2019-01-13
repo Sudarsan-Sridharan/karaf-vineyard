@@ -58,6 +58,7 @@ public class ImportCommand implements Action {
         final ShellTable shellTable = new ShellTable();
         shellTable.column("APIs");
         shellTable.column("RestResources");
+        shellTable.column("Policies");
 
         AtomicInteger restResourceCount = new AtomicInteger();
         registryService
@@ -66,7 +67,12 @@ public class ImportCommand implements Action {
                         api ->
                                 restResourceCount.addAndGet(
                                         registryService.listRestResources(api).size()));
-        shellTable.addRow().addContent(registryService.list().size(), restResourceCount.get());
+        shellTable
+                .addRow()
+                .addContent(
+                        registryService.list().size(),
+                        restResourceCount.get(),
+                        registryService.listPolicies().size());
         shellTable.print(System.out);
         return null;
     }

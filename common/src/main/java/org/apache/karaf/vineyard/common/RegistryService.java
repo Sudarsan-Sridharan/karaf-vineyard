@@ -24,112 +24,145 @@ import java.util.Map;
 public interface RegistryService {
 
     /**
-     * Add a new API in the registry.
+     * Add a new {@link API} in the registry.
      *
-     * @param api The API to add.
-     * @return The API created.
+     * @param api The {@link API} to add.
+     * @return The {@link API} created.
      */
     API add(API api) throws Exception;
 
     /**
-     * Provide a API definition.
+     * Provide an {@link API} definition.
      *
-     * @param api The API.
+     * @param api The {@link API}.
      * @param inputStream The file uploaded.
      */
     void definition(API api, InputStream inputStream) throws Exception;
 
     /**
-     * Delete an existing API from the registry, identified by ID.
+     * Delete an existing {@link API} from the registry, identified by ID.
      *
-     * @param id The API ID.
+     * @param id The {@link API} ID.
      */
     void delete(String id);
 
     /**
-     * Update an existing API.
+     * Update an existing {@link API}.
      *
-     * @param api The API details.
+     * @param api The {@link API} details.
      */
     void update(API api);
 
     /**
-     * Retrieve API details.
+     * Retrieve {@link API} details.
      *
-     * @param id The API ID.
-     * @return The API description.
+     * @param id The {@link API} ID.
+     * @return The {@link API} description.
      */
     API get(String id);
 
     /**
-     * Retrieve all the APIs in the registry.
+     * Retrieve all the {@link API} in the registry.
      *
-     * @return The list of API.
+     * @return The list of {@link API}.
      */
     Collection<API> list();
 
     /**
-     * Add a new REST resource in an API into the registry.
+     * Add a new REST resource in an {@link API} into the registry.
      *
-     * @param api The API.
-     * @param restResource The REST resource to add.
-     * @return The {@link RestResource} created for the API.
+     * @param api The {@link API}.
+     * @param restResource The {@link RestResource} to add.
+     * @return The {@link RestResource} created for the {@link API}.
      */
     RestResource addRestResource(API api, RestResource restResource);
 
     /**
-     * Delete an existing REST resource from an existing API.
+     * Delete an existing {@link RestResource} from an existing {@link API}.
      *
-     * @param api The API for the resource to remove.
-     * @param restResource The REST resource to remove.
+     * @param api The {@link API} for the resource to remove.
+     * @param restResource The {@link RestResource} to remove.
      */
     void deleteRestResource(API api, RestResource restResource);
 
     /**
-     * Retrieve all the REST resources for an existing API.
+     * Retrieve all the {@link RestResource} for an existing {@link API}.
      *
-     * @param api The API.
+     * @param api The {@link API}.
      * @return The list of resources.
      */
     Collection<RestResource> listRestResources(API api);
 
-    /** Add a policy for a given {@link RestResource}. */
-    Policy addPolicy(RestResource restResource, Policy policy);
-
-    /** Delete a policy from a given {@link RestResource}. */
-    void deletePolicy(RestResource restResource, Policy policy);
-
-    /** List the policies for a given {@link RestResource}. */
-    Collection<Policy> listPolicies(RestResource restResource);
+    /**
+     * Add a {@link Policy}.
+     *
+     * @param policy The {@link Policy} to add.
+     * @return The {@link Policy} created.
+     */
+    Policy addPolicy(Policy policy);
 
     /**
-     * Add a new meta for an existing API.
+     * Delete a given {@link Policy}.
      *
-     * @param api The API for the metadata to add.
+     * @param id The {@link Policy} to delete.
+     */
+    void deletePolicy(String id);
+
+    /** List the policies for a given {@link RestResource}. */
+    Collection<Policy> listPolicies();
+
+    /**
+     * Apply a {@link Policy} to a {@link RestResource}.
+     *
+     * @param restResourceId The id of the {@link RestResource}
+     * @param policyId The id of the {@link Policy} to apply
+     * @param order The order of the policy
+     */
+    void applyPolicy(String restResourceId, String policyId, int order);
+
+    /**
+     * Unapply a {@link Policy} to a {@link RestResource}.
+     *
+     * @param restResourceId The id of the {@link RestResource}
+     * @param policyId The id of the {@link Policy} to unapply
+     */
+    void unapplyPolicy(String restResourceId, String policyId);
+
+    /**
+     * List the policies for a given {@link RestResource}.
+     *
+     * @param restResource The {@link RestResource}.
+     */
+    Collection<Policy> listAppliedPolicies(RestResource restResource);
+
+    /**
+     * Add a new meta for an existing {@link API}.
+     *
+     * @param api The {@link API} for the metadata to add.
      * @param meta The list of meta to add.
      */
     void addMeta(API api, Map<String, String> meta);
 
     /**
-     * Delete a meta from a given API.
+     * Delete a meta from a given {@link API}.
      *
-     * @param api The API for the metadata to remove.
+     * @param api The {@link API} for the metadata to remove.
      * @param key The key of the metadata to remove.
      */
     void deleteMeta(API api, String key);
 
     /**
-     * Update meta in an existing API.
+     * Update meta in an existing {@link API}.
      *
-     * @param api The API for the metadata to update.
+     * @param api The {@link API} for the metadata to update.
      * @param meta The updated meta.
      */
     void updateMeta(API api, Map<String, String> meta);
 
     /**
-     * Retrieve all meta for a given API.
+     * Retrieve all meta for a given {@link API}.
      *
-     * @param api The API for the resource to retrieve.
+     * @param api The {@link API} for the resource to retrieve.
      * @return The meta represented by "key,value".
      */
     Map<String, String> getMeta(API api);

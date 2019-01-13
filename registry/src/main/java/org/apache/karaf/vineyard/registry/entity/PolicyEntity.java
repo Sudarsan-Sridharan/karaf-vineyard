@@ -17,9 +17,13 @@
 package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Collection;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
-@IdClass(PolicyPkEntity.class)
 @Entity
 @Table(name = "POLICY", schema = "VINEYARD")
 public class PolicyEntity implements Serializable {
@@ -30,12 +34,11 @@ public class PolicyEntity implements Serializable {
 
     private String className;
 
+    @Column(name = "POLICY_ORDER")
     private Integer order;
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "REST_RESOURCE_ID")
-    private RestResourceEntity restResourceEntity;
+    @ManyToMany(mappedBy = "policies")
+    private Collection<RestResourceEntity> restResources;
 
     public String getId() {
         return id;
@@ -69,11 +72,11 @@ public class PolicyEntity implements Serializable {
         this.order = order;
     }
 
-    public RestResourceEntity getRestResourceEntity() {
-        return restResourceEntity;
+    public Collection<RestResourceEntity> getRestResources() {
+        return restResources;
     }
 
-    public void setRestResourceEntity(RestResourceEntity restResourceEntity) {
-        this.restResourceEntity = restResourceEntity;
+    public void setRestResources(Collection<RestResourceEntity> restResources) {
+        this.restResources = restResources;
     }
 }

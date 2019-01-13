@@ -10,71 +10,56 @@
         "meta2": "value2",
         "meta3": "value3"
       },
-      "resources": [
+      "restResources": [
         {
           "id": "1",
-          "type": "rest"
+          "description": "Find all",
+          "path": "/",
+          "method": "GET",
+          "version": "1.0.0",
+          "accept": "application/json",
+          "mediaType": "application/json",
+          "policies": {
+            "1": {
+              "id": "1"
+            }
+          },
+          "response": "application/json",
+          "endpoint": "http://localhost:8181/backend/booking"
         },
         {
           "id": "2",
-          "type": "rest"
+          "description": "Get",
+          "path": "/{id}",
+          "method": "GET",
+          "version": "1.0.0",
+          "accept": "application/json",
+          "mediaType": "application/json",
+          "policies": {
+            "1": {
+              "id": "1"
+            }
+          },
+          "response": "application/json",
+          "endpoint": "http://localhost:8181/backend/booking"
         },
         {
           "id": "3",
-          "type": "rest"
+          "description": "Add new",
+          "path": "/",
+          "method": "POST",
+          "version": "1.0.0",
+          "accept": "application/json",
+          "mediaType": "application/json",
+          "policies": {
+            "1": {
+              "id": "1"
+            }
+          },
+          "response": "application/json",
+          "endpoint": "http://localhost:8181/backend/booking"
         }
       ]
-    }
-  ],
-
-  "resources": [
-    {
-      "id": "1",
-      "description": "Find all",
-      "path": "/",
-      "method": "GET",
-      "version": "1.0.0",
-      "accept": "application/json",
-      "mediaType": "application/json",
-      "policies": {
-        "1": {
-          "id": "1"
-        }
-      },
-      "response": "application/json",
-      "endpoint": "http://localhost:8181/backend/booking"
-    },
-    {
-      "id": "2",
-      "description": "Get",
-      "path": "/{id}",
-      "method": "GET",
-      "version": "1.0.0",
-      "accept": "application/json",
-      "mediaType": "application/json",
-      "policies": {
-        "1": {
-          "id": "1"
-        }
-      },
-      "response": "application/json",
-      "endpoint": "http://localhost:8181/backend/booking"
-    },
-    {
-      "id": "3",
-      "description": "Add new",
-      "path": "/",
-      "method": "POST",
-      "version": "1.0.0",
-      "accept": "application/json",
-      "mediaType": "application/json",
-      "policies": {
-        "1": {
-          "id": "1"
-        }
-      },
-      "response": "application/json",
-      "endpoint": "http://localhost:8181/backend/booking"
     }
   ],
 

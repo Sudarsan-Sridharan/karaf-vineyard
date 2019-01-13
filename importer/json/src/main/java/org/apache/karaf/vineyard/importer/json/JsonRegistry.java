@@ -19,12 +19,10 @@ package org.apache.karaf.vineyard.importer.json;
 import java.util.List;
 import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.Policy;
-import org.apache.karaf.vineyard.common.RestResource;
 
 public class JsonRegistry {
 
     private List<API> apis;
-    private List<RestResource> restResources;
     private List<Policy> policies;
 
     public List<API> getApis() {
@@ -33,14 +31,6 @@ public class JsonRegistry {
 
     public void setApis(List<API> apis) {
         this.apis = apis;
-    }
-
-    public List<RestResource> getResources() {
-        return restResources;
-    }
-
-    public void setResources(List<RestResource> restResources) {
-        this.restResources = restResources;
     }
 
     public List<Policy> getPolicies() {

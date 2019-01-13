@@ -17,7 +17,9 @@
 package org.apache.karaf.vineyard.importer.json;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.johnzon.mapper.MapperBuilder;
 import org.apache.karaf.vineyard.common.API;
@@ -40,48 +42,35 @@ public class JsonImporter implements Importer {
                 new MapperBuilder().build().readObject(inputStream, JsonRegistry.class);
 
         Map<String, Policy> policies = new HashMap<>();
-        Map<String, RestResource> resources = new HashMap<>();
-        Map<String, API> apis = new HashMap<>();
+        List<RestResource> restResources = new ArrayList<>();
 
-        /*
         for (Policy policy : registry.getPolicies()) {
             String oldId = policy.getId();
-            policies.put(oldId, registryService.add(policy));
-        }
-
-        for (RestResource resource : registry.getResources()) {
-
-            Map<Integer, Policy> resourcePolicy = new HashMap<>();
-            resourcePolicy.putAll(resource.getPolicies());
-            resource.getPolicies().clear();
-
-            String oldId = resource.getId();
-            resources.put(oldId, (RestResource) registryService.add(resource));
-            for (Integer key : resourcePolicy.keySet()) {
-                resourceRegistryService.addPolicy(
-                        resources.get(oldId).getId(),
-                        policies.get(resourcePolicy.get(key).getId()).getId(),
-                        key);
-            }
+            policies.put(oldId, registryService.addPolicy(policy));
         }
 
         for (API api : registry.getApis()) {
 
-            Map<String, Resource> apiResources = new HashMap<>();
-            for (Resource resource : api.getResources()) {
-                apiResources.put(resource.getId(), resource);
-            }
+            restResources.clear();
+            restResources.addAll(api.getRestResources());
 
-            String oldId = api.getId();
-            api.getResources().clear();
-            apis.put(oldId, apiRegistryService.add(api));
-            for (String key : apiResources.keySet()) {
-                Resource res = new Resource();
-                res.setId(resources.get(apiResources.get(key).getId()).getId());
-                res.setType("rest");
-                apiRegistryService.addResource(apis.get(oldId), res);
+            api = registryService.add(api);
+
+            for (RestResource resource : restResources) {
+
+                String newResourceId = registryService.addRestResource(api, resource).getId();
+
+                Map<Integer, Policy> resourcePolicy = new HashMap<>();
+                resourcePolicy.putAll(resource.getPolicies());
+                resource.getPolicies().clear();
+
+                for (Integer key : resourcePolicy.keySet()) {
+                    registryService.applyPolicy(
+                            newResourceId,
+                            policies.get(resourcePolicy.get(key).getId()).getId(),
+                            key);
+                }
             }
         }
-        */
     }
 }

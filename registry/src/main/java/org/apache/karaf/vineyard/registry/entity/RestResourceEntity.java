@@ -38,7 +38,11 @@ public class RestResourceEntity implements Serializable {
 
     private String mediaType;
 
-    @OneToMany(mappedBy = "restResource", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "REST_RES_POLICY",
+            joinColumns = @JoinColumn(name = "REST_RES_ID"),
+            inverseJoinColumns = @JoinColumn(name = "POLICY_ID"))
     private Collection<PolicyEntity> policies;
 
     /** The response of the Resource, it could be static */

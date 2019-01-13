@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = RegistryService.class, immediate = true)
 public class RegistryServiceImpl implements RegistryService {
 
-    @Reference(target = "(osgi.unit.name=vineyard-registry-api)")
+    @Reference(target = "(osgi.unit.name=vineyard-registry)")
     private JpaTemplate jpaTemplate;
 
     @Override
@@ -136,6 +136,7 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override
     public RestResource addRestResource(API api, RestResource restResource) {
+        restResource.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(
                 TransactionType.RequiresNew,
                 entityManager -> {
@@ -186,35 +187,24 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Policy addPolicy(RestResource restResource, Policy policy) {
+    public Policy addPolicy(Policy policy) {
+        policy.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(
                 TransactionType.RequiresNew,
                 entityManager -> {
-                    RestResourceEntity restResourceEntity =
-                            entityManager.find(RestResourceEntity.class, restResource.getId());
-                    if (restResourceEntity != null) {
-                        entityManager.persist(mapTo(policy, restResourceEntity));
-                        entityManager.flush();
-                    }
+                    entityManager.persist(mapTo(policy));
+                    entityManager.flush();
                 });
         return policy;
     }
 
     @Override
-    public void deletePolicy(RestResource restResource, Policy policy) {
+    public void deletePolicy(String id) {
         jpaTemplate.tx(
                 TransactionType.RequiresNew,
                 entityManager -> {
-                    RestResourceEntity restResourceEntity =
-                            entityManager.find(RestResourceEntity.class, restResource.getId());
-                    PolicyEntity policyEntity =
-                            entityManager.find(PolicyEntity.class, policy.getId());
-                    if (restResourceEntity != null
-                            && policyEntity != null
-                            && policyEntity
-                                    .getRestResourceEntity()
-                                    .getId()
-                                    .equals(restResourceEntity.getId())) {
+                    PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, id);
+                    if (policyEntity != null) {
                         entityManager.remove(policyEntity);
                         entityManager.flush();
                     }
@@ -222,7 +212,57 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Collection<Policy> listPolicies(RestResource restResource) {
+    public Collection<Policy> listPolicies() {
+        List<PolicyEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM PolicyEntity p", PolicyEntity.class)
+                                        .getResultList());
+        Collection<Policy> results = new ArrayList<>();
+        for (PolicyEntity entity : list) {
+            results.add(mapTo(entity));
+        }
+        return results;
+    }
+
+    @Override
+    public void applyPolicy(String restResourceId, String policyId, int order) {
+        // TODO persist order
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    RestResourceEntity restResourceEntity =
+                            entityManager.find(RestResourceEntity.class, restResourceId);
+                    PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policyId);
+                    if (restResourceEntity != null && policyEntity != null) {
+                        restResourceEntity.getPolicies().add(policyEntity);
+                        entityManager.merge(restResourceEntity);
+                        entityManager.flush();
+                    }
+                });
+    }
+
+    @Override
+    public void unapplyPolicy(String restResourceId, String policyId) {
+        jpaTemplate.tx(
+                TransactionType.RequiresNew,
+                entityManager -> {
+                    RestResourceEntity restResourceEntity =
+                            entityManager.find(RestResourceEntity.class, restResourceId);
+                    PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policyId);
+                    if (restResourceEntity != null && policyEntity != null) {
+                        restResourceEntity.getPolicies().remove(policyEntity);
+                        entityManager.merge(policyEntity);
+                        entityManager.flush();
+                    }
+                });
+    }
+
+    @Override
+    public Collection<Policy> listAppliedPolicies(RestResource restResource) {
         List<PolicyEntity> list =
                 jpaTemplate.txExpr(
                         TransactionType.Supports,
@@ -369,6 +409,14 @@ public class RegistryServiceImpl implements RegistryService {
         if (restResource != null) {
             RestResourceEntity entity = new RestResourceEntity();
             entity.setId(restResource.getId());
+            entity.setAccept(restResource.getAccept());
+            entity.setDescription(restResource.getDescription());
+            entity.setEndpoint(restResource.getEndpoint());
+            entity.setMediaType(restResource.getMediaType());
+            entity.setMethod(restResource.getMethod());
+            entity.setPath(restResource.getPath());
+            entity.setResponse(restResource.getResponse());
+            entity.setVersion(restResource.getVersion());
             entity.setApi(apiEntity);
             return entity;
         } else {
@@ -380,6 +428,14 @@ public class RegistryServiceImpl implements RegistryService {
         if (entity != null) {
             RestResource restResource = new RestResource();
             restResource.setId(entity.getId());
+            restResource.setAccept(entity.getAccept());
+            restResource.setDescription(entity.getDescription());
+            restResource.setEndpoint(entity.getEndpoint());
+            restResource.setMediaType(entity.getMediaType());
+            restResource.setMethod(entity.getMethod());
+            restResource.setPath(entity.getPath());
+            restResource.setResponse(entity.getResponse());
+            restResource.setVersion(entity.getVersion());
             return restResource;
         } else {
             return null;
@@ -398,13 +454,12 @@ public class RegistryServiceImpl implements RegistryService {
         }
     }
 
-    private PolicyEntity mapTo(Policy policy, RestResourceEntity restResourceEntity) {
+    private PolicyEntity mapTo(Policy policy) {
         if (policy != null) {
             PolicyEntity entity = new PolicyEntity();
             entity.setId(policy.getId());
             entity.setDescription(policy.getDescription());
             entity.setClassName(policy.getClassName());
-            entity.setRestResourceEntity(restResourceEntity);
             return entity;
         } else {
             return null;

@@ -17,47 +17,29 @@
 package org.apache.karaf.vineyard.registry.command;
 
 import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.ShellTable;
-import org.apache.karaf.vineyard.common.API;
+import org.apache.karaf.vineyard.common.Policy;
 import org.apache.karaf.vineyard.common.RegistryService;
-import org.apache.karaf.vineyard.common.RestResource;
 
 @Service
-@Command(
-        scope = "vineyard",
-        name = "api-resource-list",
-        description = "List the Resources of an Api in the registry")
-public class ListResourcesRestCommand implements Action {
+@Command(scope = "vineyard", name = "policy-list", description = "List of Policies in the registry")
+public class ListPolicyCommand implements Action {
 
     @Reference private RegistryService registryService;
 
-    @Argument(name = "id", description = "ID of the Api", required = true, multiValued = false)
-    @Completion(RegistryService.class)
-    String id;
-
     @Override
     public Object execute() throws Exception {
-
-        API api = registryService.get(id);
-        if (api == null) {
-            System.out.println("The api " + id + " doesn't exist in the registry!");
-            return null;
-        }
-
         final ShellTable shellTable = new ShellTable();
         shellTable.column("ID");
-        shellTable.column("Path");
-        shellTable.column("Method");
-
-        for (RestResource resource : registryService.listRestResources(api)) {
+        shellTable.column("Class name");
+        shellTable.column("Description");
+        for (Policy policy : registryService.listPolicies()) {
             shellTable
                     .addRow()
-                    .addContent(resource.getId(), resource.getPath(), resource.getMethod());
+                    .addContent(policy.getId(), policy.getClassName(), policy.getDescription());
         }
         shellTable.print(System.out);
         return null;
