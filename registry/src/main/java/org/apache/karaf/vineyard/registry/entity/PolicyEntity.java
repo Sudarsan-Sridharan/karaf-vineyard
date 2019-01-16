@@ -17,11 +17,10 @@
 package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Column;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -34,11 +33,11 @@ public class PolicyEntity implements Serializable {
 
     private String className;
 
-    @Column(name = "POLICY_ORDER")
-    private Integer order;
+    //    @ManyToMany(mappedBy = "policies")
+    //    private Collection<RestResourceEntity> restResources;
 
-    @ManyToMany(mappedBy = "policies")
-    private Collection<RestResourceEntity> restResources;
+    @OneToMany(mappedBy = "policy")
+    private List<PolicyRestResourceJoin> policyRestResourceJoins;
 
     public String getId() {
         return id;
@@ -64,19 +63,11 @@ public class PolicyEntity implements Serializable {
         this.className = className;
     }
 
-    public Integer getOrder() {
-        return order;
+    public List<PolicyRestResourceJoin> getPolicyRestResourceJoins() {
+        return policyRestResourceJoins;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
-
-    public Collection<RestResourceEntity> getRestResources() {
-        return restResources;
-    }
-
-    public void setRestResources(Collection<RestResourceEntity> restResources) {
-        this.restResources = restResources;
+    public void setPolicyRestResourceJoins(List<PolicyRestResourceJoin> policyRestResourceJoins) {
+        this.policyRestResourceJoins = policyRestResourceJoins;
     }
 }

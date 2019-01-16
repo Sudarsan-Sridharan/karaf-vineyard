@@ -29,6 +29,7 @@ import org.apache.karaf.vineyard.common.RestResource;
 import org.apache.karaf.vineyard.registry.entity.ApiEntity;
 import org.apache.karaf.vineyard.registry.entity.MetaEntity;
 import org.apache.karaf.vineyard.registry.entity.PolicyEntity;
+import org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoin;
 import org.apache.karaf.vineyard.registry.entity.RestResourceEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -238,7 +239,11 @@ public class RegistryServiceImpl implements RegistryService {
                             entityManager.find(RestResourceEntity.class, restResourceId);
                     PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policyId);
                     if (restResourceEntity != null && policyEntity != null) {
-                        restResourceEntity.getPolicies().add(policyEntity);
+                        PolicyRestResourceJoin join = new PolicyRestResourceJoin();
+                        join.setPolicy(policyEntity);
+                        join.setRestResource(restResourceEntity);
+                        join.setPolicyOrder(order);
+                        restResourceEntity.getPolicyRestResourceJoins().add(join);
                         entityManager.merge(restResourceEntity);
                         entityManager.flush();
                     }
@@ -254,7 +259,10 @@ public class RegistryServiceImpl implements RegistryService {
                             entityManager.find(RestResourceEntity.class, restResourceId);
                     PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policyId);
                     if (restResourceEntity != null && policyEntity != null) {
-                        restResourceEntity.getPolicies().remove(policyEntity);
+                        PolicyRestResourceJoin join = new PolicyRestResourceJoin();
+                        join.setPolicy(policyEntity);
+                        join.setRestResource(restResourceEntity);
+                        restResourceEntity.getPolicyRestResourceJoins().remove(join);
                         entityManager.merge(policyEntity);
                         entityManager.flush();
                     }

@@ -34,6 +34,7 @@
         <class>org.apache.karaf.vineyard.registry.entity.MetaEntity</class>
         <class>org.apache.karaf.vineyard.registry.entity.PolicyEntity</class>
         <class>org.apache.karaf.vineyard.registry.entity.RestResourceEntity</class>
+        <class>org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoin</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

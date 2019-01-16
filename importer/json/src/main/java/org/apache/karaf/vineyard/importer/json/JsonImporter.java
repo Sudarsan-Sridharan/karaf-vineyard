@@ -55,6 +55,7 @@ public class JsonImporter implements Importer {
             restResources.addAll(api.getRestResources());
 
             api = registryService.add(api);
+            registryService.addMeta(api, api.getMeta());
 
             for (RestResource resource : restResources) {
 

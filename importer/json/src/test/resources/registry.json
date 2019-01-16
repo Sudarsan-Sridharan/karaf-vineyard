@@ -38,6 +38,9 @@
           "policies": {
             "1": {
               "id": "1"
+            },
+            "2": {
+              "id": "2"
             }
           },
           "response": "application/json",
@@ -73,6 +76,16 @@
         "validate": "true"
       },
       "className": "org.apache.karaf.vineyard.registry.policy.oauth"
+    },
+    {
+      "id": "2",
+      "description": "Throttle",
+      "meta": {
+        "version": "2",
+        "limit": "1000",
+        "ban": "true"
+      },
+      "className": "org.apache.karaf.vineyard.registry.policy.throttle"
     }
   ]
 }

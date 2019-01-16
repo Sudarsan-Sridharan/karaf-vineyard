@@ -17,8 +17,13 @@
 package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.*;
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "REST_RESOURCE", schema = "VINEYARD")
@@ -38,12 +43,15 @@ public class RestResourceEntity implements Serializable {
 
     private String mediaType;
 
-    @ManyToMany
-    @JoinTable(
-            name = "REST_RES_POLICY",
-            joinColumns = @JoinColumn(name = "REST_RES_ID"),
-            inverseJoinColumns = @JoinColumn(name = "POLICY_ID"))
-    private Collection<PolicyEntity> policies;
+    //    @ManyToMany
+    //    @JoinTable(
+    //            name = "REST_RES_POLICY",
+    //            joinColumns = @JoinColumn(name = "REST_RES_ID"),
+    //            inverseJoinColumns = @JoinColumn(name = "POLICY_ID"))
+    //    private Collection<PolicyEntity> policies;
+
+    @OneToMany(mappedBy = "restResource")
+    private List<PolicyRestResourceJoin> policyRestResourceJoins;
 
     /** The response of the Resource, it could be static */
     private String response;
@@ -118,14 +126,6 @@ public class RestResourceEntity implements Serializable {
         this.mediaType = mediaType;
     }
 
-    public Collection<PolicyEntity> getPolicies() {
-        return policies;
-    }
-
-    public void setPolicies(Collection<PolicyEntity> policies) {
-        this.policies = policies;
-    }
-
     public String getResponse() {
         return response;
     }
@@ -140,5 +140,13 @@ public class RestResourceEntity implements Serializable {
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public List<PolicyRestResourceJoin> getPolicyRestResourceJoins() {
+        return policyRestResourceJoins;
+    }
+
+    public void setPolicyRestResourceJoins(List<PolicyRestResourceJoin> policyRestResourceJoins) {
+        this.policyRestResourceJoins = policyRestResourceJoins;
     }
 }
