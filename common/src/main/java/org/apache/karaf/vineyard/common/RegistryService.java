@@ -108,7 +108,7 @@ public interface RegistryService {
      */
     void deletePolicy(String id);
 
-    /** List the policies for a given {@link RestResource}. */
+    /** List all the policies in the registry. */
     Collection<Policy> listPolicies();
 
     /**

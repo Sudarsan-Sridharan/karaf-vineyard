@@ -36,7 +36,9 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.rs.security.cors.CrossOriginResourceSharing;
 import org.apache.karaf.vineyard.common.API;
+import org.apache.karaf.vineyard.common.Policy;
 import org.apache.karaf.vineyard.common.RegistryService;
+import org.apache.karaf.vineyard.common.RestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +57,7 @@ public class RegistryServiceRest {
         this.registry = registry;
     }
 
-    @Path("/")
+    @Path("/api")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -69,7 +71,7 @@ public class RegistryServiceRest {
         }
     }
 
-    @Path("/{id}/upload-definition")
+    @Path("/api/{id}/upload-definition")
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Multipart(value = "root", type = MediaType.APPLICATION_OCTET_STREAM)
@@ -88,7 +90,7 @@ public class RegistryServiceRest {
         return Response.ok().build();
     }
 
-    @Path("/")
+    @Path("/api")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -98,7 +100,7 @@ public class RegistryServiceRest {
         return Response.ok().build();
     }
 
-    @Path("/{id}")
+    @Path("/api/{id}")
     @DELETE
     @Tag(name = "Api")
     public Response deleteApi(@PathParam("id") String id) {
@@ -112,7 +114,7 @@ public class RegistryServiceRest {
         }
     }
 
-    @Path("/{id}")
+    @Path("/api/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -126,7 +128,7 @@ public class RegistryServiceRest {
         }
     }
 
-    @Path("/")
+    @Path("/api")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Api")
@@ -135,6 +137,93 @@ public class RegistryServiceRest {
         Collection<API> apis = registry.list();
         if (apis != null) {
             return Response.ok(apis).build();
+        } else {
+            return Response.noContent().build();
+        }
+    }
+
+    @Path("/api/{id}/rest-resources")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
+    public Response getApiRestResources(@PathParam("id") String id) {
+
+        API api = registry.get(id);
+        if (api != null) {
+            Collection<RestResource> restResources = registry.listRestResources(api);
+            if (restResources != null) {
+                return Response.ok(restResources).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/api/{id}/rest-resources/{idRestResource}/policies")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
+    public Response getApiRestResourcesPolicies(
+            @PathParam("id") String id, @PathParam("idRestResource") String idRestResource) {
+
+        API api = registry.get(id);
+        if (api != null) {
+            RestResource restResource =
+                    registry.listRestResources(api)
+                            .stream()
+                            .filter(restResource1 -> restResource1.getId().equals(idRestResource))
+                            .findFirst()
+                            .get();
+
+            if (restResource != null) {
+                Collection<Policy> policies = registry.listAppliedPolicies(restResource);
+                if (policies != null && !policies.isEmpty()) {
+                    return Response.ok(policies).build();
+                } else {
+                    return Response.noContent().build();
+                }
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/policy")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Tag(name = "Policy")
+    public Response addPolicy(Policy policy) throws Exception {
+
+        Policy newPolicy = registry.addPolicy(policy);
+        try {
+            return Response.created(new URI("/policy/" + newPolicy.getId())).build();
+        } catch (URISyntaxException e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Path("/policy/{id}")
+    @DELETE
+    @Tag(name = "Policy")
+    public Response deletePolicy(@PathParam("id") String id) {
+
+        registry.deletePolicy(id);
+        return Response.ok().build();
+    }
+
+    @Path("/policy")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Policy")
+    public Response getPolicies() {
+
+        Collection<Policy> policies = registry.listPolicies();
+        if (policies != null) {
+            return Response.ok(policies).build();
         } else {
             return Response.noContent().build();
         }
