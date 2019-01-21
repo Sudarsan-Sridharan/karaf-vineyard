@@ -21,7 +21,12 @@
           "mediaType": "application/json",
           "policies": {
             "1": {
-              "id": "1"
+              "id": "1",
+              "param": {
+                "version": "1",
+                "token": "SHA12",
+                "block": "true"
+              }
             }
           },
           "response": "application/json",
@@ -37,10 +42,20 @@
           "mediaType": "application/json",
           "policies": {
             "1": {
-              "id": "1"
+              "id": "1",
+              "param": {
+                "version": "1",
+                "token": "SHA12",
+                "block": "true"
+              }
             },
             "2": {
-              "id": "2"
+              "id": "2",
+              "param": {
+                "version": "2",
+                "limit": "1000",
+                "ban": "true"
+              }
             }
           },
           "response": "application/json",
@@ -56,7 +71,10 @@
           "mediaType": "application/json",
           "policies": {
             "1": {
-              "id": "1"
+              "id": "1",
+              "version": "1",
+              "token": "SHA12",
+              "block": "true"
             }
           },
           "response": "application/json",
@@ -70,22 +88,22 @@
     {
       "id": "1",
       "description": "OAuth",
+      "className": "org.apache.karaf.vineyard.registry.policy.oauth",
       "meta": {
-        "version": "1",
-        "token": "SHA512",
-        "validate": "true"
-      },
-      "className": "org.apache.karaf.vineyard.registry.policy.oauth"
+        "meta1": "value1",
+        "meta2": "value2",
+        "meta3": "value3"
+      }
     },
     {
       "id": "2",
       "description": "Throttle",
+      "className": "org.apache.karaf.vineyard.registry.policy.throttle",
       "meta": {
-        "version": "2",
-        "limit": "1000",
-        "ban": "true"
-      },
-      "className": "org.apache.karaf.vineyard.registry.policy.throttle"
+        "meta1": "value1",
+        "meta2": "value2",
+        "meta3": "value3"
+      }
     }
   ]
 }

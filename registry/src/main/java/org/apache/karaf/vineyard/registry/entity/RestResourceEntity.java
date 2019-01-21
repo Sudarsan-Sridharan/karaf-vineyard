@@ -18,6 +18,7 @@ package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -43,15 +44,8 @@ public class RestResourceEntity implements Serializable {
 
     private String mediaType;
 
-    //    @ManyToMany
-    //    @JoinTable(
-    //            name = "REST_RES_POLICY",
-    //            joinColumns = @JoinColumn(name = "REST_RES_ID"),
-    //            inverseJoinColumns = @JoinColumn(name = "POLICY_ID"))
-    //    private Collection<PolicyEntity> policies;
-
-    @OneToMany(mappedBy = "restResource")
-    private List<PolicyRestResourceJoin> policyRestResourceJoins;
+    @OneToMany(mappedBy = "restResource", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PolicyRestResourceJoinEntity> policyRestResourceJoins;
 
     /** The response of the Resource, it could be static */
     private String response;
@@ -142,11 +136,12 @@ public class RestResourceEntity implements Serializable {
         this.endpoint = endpoint;
     }
 
-    public List<PolicyRestResourceJoin> getPolicyRestResourceJoins() {
+    public List<PolicyRestResourceJoinEntity> getPolicyRestResourceJoins() {
         return policyRestResourceJoins;
     }
 
-    public void setPolicyRestResourceJoins(List<PolicyRestResourceJoin> policyRestResourceJoins) {
+    public void setPolicyRestResourceJoins(
+            List<PolicyRestResourceJoinEntity> policyRestResourceJoins) {
         this.policyRestResourceJoins = policyRestResourceJoins;
     }
 }

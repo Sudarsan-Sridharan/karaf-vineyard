@@ -16,8 +16,12 @@
  */
 package org.apache.karaf.vineyard.registry.entity;
 
+import java.util.Hashtable;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -25,7 +29,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "POLICY_REST_RESOURCE_JOIN", schema = "VINEYARD")
-public class PolicyRestResourceJoin {
+public class PolicyRestResourceJoinEntity {
 
     @Column(name = "POLICY_ORDER")
     private int policyOrder;
@@ -39,6 +43,14 @@ public class PolicyRestResourceJoin {
     @ManyToOne
     @PrimaryKeyJoinColumn(name = "POLICY_ID", referencedColumnName = "ID")
     private PolicyEntity policy;
+
+    @CollectionTable(name = "POLICY_REST_RESOURCE_JOIN_PARAM", schema = "VINEYARD")
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Hashtable<String, String> param;
+
+    public int getPolicyOrder() {
+        return policyOrder;
+    }
 
     public void setPolicyOrder(int policyOrder) {
         this.policyOrder = policyOrder;
@@ -60,9 +72,17 @@ public class PolicyRestResourceJoin {
         this.policy = policy;
     }
 
+    public Hashtable<String, String> getParam() {
+        return param;
+    }
+
+    public void setParam(Hashtable<String, String> param) {
+        this.param = param;
+    }
+
     public boolean equals(Object object) {
-        if (object instanceof PolicyRestResourceJoin) {
-            PolicyRestResourceJoin otherId = (PolicyRestResourceJoin) object;
+        if (object instanceof PolicyRestResourceJoinEntity) {
+            PolicyRestResourceJoinEntity otherId = (PolicyRestResourceJoinEntity) object;
             return otherId.restResource.getId().equals(this.restResource.getId())
                     && otherId.policy.getId().equals(this.policy.getId());
         }

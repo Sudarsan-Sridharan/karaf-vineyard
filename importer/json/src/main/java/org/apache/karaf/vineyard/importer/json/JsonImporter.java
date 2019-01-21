@@ -46,7 +46,9 @@ public class JsonImporter implements Importer {
 
         for (Policy policy : registry.getPolicies()) {
             String oldId = policy.getId();
-            policies.put(oldId, registryService.addPolicy(policy));
+            Policy newPolicy = registryService.addPolicy(policy);
+            registryService.addPolicyMeta(newPolicy, policy.getMeta());
+            policies.put(oldId, newPolicy);
         }
 
         for (API api : registry.getApis()) {
@@ -69,7 +71,8 @@ public class JsonImporter implements Importer {
                     registryService.applyPolicy(
                             newResourceId,
                             policies.get(resourcePolicy.get(key).getId()).getId(),
-                            key);
+                            key,
+                            resourcePolicy.get(key).getParam());
                 }
             }
         }

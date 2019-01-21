@@ -31,10 +31,9 @@
         <non-jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=jdbc/vineyard)</non-jta-data-source>
 
         <class>org.apache.karaf.vineyard.registry.entity.ApiEntity</class>
-        <class>org.apache.karaf.vineyard.registry.entity.MetaEntity</class>
         <class>org.apache.karaf.vineyard.registry.entity.PolicyEntity</class>
+        <class>org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoinEntity</class>
         <class>org.apache.karaf.vineyard.registry.entity.RestResourceEntity</class>
-        <class>org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoin</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

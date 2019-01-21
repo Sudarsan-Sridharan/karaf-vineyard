@@ -17,8 +17,13 @@
 package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
+import java.util.Hashtable;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -33,11 +38,12 @@ public class PolicyEntity implements Serializable {
 
     private String className;
 
-    //    @ManyToMany(mappedBy = "policies")
-    //    private Collection<RestResourceEntity> restResources;
+    @CollectionTable(name = "POLICY_META", schema = "VINEYARD")
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Hashtable<String, String> meta;
 
-    @OneToMany(mappedBy = "policy")
-    private List<PolicyRestResourceJoin> policyRestResourceJoins;
+    @OneToMany(mappedBy = "policy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PolicyRestResourceJoinEntity> policyRestResourceJoins;
 
     public String getId() {
         return id;
@@ -63,11 +69,20 @@ public class PolicyEntity implements Serializable {
         this.className = className;
     }
 
-    public List<PolicyRestResourceJoin> getPolicyRestResourceJoins() {
+    public Hashtable<String, String> getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Hashtable<String, String> meta) {
+        this.meta = meta;
+    }
+
+    public List<PolicyRestResourceJoinEntity> getPolicyRestResourceJoins() {
         return policyRestResourceJoins;
     }
 
-    public void setPolicyRestResourceJoins(List<PolicyRestResourceJoin> policyRestResourceJoins) {
+    public void setPolicyRestResourceJoins(
+            List<PolicyRestResourceJoinEntity> policyRestResourceJoins) {
         this.policyRestResourceJoins = policyRestResourceJoins;
     }
 }

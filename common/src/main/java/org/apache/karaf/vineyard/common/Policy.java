@@ -33,6 +33,12 @@ public class Policy {
     /** The class name of the Policy */
     private String className;
 
+    /**
+     * The param of the Policy for a RestResource. The definition of the parameters is defined in
+     * the Policy class
+     */
+    private Map<String, String> param;
+
     public String getId() {
         return id;
     }
@@ -63,5 +69,13 @@ public class Policy {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public Map<String, String> getParam() {
+        return param;
+    }
+
+    public void setParam(Map<String, String> param) {
+        this.param = param;
     }
 }

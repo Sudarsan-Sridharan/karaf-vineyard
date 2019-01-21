@@ -69,73 +69,6 @@ public interface RegistryService {
     Collection<API> list();
 
     /**
-     * Add a new REST resource in an {@link API} into the registry.
-     *
-     * @param api The {@link API}.
-     * @param restResource The {@link RestResource} to add.
-     * @return The {@link RestResource} created for the {@link API}.
-     */
-    RestResource addRestResource(API api, RestResource restResource);
-
-    /**
-     * Delete an existing {@link RestResource} from an existing {@link API}.
-     *
-     * @param api The {@link API} for the resource to remove.
-     * @param restResource The {@link RestResource} to remove.
-     */
-    void deleteRestResource(API api, RestResource restResource);
-
-    /**
-     * Retrieve all the {@link RestResource} for an existing {@link API}.
-     *
-     * @param api The {@link API}.
-     * @return The list of resources.
-     */
-    Collection<RestResource> listRestResources(API api);
-
-    /**
-     * Add a {@link Policy}.
-     *
-     * @param policy The {@link Policy} to add.
-     * @return The {@link Policy} created.
-     */
-    Policy addPolicy(Policy policy);
-
-    /**
-     * Delete a given {@link Policy}.
-     *
-     * @param id The {@link Policy} to delete.
-     */
-    void deletePolicy(String id);
-
-    /** List all the policies in the registry. */
-    Collection<Policy> listPolicies();
-
-    /**
-     * Apply a {@link Policy} to a {@link RestResource}.
-     *
-     * @param restResourceId The id of the {@link RestResource}
-     * @param policyId The id of the {@link Policy} to apply
-     * @param order The order of the policy
-     */
-    void applyPolicy(String restResourceId, String policyId, int order);
-
-    /**
-     * Unapply a {@link Policy} to a {@link RestResource}.
-     *
-     * @param restResourceId The id of the {@link RestResource}
-     * @param policyId The id of the {@link Policy} to unapply
-     */
-    void unapplyPolicy(String restResourceId, String policyId);
-
-    /**
-     * List the policies for a given {@link RestResource}.
-     *
-     * @param restResource The {@link RestResource}.
-     */
-    Collection<Policy> listAppliedPolicies(RestResource restResource);
-
-    /**
      * Add a new meta for an existing {@link API}.
      *
      * @param api The {@link API} for the metadata to add.
@@ -166,4 +99,121 @@ public interface RegistryService {
      * @return The meta represented by "key,value".
      */
     Map<String, String> getMeta(API api);
+
+    /**
+     * Add a new REST resource in an {@link API} into the registry.
+     *
+     * @param api The {@link API}.
+     * @param restResource The {@link RestResource} to add.
+     * @return The {@link RestResource} created for the {@link API}.
+     */
+    RestResource addRestResource(API api, RestResource restResource);
+
+    /**
+     * Delete an existing {@link RestResource} from an existing {@link API}.
+     *
+     * @param api The {@link API} for the resource to remove.
+     * @param restResource The {@link RestResource} to remove.
+     */
+    void deleteRestResource(API api, RestResource restResource);
+
+    /**
+     * Retrieve all the {@link RestResource} for an existing {@link API}.
+     *
+     * @param api The {@link API}.
+     * @return The list of resources.
+     */
+    Collection<RestResource> listRestResources(API api);
+
+    /**
+     * Retrieve {@link RestResource} details.
+     *
+     * @param id The {@link RestResource} ID.
+     * @return The {@link RestResource} description.
+     */
+    RestResource getRestResource(String id);
+
+    /**
+     * Add a {@link Policy}.
+     *
+     * @param policy The {@link Policy} to add.
+     * @return The {@link Policy} created.
+     */
+    Policy addPolicy(Policy policy);
+
+    /**
+     * Delete a given {@link Policy}.
+     *
+     * @param id The {@link Policy} to delete.
+     */
+    void deletePolicy(String id);
+
+    /**
+     * Retrieve {@link Policy} details.
+     *
+     * @param id The {@link Policy} ID.
+     * @return The {@link Policy} description.
+     */
+    Policy getPolicy(String id);
+
+    /** List all the policies in the registry. */
+    Collection<Policy> listPolicies();
+
+    /**
+     * Apply a {@link Policy} to a {@link RestResource}.
+     *
+     * @param restResourceId The id of the {@link RestResource}
+     * @param policyId The id of the {@link Policy} to apply
+     * @param order The order of the policy
+     * @param params List of the parameters for the applied {@link Policy} to the {@link
+     *     RestResource}
+     */
+    void applyPolicy(String restResourceId, String policyId, int order, Map<String, String> params);
+
+    /**
+     * Unapply a {@link Policy} to a {@link RestResource}.
+     *
+     * @param restResourceId The id of the {@link RestResource}
+     * @param policyId The id of the {@link Policy} to unapply
+     */
+    void unapplyPolicy(String restResourceId, String policyId);
+
+    /**
+     * List the policies for a given {@link RestResource}.
+     *
+     * @param restResource The {@link RestResource}.
+     */
+    Collection<Policy> listAppliedPolicies(RestResource restResource);
+
+    /**
+     * Add a new meta for an existing {@link Policy}.
+     *
+     * @param policy The {@link Policy} for the metadata to add.
+     * @param meta The list of meta to add.
+     */
+    void addPolicyMeta(Policy policy, Map<String, String> meta);
+
+    /**
+     * Delete a meta from a given {@link Policy}.
+     *
+     * @param policy The {@link Policy} for the metadata to remove.
+     * @param key The key of the metadata to remove.
+     */
+    void deletePolicyMeta(Policy policy, String key);
+
+    /**
+     * Update meta in an existing {@link Policy}.
+     *
+     * @param policy The {@link Policy} for the metadata to update.
+     * @param meta The updated meta.
+     */
+    void updatePolicyMeta(Policy policy, Map<String, String> meta);
+
+    /**
+     * Retrieve all meta for a given {@link Policy}.
+     *
+     * @param policy The {@link Policy} for the resource to retrieve.
+     * @return The meta represented by "key,value".
+     */
+    Map<String, String> getPolicyMeta(Policy policy);
 }
