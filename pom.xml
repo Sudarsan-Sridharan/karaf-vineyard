@@ -38,7 +38,7 @@
         <osgi.compendium.version>6.0.0</osgi.compendium.version>
         <osgi.enterprise.version>5.0.0</osgi.enterprise.version>
 
-        <karaf.version>4.2.2</karaf.version>
+        <karaf.version>4.2.3</karaf.version>
 
         <slf4j.version>1.7.7</slf4j.version>
         <junit.version>4.12</junit.version>
@@ -47,8 +47,8 @@
 
         <derby.version>10.14.2.0</derby.version>
         
-        <cxf.version>3.2.7</cxf.version>
-        <jackson.version>2.9.7</jackson.version>
+        <cxf.version>3.2.8</cxf.version>
+        <jackson.version>2.9.8</jackson.version>
         <json-api.version>1.1.4</json-api.version>
         <johnzon.version>1.1.10</johnzon.version>
     </properties>
