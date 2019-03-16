@@ -32,6 +32,13 @@
     <artifactId>org.apache.karaf.vineyard.itests</artifactId>
     <name>Apache Karaf :: Vineyard :: Integration Tests</name>
 
+    <properties>
+        <geronimo.atinject.version>1.1</geronimo.atinject.version>
+        <awaitility.version>3.1.6</awaitility.version>
+        <hamcrest.version>1.3_1</hamcrest.version>
+        <javax.rs.api.version>2.1.1</javax.rs.api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.karaf.vineyard</groupId>
@@ -88,13 +95,13 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
-            <version>1.0</version>
+            <version>${geronimo.atinject.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>3.1.2</version>
+            <version>${awaitility.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -104,13 +111,13 @@
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.hamcrest</artifactId>
-            <version>1.3_1</version>
+            <version>${hamcrest.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.1</version>
+            <version>${javax.rs.api.version}</version>
         </dependency>
     </dependencies>
 

@@ -33,6 +33,14 @@
     <packaging>bundle</packaging>
     <name>Apache Karaf :: Vineyard :: Registry</name>
 
+    <properties>
+        <aries.jpa.version>2.7.2</aries.jpa.version>
+        <javax.persistence.version>2.2.1</javax.persistence.version>
+        <javax.jta.transaction.version>1.2</javax.jta.transaction.version>
+        <javax.interceptor.version>1.2</javax.interceptor.version>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.karaf.vineyard</groupId>
@@ -61,32 +69,22 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
-            <version>2.1.0</version>
+            <version>${javax.persistence.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>javax.transaction-api</artifactId>
-            <version>1.2</version>
+            <version>${javax.jta.transaction.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.interceptor</groupId>
             <artifactId>javax.interceptor-api</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>6.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
-            <version>6.0.0</version>
+            <version>${javax.interceptor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.aries.jpa</groupId>
             <artifactId>org.apache.aries.jpa.api</artifactId>
-            <version>2.7.0</version>
+            <version>${aries.jpa.version}</version>
         </dependency>
     </dependencies>
 

@@ -30,7 +30,7 @@
             }
           },
           "response": "application/json",
-          "endpoint": "http://localhost:8181/backend/booking"
+          "endpoint": "http://localhost:8181/cxf/booking"
         },
         {
           "id": "2",
@@ -59,7 +59,7 @@
             }
           },
           "response": "application/json",
-          "endpoint": "http://localhost:8181/backend/booking"
+          "endpoint": "http://localhost:8181/cxf/booking"
         },
         {
           "id": "3",
@@ -78,7 +78,7 @@
             }
           },
           "response": "application/json",
-          "endpoint": "http://localhost:8181/backend/booking"
+          "endpoint": "http://localhost:8181/cxf/booking"
         }
       ]
     }

@@ -72,12 +72,15 @@ public class GatewayServiceImpl implements GatewayService {
         definition.log("Processing " + api.getContext() + restResource.getPath());
         definition.routeId(routeId);
 
-        TreeMap<Integer, Policy> sortedPolicies = new TreeMap<>(restResource.getPolicies());
-        for (Policy policy : sortedPolicies.values()) {
-            Processor processor =
-                    (Processor) Class.forName(policy.getClassName()).getConstructor().newInstance();
-            definition.log("Adding policy " + policy.getClassName());
-            definition.process(processor);
+        if (restResource.getPolicies() != null) {
+            TreeMap<Integer, Policy> sortedPolicies = new TreeMap<>(restResource.getPolicies());
+            for (Policy policy : sortedPolicies.values()) {
+                Processor processor =
+                        (Processor)
+                                Class.forName(policy.getClassName()).getConstructor().newInstance();
+                definition.log("Adding policy " + policy.getClassName());
+                definition.process(processor);
+            }
         }
 
         if (restResource.getResponse() != null) {
