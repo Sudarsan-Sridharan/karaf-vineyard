@@ -26,6 +26,7 @@ import org.apache.karaf.vineyard.common.API;
 import org.apache.karaf.vineyard.common.GatewayService;
 import org.apache.karaf.vineyard.common.Policy;
 import org.apache.karaf.vineyard.common.RestResource;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -36,8 +37,10 @@ public class GatewayServiceImpl implements GatewayService {
     private CamelContext camelContext = new DefaultCamelContext();
 
     @Activate
-    public void activate() throws Exception {
+    public void activate(ComponentContext context) throws Exception {
+        DefaultCamelContext.class.cast(camelContext).setName("vineyard-gateway");
         camelContext.start();
+        context.getBundleContext().registerService(CamelContext.class, camelContext, null);
     }
 
     @Deactivate
