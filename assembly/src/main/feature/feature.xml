@@ -42,6 +42,7 @@
         <feature prerequisite="true">http</feature>
         <feature prerequisite="true">scr</feature>
         <feature>camel-core</feature>
+        <feature>camel-jetty</feature>
         <feature version="${cxf.version}">cxf-jaxrs</feature>
         <feature version="${cxf.version}">cxf-rs-security-cors</feature>
         <feature version="${cxf.version}">cxf-rs-description-openapi-v3</feature>
