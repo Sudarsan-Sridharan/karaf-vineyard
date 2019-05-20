@@ -41,6 +41,7 @@ public class GatewayServiceImpl implements GatewayService {
         DefaultCamelContext.class.cast(camelContext).setName("vineyard-gateway");
         camelContext.start();
         context.getBundleContext().registerService(CamelContext.class, camelContext, null);
+        camelContext.addComponent("jetty", new JettyHttpComponent9());
     }
 
     @Deactivate
@@ -94,7 +95,6 @@ public class GatewayServiceImpl implements GatewayService {
             definition.to(restResource.getEndpoint());
         }
 
-        camelContext.addComponent("jetty", new JettyHttpComponent9());
         DefaultCamelContext.class.cast(camelContext).addRouteDefinition(definition);
     }
 
