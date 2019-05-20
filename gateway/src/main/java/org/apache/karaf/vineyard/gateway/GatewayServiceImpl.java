@@ -19,7 +19,7 @@ package org.apache.karaf.vineyard.gateway;
 import java.util.TreeMap;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
-import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.jetty9.JettyHttpComponent9;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.karaf.vineyard.common.API;
@@ -94,14 +94,8 @@ public class GatewayServiceImpl implements GatewayService {
             definition.to(restResource.getEndpoint());
         }
 
-        RouteBuilder builder =
-                new RouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        configureRoute(definition);
-                    }
-                };
-        camelContext.addRoutes(builder);
+        camelContext.addComponent("jetty", new JettyHttpComponent9());
+        DefaultCamelContext.class.cast(camelContext).addRouteDefinition(definition);
     }
 
     @Override
@@ -115,12 +109,12 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Override
     public void resume(API api, RestResource restResource) throws Exception {
-        camelContext.resumeRoute(getRouteId(api, restResource));
+        DefaultCamelContext.class.cast(camelContext).resumeRoute(getRouteId(api, restResource));
     }
 
     @Override
     public void suspend(API api, RestResource restResource) throws Exception {
-        camelContext.suspendRoute(getRouteId(api, restResource));
+        DefaultCamelContext.class.cast(camelContext).suspendRoute(getRouteId(api, restResource));
     }
 
     private String getRouteId(API api, RestResource resource) {
