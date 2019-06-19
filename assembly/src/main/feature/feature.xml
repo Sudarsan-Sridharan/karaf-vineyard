@@ -16,12 +16,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<features name="karaf-vineyard-${project.version}" 
-    xmlns="http://karaf.apache.org/xmlns/features/v1.4.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0 http://karaf.apache.org/xmlns/features/v1.4.0">
+<features name="karaf-vineyard-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0 http://karaf.apache.org/xmlns/features/v1.4.0">
 
-    <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
     <repository>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</repository>
     
     <feature name="vineyard" version="${project.version}" description="Meta feature installing common Vineyard features">
@@ -39,13 +35,15 @@
     
     <feature name="vineyard-gateway" version="${project.version}" description="Karaf Vineyard Gateway">
         <feature>vineyard-common</feature>
+        <feature prerequisite="true">wrap</feature>
+        <feature prerequisite="true">aries-blueprint</feature>
         <feature prerequisite="true">http</feature>
         <feature prerequisite="true">scr</feature>
         <feature>camel-core</feature>
         <feature>camel-jetty</feature>
-        <feature version="${cxf.version}">cxf-jaxrs</feature>
-        <feature version="${cxf.version}">cxf-rs-security-cors</feature>
-        <feature version="${cxf.version}">cxf-rs-description-openapi-v3</feature>
+        <feature>cxf-jaxrs</feature>
+        <feature>cxf-rs-security-cors</feature>
+        <feature>cxf-rs-description-openapi-v3</feature>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
@@ -65,8 +63,7 @@
         <bundle>mvn:org.apache.karaf.vineyard.importer/org.apache.karaf.vineyard.importer.json/${project.version}</bundle>
     </feature>
 
-    <feature name="vineyard-registry-datasource" version="${project.version}"
-             description="Karaf Vineyard Datasource for Registry">
+    <feature name="vineyard-registry-datasource-derby" version="${project.version}" description="Karaf Vineyard Datasource for Registry">
         <config name="org.ops4j.datasource-vineyard">
             osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
             dataSourceName=jdbc/vineyard
@@ -77,10 +74,9 @@
         </capability>
     </feature>
 
-    <feature name="vineyard-registry" version="${project.version}"
-             description="Karaf Vineyard Registry">
-        <feature version="${project.version}">vineyard-common</feature>
-        <feature version="${project.version}">vineyard-registry-datasource</feature>
+    <feature name="vineyard-registry" version="${project.version}" description="Karaf Vineyard Registry">
+        <feature>vineyard-common</feature>
+        <feature>vineyard-registry-datasource-derby</feature>
         <feature>transaction</feature>
         <feature>jndi</feature>
         <feature>jdbc</feature>
@@ -90,9 +86,9 @@
         <feature dependency="true">aries-blueprint</feature>
         <feature version="[2,3)">jpa</feature>
         <feature version="[2,3)">eclipselink</feature>
-        <feature version="${cxf.version}">cxf-jaxrs</feature>
-        <feature version="${cxf.version}">cxf-rs-security-cors</feature>
-        <feature version="${cxf.version}">cxf-rs-description-openapi-v3</feature>
+        <feature>cxf-jaxrs</feature>
+        <feature>cxf-rs-security-cors</feature>
+        <feature>cxf-rs-description-openapi-v3</feature>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
         <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
