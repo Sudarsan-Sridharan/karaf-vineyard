@@ -17,8 +17,8 @@
 package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -40,7 +40,7 @@ public class PolicyEntity implements Serializable {
 
     @CollectionTable(name = "POLICY_META", schema = "VINEYARD")
     @ElementCollection(fetch = FetchType.LAZY)
-    private Hashtable<String, String> meta;
+    private Map<String, String> meta;
 
     @OneToMany(mappedBy = "policy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PolicyRestResourceJoinEntity> policyRestResourceJoins;
@@ -69,11 +69,11 @@ public class PolicyEntity implements Serializable {
         this.className = className;
     }
 
-    public Hashtable<String, String> getMeta() {
+    public Map<String, String> getMeta() {
         return meta;
     }
 
-    public void setMeta(Hashtable<String, String> meta) {
+    public void setMeta(Map<String, String> meta) {
         this.meta = meta;
     }
 

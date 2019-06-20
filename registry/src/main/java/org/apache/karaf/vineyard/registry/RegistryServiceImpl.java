@@ -18,6 +18,7 @@ package org.apache.karaf.vineyard.registry;
 
 import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +54,7 @@ public class RegistryServiceImpl implements RegistryService {
     public API add(API api) {
         api.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(
-                TransactionType.RequiresNew,
+                TransactionType.Required,
                 entityManager -> {
                     entityManager.persist(mapTo(api));
                     entityManager.flush();
@@ -445,5 +446,10 @@ public class RegistryServiceImpl implements RegistryService {
         } else {
             return null;
         }
+    }
+
+    @VisibleForTesting
+    protected void setJpaTemplate(JpaTemplate jpaTemplate) {
+        this.jpaTemplate = jpaTemplate;
     }
 }

@@ -18,7 +18,7 @@ package org.apache.karaf.vineyard.registry.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -48,7 +48,7 @@ public class ApiEntity implements Serializable {
 
     @CollectionTable(name = "API_META", schema = "VINEYARD")
     @ElementCollection(fetch = FetchType.LAZY)
-    private Hashtable<String, String> meta;
+    private Map<String, String> meta;
 
     @OneToMany(mappedBy = "api", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<RestResourceEntity> restResources;
@@ -93,11 +93,11 @@ public class ApiEntity implements Serializable {
         this.definition = definition;
     }
 
-    public Hashtable<String, String> getMeta() {
+    public Map<String, String> getMeta() {
         return meta;
     }
 
-    public void setMeta(Hashtable<String, String> meta) {
+    public void setMeta(Map<String, String> meta) {
         this.meta = meta;
     }
 

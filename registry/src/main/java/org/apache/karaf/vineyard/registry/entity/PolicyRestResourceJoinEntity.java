@@ -16,7 +16,8 @@
  */
 package org.apache.karaf.vineyard.registry.entity;
 
-import java.util.Hashtable;
+import java.io.Serializable;
+import java.util.Map;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -29,7 +30,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "POLICY_REST_RESOURCE_JOIN", schema = "VINEYARD")
-public class PolicyRestResourceJoinEntity {
+public class PolicyRestResourceJoinEntity implements Serializable {
 
     @Column(name = "POLICY_ORDER")
     private int policyOrder;
@@ -46,7 +47,7 @@ public class PolicyRestResourceJoinEntity {
 
     @CollectionTable(name = "POLICY_REST_RESOURCE_JOIN_PARAM", schema = "VINEYARD")
     @ElementCollection(fetch = FetchType.LAZY)
-    private Hashtable<String, String> param;
+    private Map<String, String> param;
 
     public int getPolicyOrder() {
         return policyOrder;
@@ -72,11 +73,11 @@ public class PolicyRestResourceJoinEntity {
         this.policy = policy;
     }
 
-    public Hashtable<String, String> getParam() {
+    public Map<String, String> getParam() {
         return param;
     }
 
-    public void setParam(Hashtable<String, String> param) {
+    public void setParam(Map<String, String> param) {
         this.param = param;
     }
 
