@@ -36,7 +36,6 @@ import org.apache.karaf.itests.KarafTestSupport;
 import org.apache.karaf.jaas.boot.principal.RolePrincipal;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -107,6 +106,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                     .groupId("org.apache.karaf.itests")
                     .artifactId("common")
                     .versionAsInProject(),
+
             editConfigurationFilePut(
                     "etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
             editConfigurationFilePut(
@@ -117,21 +117,17 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             editConfigurationFilePut(
                     "etc/org.ops4j.pax.url.mvn.cfg",
                     "org.ops4j.pax.url.mvn.localRepository",
-                    localRepository)
+                    localRepository),
+                editConfigurationFilePut("etc/system.properties", "vineyard.version", System.getProperty("vineyard.version"))
         };
     }
 
     @Test
-    @Ignore
     public void testVineyardRegistryFeatureInstall() throws Exception {
         // adding vineyard features repository
         addFeaturesRepository(
-                "mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/1.0.0-SNAPSHOT/xml/features");
+                "mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/" + System.getProperty("vineyard.version") + "/xml/features");
 
-        String featureList = executeCommand("feature:list -o | grep vineyard");
-        Assert.assertTrue(featureList.contains("vineyard"));
-
-        // executeCommand("feature:install vineyard", ADMIN_ROLES);
         installAndAssertFeature("vineyard");
 
         Thread.sleep(5000);
@@ -147,88 +143,11 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
         System.out.println(jdbcList);
         Assert.assertTrue(jdbcList.contains("jdbc:derby:data/vineyard/derby │ OK"));
 
-        String dataformatId = "";
         String apiId = "";
-
-        // DATA_FORMAT
-        try {
-            String URL = "http://localhost:8181/cxf/vineyard/registry/dataformat";
-            java.net.URL urlDataformat = new URL(URL);
-
-            // Call add dataformat service
-            String jsonAddDataformat =
-                    "{\n"
-                            + "  \"name\": \"json\",\n"
-                            + "  \"schema\": \"json\",\n"
-                            + "  \"sample\": \"json-sample\"\n"
-                            + "}";
-            System.out.println("Call POST " + URL);
-            HttpURLConnection connection = (HttpURLConnection) urlDataformat.openConnection();
-            connection.setRequestMethod(HttpMethod.POST);
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            OutputStream os = connection.getOutputStream();
-            os.write(jsonAddDataformat.getBytes());
-            os.flush();
-
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
-                Assert.assertTrue(true);
-                String location = connection.getHeaderField("Location");
-                System.out.println("Location created: " + location);
-
-                urlDataformat = new URL(location);
-                connection = (HttpURLConnection) urlDataformat.openConnection();
-                connection.setRequestMethod(HttpMethod.GET);
-                connection.connect();
-
-                StringBuffer sb = new StringBuffer();
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader buffer =
-                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-
-                    while ((line = buffer.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    if (sb.length() == 0) {
-                        System.out.println("Dataformat not found");
-                        Assert.assertTrue(false);
-                    } else {
-                        System.out.println(sb.toString());
-                        Assert.assertTrue(true);
-                    }
-                } else {
-                    System.out.println(
-                            "Error when sending GET method : HTTP_CODE = "
-                                    + connection.getResponseCode());
-                    Assert.assertTrue(false);
-                }
-                connection.disconnect();
-
-                if (sb.length() != 0) {
-                    JsonReader reader = Json.createReader(new StringReader(sb.toString()));
-                    JsonObject jsonObject = reader.readObject();
-                    dataformatId = jsonObject.getString("id");
-                    System.out.println("Dataformat id = " + dataformatId);
-                }
-            } else {
-                System.out.println(
-                        "Error when sending POST method : HTTP_CODE = "
-                                + connection.getResponseCode());
-                Assert.assertTrue(false);
-            }
-
-            connection.disconnect();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.assertTrue(false);
-        }
 
         // API
         try {
-            String URL = "http://localhost:8181/cxf/vineyard/registry/api";
+            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api";
             URL urlApi = new URL(URL);
 
             // Call add rest-api
@@ -307,20 +226,15 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
 
         // RESOURCES
         try {
-            String URL = "http://localhost:8181/cxf/vineyard/registry/api/" + apiId + "/resource";
+            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api/" + apiId + "/resource";
             URL urlResource = new URL(URL);
 
             // Call add rest-api
+            // TODO update
             String jsonAddRestResource =
                     "{\n"
                             + "  \"path\": \"/token\",\n"
                             + "  \"method\": \"GET\",\n"
-                            + "  \"inFormat\": {\"id\": \""
-                            + dataformatId
-                            + "\"},\n"
-                            + "  \"outFormat\": {\"id\": \""
-                            + dataformatId
-                            + "\"},\n"
                             + "  \"useBridge\": \"false\",\n"
                             + "  \"response\": \"response\",\n"
                             + "  \"bridge\": \"bridge\""
@@ -384,7 +298,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
 
         // METADATA
         try {
-            String URL = "http://localhost:8181/cxf/vineyard/registry/api/" + apiId + "/metadata";
+            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api/" + apiId + "/metadata";
             URL urlResource = new URL(URL);
 
             // Call add rest-api

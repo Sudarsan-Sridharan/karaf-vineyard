@@ -64,6 +64,9 @@
     </feature>
 
     <feature name="vineyard-registry-datasource-derby" version="${project.version}" description="Karaf Vineyard Datasource for Registry">
+        <feature prerequisite="true">jdbc</feature>
+        <feature prerequisite="true">pax-jdbc-config</feature>
+        <feature prerequisite="true">pax-jdbc-derby</feature>
         <config name="org.ops4j.datasource-vineyard">
             osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
             dataSourceName=jdbc/vineyard
@@ -79,10 +82,6 @@
         <feature>vineyard-registry-datasource-derby</feature>
         <feature>transaction</feature>
         <feature>jndi</feature>
-        <feature>jdbc</feature>
-        <feature>pax-jdbc-config</feature>
-        <feature>pax-jdbc-derby</feature>
-        <feature>pax-jdbc-pool-dbcp2</feature>
         <feature dependency="true">aries-blueprint</feature>
         <feature version="[2,3)">jpa</feature>
         <feature version="[2,3)">eclipselink</feature>

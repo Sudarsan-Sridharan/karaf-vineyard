@@ -113,14 +113,12 @@ public class RegistryServiceImplTest {
         api.setName("Simple");
         registryService.add(api);
 
-        ClientDataSource dataSource = new ClientDataSource();
-        dataSource.setDatabaseName("target/vineyard");
-        dataSource.setServerName("localhost");
-        dataSource.setPortNumber(9999);
+        ClientDataSource dataSource = getDataSource();
 
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                try (ResultSet resultSet = statement.executeQuery("select * from VINEYARD.API")) {
+                try (ResultSet resultSet =
+                        statement.executeQuery("select * from VINEYARD.API where name='Simple'")) {
                     resultSet.next();
                     Assert.assertNotNull(resultSet.getString("ID"));
                     Assert.assertEquals(resultSet.getString("NAME"), "Simple");
@@ -130,6 +128,14 @@ public class RegistryServiceImplTest {
                 }
             }
         }
+    }
+
+    private ClientDataSource getDataSource() {
+        ClientDataSource dataSource = new ClientDataSource();
+        dataSource.setDatabaseName("target/vineyard");
+        dataSource.setServerName("localhost");
+        dataSource.setPortNumber(9999);
+        return dataSource;
     }
 
     private EmSupplier createEmSupplier(EntityManagerFactory emf) {
