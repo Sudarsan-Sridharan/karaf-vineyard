@@ -161,6 +161,25 @@ public class RegistryServiceRest {
         }
     }
 
+    @Path("/api/{id}/rest-resources")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
+    public Response addApiRestResources(@PathParam("id") String id, RestResource restResource) {
+
+        API api = registry.get(id);
+        if (api != null) {
+            RestResource result = registry.addRestResource(api, restResource);
+            if (result != null) {
+                return Response.ok().build();
+            } else {
+                return Response.notModified().build();
+            }
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @Path("/api/{id}/rest-resources/{idRestResource}/policies")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

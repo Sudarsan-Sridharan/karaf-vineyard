@@ -13,14 +13,6 @@
  */
 package org.apache.karaf.vineyard.itests;
 
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -45,6 +37,14 @@ import org.ops4j.pax.exam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -155,8 +155,7 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                     "{\n"
                             + "  \"name\": \"authenticate service\",\n"
                             + "  \"context\": \"api/authenticate\",\n"
-                            + "  \"description\": \"use to authenticate user with token\",\n"
-                            + "  \"version\": \"1.0.0\""
+                            + "  \"description\": \"use to authenticate user with token\""
                             + "}";
             System.out.println("Call POST " + URL);
             HttpURLConnection connection = (HttpURLConnection) urlApi.openConnection();
@@ -226,18 +225,21 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
 
         // RESOURCES
         try {
-            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api/" + apiId + "/resource";
+            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api/" + apiId + "/rest-resources";
             URL urlResource = new URL(URL);
 
             // Call add rest-api
             // TODO update
             String jsonAddRestResource =
                     "{\n"
+                            + "  \"description\": \"my api\",\n"
                             + "  \"path\": \"/token\",\n"
                             + "  \"method\": \"GET\",\n"
-                            + "  \"useBridge\": \"false\",\n"
+                            + "  \"version\": \"1.0.0\",\n"
+                            + "  \"accept\": \"application/json\",\n"
+                            + "  \"mediaType\": \"application/json\",\n"
                             + "  \"response\": \"response\",\n"
-                            + "  \"bridge\": \"bridge\""
+                            + "  \"endpoint\": \"http://localhost/my-api\""
                             + "}";
             System.out.println("Call POST " + URL);
             HttpURLConnection connection = (HttpURLConnection) urlResource.openConnection();
@@ -296,70 +298,6 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             Assert.assertTrue(false);
         }
 
-        // METADATA
-        try {
-            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api/" + apiId + "/metadata";
-            URL urlResource = new URL(URL);
-
-            // Call add rest-api
-            String jsonAddRestMetadata =
-                    "{\n" + "  \"documentation\": \"Swagger\",\n" + "  \"manual\": \"pdf\"" + "}";
-            System.out.println("Call POST " + URL);
-            HttpURLConnection connection = (HttpURLConnection) urlResource.openConnection();
-            connection.setRequestMethod(HttpMethod.POST);
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            OutputStream os = connection.getOutputStream();
-            os.write(jsonAddRestMetadata.getBytes());
-            os.flush();
-
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                Assert.assertTrue(true);
-
-                urlResource = new URL(URL);
-                connection = (HttpURLConnection) urlResource.openConnection();
-                connection.setRequestMethod(HttpMethod.GET);
-                connection.connect();
-
-                StringBuffer sb = new StringBuffer();
-
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader buffer =
-                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-
-                    while ((line = buffer.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    if (sb.length() == 0) {
-                        System.out.println("resource not found");
-                        Assert.assertTrue(false);
-                    } else {
-                        System.out.println(sb.toString());
-                        Assert.assertTrue(true);
-                    }
-                } else {
-                    System.out.println(
-                            "Error when sending GET method : HTTP_CODE = "
-                                    + connection.getResponseCode());
-                    Assert.assertTrue(false);
-                }
-                connection.disconnect();
-
-            } else {
-                System.out.println(
-                        "Error when sending POST method : HTTP_CODE = "
-                                + connection.getResponseCode());
-                Assert.assertTrue(false);
-            }
-
-            connection.disconnect();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assert.assertTrue(false);
-        }
     }
 
     @After
