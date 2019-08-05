@@ -50,7 +50,7 @@ features:
 Simply register Karaf Vineyard features repository:
 
 ```
-karaf@root()> feature:repo-add mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/4.0.0/xml/features
+karaf@root()> feature:repo-add mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/1.0.0-SNAPSHOT/xml/features
 ```
 
 Then you can directly install the Karaf Vineyard features using `feature:install` command.
