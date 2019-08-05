@@ -13,6 +13,14 @@
  */
 package org.apache.karaf.vineyard.itests;
 
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -37,14 +45,6 @@ import org.ops4j.pax.exam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -106,7 +106,6 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                     .groupId("org.apache.karaf.itests")
                     .artifactId("common")
                     .versionAsInProject(),
-
             editConfigurationFilePut(
                     "etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
             editConfigurationFilePut(
@@ -118,7 +117,10 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
                     "etc/org.ops4j.pax.url.mvn.cfg",
                     "org.ops4j.pax.url.mvn.localRepository",
                     localRepository),
-                editConfigurationFilePut("etc/system.properties", "vineyard.version", System.getProperty("vineyard.version"))
+            editConfigurationFilePut(
+                    "etc/system.properties",
+                    "vineyard.version",
+                    System.getProperty("vineyard.version"))
         };
     }
 
@@ -126,7 +128,9 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
     public void testVineyardRegistryFeatureInstall() throws Exception {
         // adding vineyard features repository
         addFeaturesRepository(
-                "mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/" + System.getProperty("vineyard.version") + "/xml/features");
+                "mvn:org.apache.karaf.vineyard/apache-karaf-vineyard/"
+                        + System.getProperty("vineyard.version")
+                        + "/xml/features");
 
         installAndAssertFeature("vineyard");
 
@@ -225,7 +229,12 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
 
         // RESOURCES
         try {
-            String URL = "http://localhost:" + getHttpPort() + "/cxf/vineyard-registry/api/" + apiId + "/rest-resources";
+            String URL =
+                    "http://localhost:"
+                            + getHttpPort()
+                            + "/cxf/vineyard-registry/api/"
+                            + apiId
+                            + "/rest-resources";
             URL urlResource = new URL(URL);
 
             // Call add rest-api
@@ -297,7 +306,6 @@ public class VineyardRegistryRestTest extends KarafTestSupport {
             System.out.println(e.getMessage());
             Assert.assertTrue(false);
         }
-
     }
 
     @After
