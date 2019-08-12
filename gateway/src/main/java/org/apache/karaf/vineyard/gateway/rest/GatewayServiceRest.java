@@ -60,6 +60,20 @@ public class GatewayServiceRest {
         return Response.ok().build();
     }
 
+    @Path("/remove")
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeResource(API api, RestResource restResource) {
+
+        try {
+            gateway.remove(api, restResource);
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+
+        return Response.ok().build();
+    }
+
     @Path("/publish")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -67,6 +81,20 @@ public class GatewayServiceRest {
 
         try {
             gateway.publish(api);
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+
+        return Response.ok().build();
+    }
+
+    @Path("/publish")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishResource(API api, RestResource restResource) {
+
+        try {
+            gateway.publish(api, restResource);
         } catch (Exception e) {
             return Response.serverError().build();
         }
