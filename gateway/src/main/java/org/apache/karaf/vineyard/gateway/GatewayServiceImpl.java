@@ -117,6 +117,16 @@ public class GatewayServiceImpl implements GatewayService {
         DefaultCamelContext.class.cast(camelContext).suspendRoute(getRouteId(api, restResource));
     }
 
+    @Override
+    public String getStatus(String apiId, String resourceId) throws Exception {
+        String routeId = apiId + "-" + resourceId;
+        if (camelContext.getRoute(routeId) == null) {
+            return "NotPublished";
+        } else {
+            return DefaultCamelContext.class.cast(camelContext).getRouteStatus(routeId).name();
+        }
+    }
+
     private String getRouteId(API api, RestResource resource) {
         return api.getId() + "-" + resource.getId();
     }

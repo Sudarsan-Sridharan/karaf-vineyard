@@ -29,4 +29,15 @@ public interface GatewayService {
     void resume(API api, RestResource resource) throws Exception;
 
     void suspend(API api, RestResource resource) throws Exception;
+
+    /**
+     * Return the status of the resource: NotPublished Starting Started Stopping Stopped Suspending
+     * Suspended
+     *
+     * @param apiId
+     * @param resourceId
+     * @return the status of the resource
+     * @throws Exception
+     */
+    String getStatus(String apiId, String resourceId) throws Exception;
 }
