@@ -16,14 +16,13 @@
  */
 package org.apache.karaf.vineyard.registry;
 
-import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
-
 import com.google.common.annotations.VisibleForTesting;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,8 @@ import org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoinEntity;
 import org.apache.karaf.vineyard.registry.entity.RestResourceEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
 
 /**
  * Implementation of the Registry service using the JPA entity manager service (provided by Karaf).
@@ -265,6 +266,25 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
+    public Collection<RestResource> listRestResources(Policy policy) {
+        List<PolicyRestResourceJoinEntity> list =
+                jpaTemplate.txExpr(
+                        TransactionType.Supports,
+                        entityManager ->
+                                entityManager
+                                        .createQuery(
+                                                "SELECT p FROM PolicyRestResourceJoinEntity p where p.policy.id = :policyId",
+                                                PolicyRestResourceJoinEntity.class)
+                                        .setParameter("policyId", policy.getId())
+                                        .getResultList());
+        Collection<RestResource> results = new ArrayList<>();
+        for (PolicyRestResourceJoinEntity entity : list) {
+            results.add(mapTo(entity.getRestResource()));
+        }
+        return results;
+    }
+
+    @Override
     public Policy addPolicy(Policy policy) {
         policy.setId(UUID.randomUUID().toString());
         jpaTemplate.tx(
@@ -365,22 +385,22 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Collection<Policy> listAppliedPolicies(RestResource restResource) {
+    public Map<Integer, Policy> listAppliedPolicies(RestResource restResource) {
         List<PolicyRestResourceJoinEntity> list =
                 jpaTemplate.txExpr(
                         TransactionType.Supports,
                         entityManager ->
                                 entityManager
                                         .createQuery(
-                                                "SELECT p FROM PolicyRestResourceJoinEntity p WHERE p.resource.id = :resourceId",
+                                                "SELECT p FROM PolicyRestResourceJoinEntity p WHERE p.restResource.id = :resourceId",
                                                 PolicyRestResourceJoinEntity.class)
                                         .setParameter("resourceId", restResource.getId())
                                         .getResultList());
 
-        Collection<Policy> results = new ArrayList<>();
+        Map<Integer, Policy> results = new HashMap<>();
         list.forEach(
                 policyRestResourceJoinEntity -> {
-                    ((ArrayList<Policy>) results).add(mapTo(policyRestResourceJoinEntity));
+                    results.put(policyRestResourceJoinEntity.getPolicyOrder(), mapTo(policyRestResourceJoinEntity));
                 });
         return results;
     }

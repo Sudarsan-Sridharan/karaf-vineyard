@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -197,15 +198,52 @@ public class RegistryServiceRest {
                             .get();
 
             if (restResource != null) {
-                Collection<Policy> policies = registry.listAppliedPolicies(restResource);
-                if (policies != null && !policies.isEmpty()) {
-                    return Response.ok(policies).build();
+                Map<Integer, Policy> appliedPolicies = registry.listAppliedPolicies(restResource);
+                if (appliedPolicies != null && !appliedPolicies.isEmpty()) {
+                    return Response.ok(appliedPolicies).build();
                 } else {
                     return Response.noContent().build();
                 }
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/api/{id}/rest-resources/{idRestResource}/policies/{order}")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
+    public Response applyPolicy(
+            @PathParam("id") String id,
+            @PathParam("idRestResource") String idRestResource,
+            @PathParam("order") int order,
+            Policy policy) {
+
+        API api = registry.get(id);
+        if (api != null) {
+            registry.applyPolicy(idRestResource, policy.getId(), order, policy.getParam());
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/api/{id}/rest-resources/{idRestResource}/policies/{idPolicy}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Api")
+    public Response unapplyPolicy(
+            @PathParam("id") String id,
+            @PathParam("idRestResource") String idRestResource,
+            @PathParam("idPolicy") String idPolicy) {
+
+        API api = registry.get(id);
+        if (api != null) {
+            registry.unapplyPolicy(idRestResource, idPolicy);
+            return Response.ok().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -239,6 +277,20 @@ public class RegistryServiceRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
     public Response getPolicies() {
+
+        Collection<Policy> policies = registry.listPolicies();
+        if (policies != null) {
+            return Response.ok(policies).build();
+        } else {
+            return Response.noContent().build();
+        }
+    }
+
+    @Path("/policy/{id}/rest-resources")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Policy")
+    public Response getRestResourcesApplyPolicy() {
 
         Collection<Policy> policies = registry.listPolicies();
         if (policies != null) {

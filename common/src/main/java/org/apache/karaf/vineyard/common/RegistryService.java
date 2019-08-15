@@ -134,6 +134,14 @@ public interface RegistryService {
     RestResource getRestResource(String id);
 
     /**
+     * Retrieve all the {@link RestResource} for an existing {@link Policy}.
+     *
+     * @param policy The {@link Policy}.
+     * @return The list of resources.
+     */
+    Collection<RestResource> listRestResources(Policy policy);
+
+    /**
      * Add a {@link Policy}.
      *
      * @param policy The {@link Policy} to add.
@@ -182,8 +190,9 @@ public interface RegistryService {
      * List the policies for a given {@link RestResource}.
      *
      * @param restResource The {@link RestResource}.
+     * @return The map of the {@link Policy} with the applied order key by the gateway.
      */
-    Collection<Policy> listAppliedPolicies(RestResource restResource);
+    Map<Integer, Policy> listAppliedPolicies(RestResource restResource);
 
     /**
      * Add a new meta for an existing {@link Policy}.

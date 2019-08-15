@@ -56,6 +56,7 @@ public class GatewayServiceRest {
         try {
             gateway.delete(api);
         } catch (Exception e) {
+            LOGGER.error("error while removing api", e);
             return Response.serverError().build();
         }
 
@@ -70,6 +71,7 @@ public class GatewayServiceRest {
         try {
             gateway.remove(api, restResource);
         } catch (Exception e) {
+            LOGGER.error("error while removing resource", e);
             return Response.serverError().build();
         }
 
@@ -84,6 +86,7 @@ public class GatewayServiceRest {
         try {
             gateway.publish(api);
         } catch (Exception e) {
+            LOGGER.error("error while publishing api", e);
             return Response.serverError().build();
         }
 
@@ -98,6 +101,7 @@ public class GatewayServiceRest {
         try {
             gateway.publish(api, restResource);
         } catch (Exception e) {
+            LOGGER.error("error while publishing resource", e);
             return Response.serverError().build();
         }
 
@@ -112,6 +116,7 @@ public class GatewayServiceRest {
         try {
             gateway.suspend(api, restResource);
         } catch (Exception e) {
+            LOGGER.error("error while suspending resource", e);
             return Response.serverError().build();
         }
 
@@ -126,6 +131,7 @@ public class GatewayServiceRest {
         try {
             gateway.resume(api, restResource);
         } catch (Exception e) {
+            LOGGER.error("error while resuming resource", e);
             return Response.serverError().build();
         }
 
@@ -141,6 +147,7 @@ public class GatewayServiceRest {
         try {
             return Response.ok(gateway.getStatus(id, idRestResource)).build();
         } catch (Exception e) {
+            LOGGER.error("error while retreiving status resource", e);
             return Response.serverError().build();
         }
     }
