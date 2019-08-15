@@ -425,6 +425,16 @@
 
     <profiles>
         <profile>
+            <id>fast</id>
+            <properties>
+                <maven.test.skip.exec>true</maven.test.skip.exec>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <defaultGoal>install</defaultGoal>
+            </build>
+        </profile>
+        <profile>
             <id>rat</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
