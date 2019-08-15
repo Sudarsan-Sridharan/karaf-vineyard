@@ -24,11 +24,11 @@ public interface GatewayService {
 
     void delete(API api) throws Exception;
 
-    void remove(API api, RestResource resource) throws Exception;
+    void remove(String apiId, String resourceId) throws Exception;
 
-    void resume(API api, RestResource resource) throws Exception;
+    void resume(String apiId, String resourceId) throws Exception;
 
-    void suspend(API api, RestResource resource) throws Exception;
+    void suspend(String apiId, String resourceId) throws Exception;
 
     /**
      * Return the status of the resource: NotPublished Starting Started Stopping Stopped Suspending

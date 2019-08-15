@@ -63,13 +63,13 @@ public class GatewayServiceRest {
         return Response.ok().build();
     }
 
-    @Path("/remove")
+    @Path("/api/{idApi}/rest-resources/{idRestResource}/remove")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeResource(API api, RestResource restResource) {
+    public Response removeResource(@PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
-            gateway.remove(api, restResource);
+            gateway.remove(idApi, idRestResource);
         } catch (Exception e) {
             LOGGER.error("error while removing resource", e);
             return Response.serverError().build();
@@ -108,13 +108,13 @@ public class GatewayServiceRest {
         return Response.ok().build();
     }
 
-    @Path("/suspend")
+    @Path("/api/{idApi}/rest-resources/{idRestResource}/suspend")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response suspendApi(API api, RestResource restResource) {
+    public Response suspendApi(@PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
-            gateway.suspend(api, restResource);
+            gateway.suspend(idApi, idRestResource);
         } catch (Exception e) {
             LOGGER.error("error while suspending resource", e);
             return Response.serverError().build();
@@ -123,13 +123,13 @@ public class GatewayServiceRest {
         return Response.ok().build();
     }
 
-    @Path("/resume")
+    @Path("/api/{idApi}/rest-resources/{idRestResource}/resume")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response resumeApi(API api, RestResource restResource) {
+    public Response resumeApi(@PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
-            gateway.resume(api, restResource);
+            gateway.resume(idApi, idRestResource);
         } catch (Exception e) {
             LOGGER.error("error while resuming resource", e);
             return Response.serverError().build();
@@ -138,16 +138,16 @@ public class GatewayServiceRest {
         return Response.ok().build();
     }
 
-    @Path("/api/{id}/rest-resources/{idRestResource}/status")
+    @Path("/api/{idApi}/rest-resources/{idRestResource}/status")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getResourceStatus(
-            @PathParam("id") String id, @PathParam("idRestResource") String idRestResource) {
+            @PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
-            return Response.ok(gateway.getStatus(id, idRestResource)).build();
+            return Response.ok(gateway.getStatus(idApi, idRestResource)).build();
         } catch (Exception e) {
-            LOGGER.error("error while retreiving status resource", e);
+            LOGGER.error("error while retrieving status resource", e);
             return Response.serverError().build();
         }
     }

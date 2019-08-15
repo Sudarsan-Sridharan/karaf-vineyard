@@ -59,7 +59,7 @@ public class GatewayServiceImpl implements GatewayService {
     @Override
     public void delete(API api) throws Exception {
         for (RestResource restResource : api.getRestResources()) {
-            remove(api, restResource);
+            remove(api.getId(), restResource.getId());
         }
     }
 
@@ -99,22 +99,23 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     @Override
-    public void remove(API api, RestResource restResource) throws Exception {
-        String routeId = getRouteId(api, restResource);
+    public void remove(String apiId, String resourceId) throws Exception {
+        String routeId = getRouteId(apiId, resourceId);
         if (camelContext.getRoute(routeId) == null) {
             throw new IllegalArgumentException("API resource not published");
         }
-        camelContext.removeRoute(routeId);
+        DefaultCamelContext.class.cast(camelContext).stopRoute(routeId);
+        DefaultCamelContext.class.cast(camelContext).removeRoute(routeId);
     }
 
     @Override
-    public void resume(API api, RestResource restResource) throws Exception {
-        DefaultCamelContext.class.cast(camelContext).resumeRoute(getRouteId(api, restResource));
+    public void resume(String apiId, String resourceId) throws Exception {
+        DefaultCamelContext.class.cast(camelContext).resumeRoute(getRouteId(apiId, resourceId));
     }
 
     @Override
-    public void suspend(API api, RestResource restResource) throws Exception {
-        DefaultCamelContext.class.cast(camelContext).suspendRoute(getRouteId(api, restResource));
+    public void suspend(String apiId, String resourceId) throws Exception {
+        DefaultCamelContext.class.cast(camelContext).suspendRoute(getRouteId(apiId, resourceId));
     }
 
     @Override
@@ -128,6 +129,10 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     private String getRouteId(API api, RestResource resource) {
-        return api.getId() + "-" + resource.getId();
+        return getRouteId(api.getId(), resource.getId());
+    }
+
+    private String getRouteId(String apiId, String resourceId) {
+        return apiId + "-" + resourceId;
     }
 }
