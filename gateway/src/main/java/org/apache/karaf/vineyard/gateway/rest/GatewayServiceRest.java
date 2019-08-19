@@ -66,7 +66,8 @@ public class GatewayServiceRest {
     @Path("/api/{idApi}/rest-resources/{idRestResource}/remove")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeResource(@PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
+    public Response removeResource(
+            @PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
             gateway.remove(idApi, idRestResource);
@@ -111,7 +112,8 @@ public class GatewayServiceRest {
     @Path("/api/{idApi}/rest-resources/{idRestResource}/suspend")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response suspendApi(@PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
+    public Response suspendApi(
+            @PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
             gateway.suspend(idApi, idRestResource);
@@ -126,7 +128,8 @@ public class GatewayServiceRest {
     @Path("/api/{idApi}/rest-resources/{idRestResource}/resume")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response resumeApi(@PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
+    public Response resumeApi(
+            @PathParam("idApi") String idApi, @PathParam("idRestResource") String idRestResource) {
 
         try {
             gateway.resume(idApi, idRestResource);
