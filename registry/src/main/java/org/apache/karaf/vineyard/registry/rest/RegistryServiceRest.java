@@ -290,11 +290,12 @@ public class RegistryServiceRest {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Policy")
-    public Response getRestResourcesApplyPolicy() {
+    public Response getRestResourcesApplyPolicy(@PathParam("id") String id) {
 
-        Collection<Policy> policies = registry.listPolicies();
-        if (policies != null) {
-            return Response.ok(policies).build();
+        Policy policy = registry.getPolicy(id);
+        if (policy != null) {
+            Collection<RestResource> resources = registry.listRestResources(policy);
+            return Response.ok(resources).build();
         } else {
             return Response.noContent().build();
         }
