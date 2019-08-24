@@ -16,8 +16,6 @@
  */
 package org.apache.karaf.vineyard.registry;
 
-import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
-
 import com.google.common.annotations.VisibleForTesting;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,6 +39,8 @@ import org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoinEntity;
 import org.apache.karaf.vineyard.registry.entity.RestResourceEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
 
 /**
  * Implementation of the Registry service using the JPA entity manager service (provided by Karaf).
@@ -374,11 +374,20 @@ public class RegistryServiceImpl implements RegistryService {
                             entityManager.find(RestResourceEntity.class, restResourceId);
                     PolicyEntity policyEntity = entityManager.find(PolicyEntity.class, policyId);
                     if (restResourceEntity != null && policyEntity != null) {
-                        PolicyRestResourceJoinEntity join = new PolicyRestResourceJoinEntity();
-                        join.setPolicy(policyEntity);
-                        join.setRestResource(restResourceEntity);
-                        restResourceEntity.getPolicyRestResourceJoins().remove(join);
-                        entityManager.merge(policyEntity);
+
+                        PolicyRestResourceJoinEntity result =
+                                restResourceEntity
+                                        .getPolicyRestResourceJoins()
+                                        .stream()
+                                        .filter(
+                                                policyRestResourceJoinEntity ->
+                                                        policyRestResourceJoinEntity
+                                                                .getPolicy()
+                                                                .getId()
+                                                                .equals(policyId))
+                                        .findFirst()
+                                        .get();
+                        entityManager.remove(result);
                         entityManager.flush();
                     }
                 });
