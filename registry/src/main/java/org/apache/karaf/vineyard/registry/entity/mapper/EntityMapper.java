@@ -99,6 +99,8 @@ public class EntityMapper {
             policy.setId(entity.getId());
             policy.setDescription(entity.getDescription());
             policy.setClassName(entity.getClassName());
+            policy.setMeta(new HashMap<>());
+            entity.getMeta().forEach((key, value) -> policy.getMeta().put(key, value));
             return policy;
         } else {
             return null;
@@ -111,6 +113,8 @@ public class EntityMapper {
             entity.setId(policy.getId());
             entity.setDescription(policy.getDescription());
             entity.setClassName(policy.getClassName());
+            entity.setMeta(new HashMap<>());
+            policy.getMeta().forEach((key, value) -> entity.getMeta().put(key, value));
             return entity;
         } else {
             return null;
