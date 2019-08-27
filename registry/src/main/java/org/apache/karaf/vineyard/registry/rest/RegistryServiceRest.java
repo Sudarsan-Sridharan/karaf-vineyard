@@ -286,6 +286,20 @@ public class RegistryServiceRest {
         }
     }
 
+    @Path("/policy/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Policy")
+    public Response getPolicy(@PathParam("id") String id) {
+
+        Policy policy = registry.getPolicy(id);
+        if (policy != null) {
+            return Response.ok(policy).build();
+        } else {
+            return Response.noContent().build();
+        }
+    }
+
     @Path("/policy/{id}/rest-resources")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

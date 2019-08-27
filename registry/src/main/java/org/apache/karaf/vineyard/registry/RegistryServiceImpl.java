@@ -16,6 +16,8 @@
  */
 package org.apache.karaf.vineyard.registry;
 
+import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
+
 import com.google.common.annotations.VisibleForTesting;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,8 +41,6 @@ import org.apache.karaf.vineyard.registry.entity.PolicyRestResourceJoinEntity;
 import org.apache.karaf.vineyard.registry.entity.RestResourceEntity;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import static org.apache.karaf.vineyard.registry.entity.mapper.EntityMapper.mapTo;
 
 /**
  * Implementation of the Registry service using the JPA entity manager service (provided by Karaf).
