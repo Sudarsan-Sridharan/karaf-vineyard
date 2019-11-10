@@ -38,7 +38,7 @@
         <osgi.compendium.version>6.0.0</osgi.compendium.version>
         <osgi.enterprise.version>5.0.0</osgi.enterprise.version>
 
-        <karaf.version>4.2.6</karaf.version>
+        <karaf.version>4.2.7</karaf.version>
 
         <camel.version>2.24.0</camel.version>
         <cxf.version>3.2.7</cxf.version>
