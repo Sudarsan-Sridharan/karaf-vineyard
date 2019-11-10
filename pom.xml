@@ -48,7 +48,7 @@
         <pax.exam.version>4.13.1</pax.exam.version>
         <javax.annotation.version>1.2</javax.annotation.version>
 
-        <derby.version>10.11.1.1</derby.version>
+        <derby.version>10.14.2.0</derby.version>
 
         <jackson.version>2.9.7</jackson.version>
         <json-api.version>1.1.4</json-api.version>
